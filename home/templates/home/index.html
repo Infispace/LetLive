@@ -1,0 +1,10 @@
+{% extends "home/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% for entry in latest_articles_list %}
+    <h2>{{ entry.headline }}</h2>
+    <p>{{ entry.pub_date }}</p>
+{% endfor %}
+{% endblock %}
