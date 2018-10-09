@@ -18,19 +18,21 @@ class TopicView(generic.DetailView):
     model = Topic
     template_name = 'home/topic.html'
 
-    def get(self, request, topic_id):
-        return HttpResponse('topic view')
+    def get(self, request, topic_id=0):
+        return HttpResponse('topic view'+
+            reverse('home:topic_default')
+        )
 
 class ArticleView(generic.DetailView):
     model = Article
     template_name = 'home/article.html'
 
-    def get(self, request, article_id):
+    def get(self, request, article_id=0):
         return HttpResponse('article view')
 
 class UserView(generic.DetailView):
     model = Author
     template_name = 'home/user.html'
 
-    def get(self, request, user_id):
+    def get(self, request, user_id=0):
         return HttpResponse('user view')
