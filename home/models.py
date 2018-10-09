@@ -2,12 +2,8 @@ from django.conf import settings # to get the default auth_user
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-<<<<<<< HEAD
+#from django.utils.safestring import mark_safe
 #from markdown_deux import markdown
-=======
-from markdown_deux import markdown
->>>>>>> dev
-from django.utils.safestring import mark_safe
 
 # controls how the models work
 class ArticleManager(models.Manager):
@@ -31,14 +27,11 @@ class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, null=True, on_delete=models.SET_NULL)
     title = models.CharField(max_length=120)
     image = models.ImageField(upload_to = upload_location,
-                              null = True,
-                              blank=True,
-                              width_field = "width_field",
-<<<<<<< HEAD
-                              height_field= "height_field")
-=======
-                              height_field= "heigth_field")
->>>>>>> dev
+        null = True,
+        blank=True,
+        width_field = "width_field",
+        height_field= "height_field"
+    )
     height_field = models.IntegerField(default=0)
     width_field = models.IntegerField(default=0)
     content = models.TextField()
@@ -46,12 +39,9 @@ class Article(models.Model):
     draft = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
 
-<<<<<<< HEAD
     # linking the manager model to the model(Article) so that it can work
-=======
-    # linking th manager model to the model(Article) so that it can work
->>>>>>> dev
     objects = ArticleManager()
 
     def __str__(self):
@@ -60,16 +50,8 @@ class Article(models.Model):
     class Meta:
         ordering = ['-timestamp', 'updated']
 
-<<<<<<< HEAD
     #def get_markdown(self):
         #content = self.content
         # converting content to markdown the django way
         #markdown_text = markdown(content)
         #return mark_safe(markdown_text)
-=======
-    def get_markdown(self):
-        content = self.content
-        # converting content to markdown the django way
-        markdown_text = markdown(content)
-        return mark_safe(markdown_text)
->>>>>>> dev
