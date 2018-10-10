@@ -39,7 +39,7 @@ class Article(models.Model):
     draft = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, default=None)
 
     # linking the manager model to the model(Article) so that it can work
     objects = ArticleManager()
