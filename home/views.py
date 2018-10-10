@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
 from django.urls import reverse
 from django.views import generic
 
@@ -57,8 +58,24 @@ class UserView(generic.DetailView):
         else:
             return HttpResponse('user view '+request.user.username)
 
-    def userLogin(request, next=''):
-        user = authenticate(username='ken', password='myPass')
+    def userLogout(request):
+        if request.user.is_authenticated:
+            logout(request)
+            return HttpResponseRedirect(reverse('home:index'))
+        else:
+            return HttpResponse('user error')
+
+class UserLoginView(generic.TemplateView):
+    template_name = 'home/login.html'
+
+    def get(self, request, next=''):
+        if 'next' in request.GET:
+            next = request.GET['next']
+
+        return render(request, self.template_name, {'next': next})
+
+    def post(self, request):
+        user = authenticate(username='ken', password='myPasss')
         if user is not None:
             login(request, user)
             if next is not '':
@@ -66,11 +83,4 @@ class UserView(generic.DetailView):
             else:
                 return HttpResponseRedirect(reverse('home:index'))
         else:
-            return HttpResponse('user error')
-
-    def userLogout(request):
-        if request.user.is_authenticated:
-            logout(request)
-            return HttpResponseRedirect(reverse('home:index'))
-        else:
-            return HttpResponse('user error')
+            return HttpResponse('user error'+next)
