@@ -19,6 +19,6 @@ urlpatterns = [
         path('<int:user_id>/', views.UserView.as_view(), name='user'),
         path('login/', views.UserLoginView.as_view(), name='user_login'),
         path('logout/', views.UserView.userLogout, name='user_logout'),
-        path('logout/', views.UserView.as_view(), name='password_reset'),
+        path('password_reset/', views.UserView.as_view(), name='password_reset'),
     ])),
 ]

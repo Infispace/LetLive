@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.views import generic
 
 from .models import Topic, Article
+from .forms import LoginForm
 # Create your views here.
 
 class IndexView(generic.ListView):
@@ -48,7 +49,7 @@ class ArticleView(generic.DetailView):
         pass
 
 class UserView(generic.DetailView):
-    #model = User
+    model = User
     template_name = 'home/user.html'
 
     @method_decorator(login_required)
@@ -58,6 +59,7 @@ class UserView(generic.DetailView):
         else:
             return HttpResponse('user view '+request.user.username)
 
+    @login_required()
     def userLogout(request):
         if request.user.is_authenticated:
             logout(request)
@@ -67,15 +69,31 @@ class UserView(generic.DetailView):
 
 class UserLoginView(generic.TemplateView):
     template_name = 'home/login.html'
+    form = LoginForm()
 
     def get(self, request, next=''):
         if 'next' in request.GET:
             next = request.GET['next']
 
-        return render(request, self.template_name, {'next': next})
+        return render(request, self.template_name,
+            {'next': next, 'form': self.form}
+        )
 
-    def post(self, request):
-        user = authenticate(username='ken', password='myPasss')
+    def post(self, request, next='', error='', user=None):
+        if 'next' in request.POST:
+            next = request.POST['next']
+
+        self.form = LoginForm(request.POST)
+        if self.form.is_valid():
+            user = authenticate(username=self.form.cleaned_data['username'],
+                password= self.form.cleaned_data['password']
+            )
+        else:
+            error = 'Empty username and/or password'
+            return render(request, self.template_name,
+                {'next': next, 'error': error, 'form': self.form}
+            )
+
         if user is not None:
             login(request, user)
             if next is not '':
@@ -83,4 +101,7 @@ class UserLoginView(generic.TemplateView):
             else:
                 return HttpResponseRedirect(reverse('home:index'))
         else:
-            return HttpResponse('user error'+next)
+            error = 'Invalid username and/or password'
+            return render(request, self.template_name,
+                {'next': next, 'error': error, 'form': self.form}
+            )
