@@ -12,25 +12,25 @@
 <body>
   {% block navbar %}
   <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="http://127.0.0.1:8000/">Navbar</a><!-- website url goes here-->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         {% block menubar_links %}
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:index' %}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Topics</a>
+          <a class="nav-link" href="{% url 'home:topic_default' %}">Topics</a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="#">My Blog</a>
+          <a class="nav-link" href="{% url 'home:article_default' %}">My Blog</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">New Article</a>
+          <a class="nav-link" href="{% url 'home:article_new' %}">New Article</a>
         </li>
         {% endif %}
         {% endblock %}
@@ -64,8 +64,8 @@
             <form class="px-4 py-3" method="post" action="{% url 'home:user_login' %}">
               {% csrf_token %}
               <div class="form-group">
-                <label for="loginDropdownFormEmail">User Name</label>
-                <input type="text" name="username" class="form-control" id="loginDropdownFormEmail" placeholder="email@example.com">
+                <label for="loginDropdownFormName">Username</label>
+                <input type="text" name="username" class="form-control" id="loginDropdownFormName" placeholder="username">
               </div>
               <div class="form-group">
                 <label for="loginDropdownFormPassword">Password</label>
@@ -80,8 +80,8 @@
               <button type="submit" class="btn btn-primary">Sign in</button>
             </form>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">New around here? Sign up</a>
-            <a class="dropdown-item" href="{% url 'home:password_reset' %}">Forgot password?</a>
+            <a class="dropdown-item" href="{% url 'home:user_register' %}">New around here? Sign up</a>
+            <a class="dropdown-item" href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">Forgot password?</a>
           </div>
         {% endif %}
       </div>

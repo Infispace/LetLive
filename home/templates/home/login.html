@@ -6,42 +6,44 @@
 
 {% block content %}
 
-{% if form.errors %}
-  <p>Your username and password didn't match. Please try again.</p>
+{% if form.errors or error_string %}
+<p>{{ error_string }}</p>
 {% endif %}
 
 {% if next %}
   {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
+  <p>Your account doesn't have access to this page. To proceed,
+  please login with an account that has access.</p>
   {% else %}
-    <p>Please login to see this page.</p>
+  <p>Please login to see this page.</p>
   {% endif %}
 {% endif %}
 
-{% if error %}
-  <p> {{ error }}</p>
-{% endif %}
-
+{% if page != 'signup' %}
 <form method="post" action="{% url 'home:user_login' %}">
+{% else %}
+<form method="post" action="{% url 'home:user_register' %}">
+{% endif %}
 {% csrf_token %}
+
 <table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
+  {{ form.as_table }}
 </table>
 
+{% if page != 'signup' %}
 <input type="submit" value="login">
+{% else %}
+<input type="submit" value="register">
+{% endif %}
 <input type="hidden" name="next" value="{{ next }}">
 </form>
 
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'home:password_reset' %}">Lost password?</a></p>
+{% if page != 'signup' %}
+<p><a href="{% url 'home:user_register' %}{% if next %}?next={{ next }}{% endif %}">New around here? Sign up</a></p>
+<p><a href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">Lost password?</a></p>
+{% else %}
+<p><a href="{% url 'home:user_login' %}{% if next %}?next={{ next }}{% endif %}">Sign in</a></p>
+{% endif %}
 
 
 {% endblock %}

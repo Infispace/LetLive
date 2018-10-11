@@ -30,8 +30,9 @@ class ArticleModelTest(TestCase):
     def test_article_created_is_not_published(self):
         # A new article is not published
 
-    def test_publish_date_is_not_future(self):
-        # An article cannot be published in the future
+    def test_future_published_article_not_shown(self):
+        # An article can be published in the future
+        # but should not be shown till published date
 
     def test_published_article_cannot_be_deleted(self):
         # A published article cannot be deleted except by an admin
