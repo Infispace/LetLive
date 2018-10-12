@@ -1,0 +1,49 @@
+{% extends "home/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+
+{% if form.errors or error_string %}
+<p>{{ error_string }}</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+  <p>Your account doesn't have access to this page. To proceed,
+  please login with an account that has access.</p>
+  {% else %}
+  <p>Please login to see this page.</p>
+  {% endif %}
+{% endif %}
+
+{% if page != 'signup' %}
+<form method="post" action="{% url 'home:user_login' %}">
+{% else %}
+<form method="post" action="{% url 'home:user_register' %}">
+{% endif %}
+{% csrf_token %}
+
+<table>
+  {{ form.as_table }}
+</table>
+
+{% if page != 'signup' %}
+<input type="submit" value="login">
+{% else %}
+<input type="submit" value="register">
+{% endif %}
+<input type="hidden" name="next" value="{{ next }}">
+</form>
+
+{% if page != 'signup' %}
+<p><a href="{% url 'home:user_register' %}{% if next %}?next={{ next }}{% endif %}">New around here? Sign up</a></p>
+<p><a href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">Lost password?</a></p>
+{% else %}
+<p><a href="{% url 'home:user_login' %}{% if next %}?next={{ next }}{% endif %}">Sign in</a></p>
+{% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "home/base.html" %}
+
+{% block title %}User{% endblock %}
+
+{% block content %}
+<!-- Enter something -->
+{% if view_user %}
+  {{ view_user.username }}
+{% endif %}
+
+{% endblock %}
