@@ -74,6 +74,8 @@ class UserView(generic.TemplateView):
     def get(self, request, user_id=0):
         if user_id > 0:
             self.view_user = get_object_or_404(User, pk=user_id)
+        else:
+            self.view_user = request.user
 
         return render(request, self.template_name,
             {'next': next, 'view_user': self.view_user}
@@ -118,9 +120,22 @@ class UserLoginView(generic.TemplateView):
         if page == 'signup':
             self.form = RegisterForm(request.POST)
             if self.form.is_valid():
-                return HttpResponse('user valid')
-            else:
-                return HttpResponse('user error')
+                # create user in author's group
+                if False:
+                    if next is not '':
+                        return HttpResponseRedirect(next)
+                    else:
+                        return HttpResponseRedirect(reverse('home:user_default'))
+                else:
+                    #self.error_string = 'Email and/or username already exist. Please try again.'
+                    self.error_string = "We don't accept new users at this time."
+
+            return render(request, self.template_name,{
+                'next': next,
+                'form': self.form,
+                'page': page,
+                'error_string': self.error_string
+            })
 
         else:
             self.form = LoginForm(request.POST)
