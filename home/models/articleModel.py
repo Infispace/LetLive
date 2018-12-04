@@ -5,20 +5,14 @@ from django.utils import timezone
 #from django.utils.safestring import mark_safe
 #from markdown_deux import markdown
 
+from .topicModel import Topic
+
 # controls how the models work
 class ArticleManager(models.Manager):
     def active(self, *args, **kwargs):
         #we override the default all(),i.e, (Article.objects.all())
         #Article.objects.all() = super(ArticleManager,self).all()
         return super(ArticleManager, self).filter(draft=False).filter(publish__lte=timezone.now())
-
-
-class Topic(models.Model):
-    topic_name = models.CharField(max_length=250)
-    intro = models.TextField()
-
-    def __str__(self):
-        return self.topic_name
 
 def upload_location(instance, filename):
     return "%s/%s" %(instance.id, filename)
