@@ -1,4 +1,3 @@
-from django.conf import settings # to get the default auth_user
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -6,6 +5,7 @@ from django.utils import timezone
 #from markdown_deux import markdown
 
 from .topicModel import Topic
+from .userModel import Author, Publisher
 
 # controls how the models work
 class ArticleManager(models.Manager):
@@ -18,22 +18,24 @@ def upload_location(instance, filename):
     return "%s/%s" %(instance.id, filename)
 
 class Article(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, null=True, on_delete=models.SET_NULL)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
-    image = models.ImageField(upload_to = upload_location,
-        null = True,
-        blank=True,
-        width_field = "width_field",
-        height_field= "height_field"
-    )
-    height_field = models.IntegerField(default=0)
-    width_field = models.IntegerField(default=0)
+    publisher = models.ForeignKey(Publisher, null=True, on_delete=models.SET_NULL)
     content = models.TextField()
     publish= models.DateField(auto_now=False, auto_now_add=False)
     draft = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, default=None)
+    # image, height and width fields should be looked at
+    height_field = models.IntegerField(default=0)
+    width_field = models.IntegerField(default=0)
+    image = models.ImageField(upload_to = upload_location,
+        null = True,
+        blank=True,
+        width_field = "width_field",
+        height_field= "height_field"
+    )
 
     # linking the manager model to the model(Article) so that it can work
     objects = ArticleManager()
@@ -43,6 +45,7 @@ class Article(models.Model):
 
     class Meta:
         ordering = ['-timestamp', 'updated']
+        permissions = (("publish_article", "Can publish an article"),)
 
     #def get_markdown(self):
         #content = self.content
