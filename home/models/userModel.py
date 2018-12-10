@@ -45,9 +45,12 @@ class AppUser(models.Model):
     def __str__(self):
         return self.user.username
 
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        User.objects.get(username=self.user.username).delete()
+
 def upload_location(instance, filename):
     return "%s/%s" %(instance.id, filename)
-
 
 class Author(AppUser):
     avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
@@ -56,6 +59,5 @@ class Publisher(AppUser):
     avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
 
 class Admin(AppUser):
-
     class Meta:
         verbose_name = "Administrator"

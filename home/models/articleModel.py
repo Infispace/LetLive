@@ -22,19 +22,15 @@ class Article(models.Model):
     title = models.CharField(max_length=120)
     publisher = models.ForeignKey(Publisher, null=True, on_delete=models.SET_NULL)
     content = models.TextField()
-    publish= models.DateField(auto_now=False, auto_now_add=False)
+    publish_date= models.DateField(auto_now=False, auto_now_add=False)
     draft = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, default=None)
     # image, height and width fields should be looked at
-    height_field = models.IntegerField(default=0)
-    width_field = models.IntegerField(default=0)
     image = models.ImageField(upload_to = upload_location,
         null = True,
-        blank=True,
-        width_field = "width_field",
-        height_field= "height_field"
+        blank=True
     )
 
     # linking the manager model to the model(Article) so that it can work

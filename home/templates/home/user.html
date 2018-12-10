@@ -2,10 +2,31 @@
 
 {% block title %}User{% endblock %}
 
-{% block content %}
-<!-- Enter something -->
-{% if view_user %}
-  {{ view_user.username }}
-{% endif %}
+{% block menubar_links %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'home:index' %}">Home<span class="sr-only">(current)</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'home:topic_default' %}">Topics</a>
+  </li>
+  {% if user.author %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'home:article_default' %}">My Blog</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'home:article_new' %}">New Article</a>
+    </li>
+  {% endif %}
+{% endblock %}
 
+{% block content %}
+  <div class="container p-3">
+
+    {% if editable %}
+      {% include 'home/user_edit.html' %}
+    {% else %}
+      {% include 'home/user_view.html' %}
+    {% endif %}
+
+  </div>
 {% endblock %}

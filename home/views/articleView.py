@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin,  PermissionRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -12,7 +12,12 @@ from django.views import generic
 from ..models.articleModel import Article
 from ..forms.articleForm import ArticleForm
 
-class ArticleView(generic.TemplateView):
+class ArticleView(PermissionRequiredMixin, generic.TemplateView):
+    permission_required = (
+        'home.add_article',
+        'home.view_article',
+        'home.change_article'
+    )
     template_name = 'home/article.html'
     form = None
     article_to_edit = None
