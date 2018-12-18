@@ -9,8 +9,8 @@ from django.views.decorators.http import require_http_methods
 from django.urls import reverse
 from django.views import generic
 
-from ..models.articleModel import Article
-from ..forms.articleForm import ArticleForm
+from ..models import Article
+from ..forms import ArticleForm
 
 class ArticleView(PermissionRequiredMixin, generic.TemplateView):
     permission_required = (

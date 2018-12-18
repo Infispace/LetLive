@@ -1,0 +1,38 @@
+<h2>DELETE TOPIC</h2>
+<hr>
+
+{% if form.errors or error_string %}
+  <div
+    class="alert {% if form.errors %} alert-warning
+      {% else %} alert-danger
+    {% endif %}"
+    role="alert"
+  >
+    {% if form.errors %}
+      There were errors found:
+      {{ form.non_field_errors }}
+    {% else %}
+      {{ error_string }}
+    {% endif %}
+  </div>
+{% endif %}
+
+<form action="{% url 'home:topic_delete' topic.id %}" method="post">
+  {% csrf_token %}
+  <label for="user_delete_form">
+    Are you sure want to delete topic "{{ topic.topic_name }}" ?
+  </label>
+  <table class="d-none">
+    {{ topic_form.as_table }}
+  </table>
+  <button type="submit" class="btn btn-danger">
+    Delete
+  </button>
+  <a
+    class="btn btn-secondary"
+    role="button"
+    href="{% url 'home:topic' topic.id %}"
+  >
+    Cancel
+  </a>
+</form>

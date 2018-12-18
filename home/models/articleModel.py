@@ -9,7 +9,8 @@ from .userModel import Author, Publisher
 
 # controls how the models work
 class ArticleManager(models.Manager):
-    def active(self, *args, **kwargs):
+    def published(self, *args, **kwargs):
+        status = kwargs['status']
         #we override the default all(),i.e, (Article.objects.all())
         #Article.objects.all() = super(ArticleManager,self).all()
         return super(ArticleManager, self).filter(draft=False).filter(publish__lte=timezone.now())

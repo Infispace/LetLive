@@ -1,0 +1,95 @@
+{% load has_perm %}
+
+<!-- index menu item -->
+<li class="nav-item {% if page == 'index' %}active{% endif %}" >
+  <a
+    class="nav-link"
+    href="{% if page == 'index' %} # {% else %}
+      {% url 'home:index' %}
+    {% endif %}"
+  >
+    Home
+    {% if page == 'index' %}
+      <span class="sr-only">(current)</span>
+    {% endif %}
+  </a>
+</li>
+
+<!-- topic menu item -->
+<li class="nav-item {% if page == 'topic_default' %}active{% endif %}">
+  <a
+    class="nav-link"
+    href="{% if page == 'topic_default' %} # {% else %}
+      {% url 'home:topic_default' %}
+    {% endif %}"
+  >
+    Topics
+    {% if page == 'topic_default' %}
+      <span class="sr-only">(current)</span>
+    {% endif %}
+  </a>
+</li>
+
+<!-- article menu item -->
+{% has_perm user 'home.add_article' as add_article %}
+{% if add_article %}
+<li class="nav-item {% if page == 'my_blog' %}active{% endif %}">
+  <a
+    class="nav-link"
+    href="{% if page == 'my_blog' %} # {% else %}
+      {% url 'home:article_default' %}
+    {% endif %}"
+  >
+    My Blog
+    {% if page == 'my_blog' %}
+      <span class="sr-only">(current)</span>
+    {% endif %}
+  </a>
+</li>
+<li class="nav-item {% if page == 'article_new' %}active{% endif %}">
+  <a
+    class="nav-link"
+    href="{% if page == 'article_new' %} # {% else %}
+      {% url 'home:article_new' %}
+    {% endif %}"
+  >
+    New Article
+    {% if page == 'article_new' %}
+      <span class="sr-only">(current)</span>
+    {% endif %}
+  </a>
+</li>
+{% endif %}
+
+<!-- publish article menu item -->
+{% has_perm user 'home.publish_article' as publish_article %}
+{% if publish_article %}
+  <li class="nav-item {% if page == 'publish_article' %}active{% endif %}">
+    <a
+      class="nav-link"
+      href="{% if page == 'publish_article' %} # {% else %}
+        #
+      {% endif %}"
+    >
+      Publish Articles
+    </a>
+  </li>
+{% endif %}
+
+<!-- users menu item -->
+{% has_perm user 'home.add_publisher' as add_publisher %}
+{% if add_publisher %}
+  <li class="nav-item {% if page == 'users' %}active{% endif %}">
+    <a
+      class="nav-link"
+      href="{% if page == 'users' %} # {% else %}
+        {% url 'home:users_default' %}
+      {% endif %}"
+    >
+      Users
+      {% if page == 'users' %}
+        <span class="sr-only">(current)</span>
+      {% endif %}
+    </a>
+  </li>
+{% endif %}

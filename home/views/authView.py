@@ -1,11 +1,20 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from ..forms.authForm import LoginForm, RegisterForm
-from ..models.userModel import Author
+from ..forms import LoginForm, RegisterUserForm
+from ..models import Author
+
+@login_required()
+def user_logout(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return HttpResponseRedirect(reverse('home:index'))
+    else:
+        return HttpResponse('Unknown Error')
 
 class UserLoginView(generic.TemplateView):
     template_name = 'home/login.html'
@@ -23,7 +32,7 @@ class UserLoginView(generic.TemplateView):
                 return HttpResponseRedirect(reverse('home:index'))
 
         if page == 'signup':
-            self.form = RegisterForm()
+            self.form = RegisterUserForm()
         else:
             self.form = LoginForm()
 
@@ -35,8 +44,8 @@ class UserLoginView(generic.TemplateView):
         success = False
         password = self.form.cleaned_data['password']
         password2 = self.form.cleaned_data['password2']
-        password_match = False
 
+        password_match = False
         if password != '' and password2 != '' and password == password2:
             password_match = True
 
@@ -49,8 +58,6 @@ class UserLoginView(generic.TemplateView):
                     user_level= Author.AUTHOR
                 )
                 success = self.login(request)
-                if success:
-                    print('success')
             except:
                 self.error_string = 'Username already exist. Please try again.'
         else:
@@ -72,14 +79,14 @@ class UserLoginView(generic.TemplateView):
 
         return success
 
-
-    def post(self, request, next='', page='login', user=None):
+    def post(self, request, next='', page='login'):
         if 'next' in request.POST:
             next = request.POST['next']
 
         success = False
+        errors = []
         if page == 'signup':
-            self.form = RegisterForm(request.POST)
+            self.form = RegisterUserForm(request.POST)
             if self.form.is_valid():
                 success = self.signup(request);
         else:
@@ -96,5 +103,5 @@ class UserLoginView(generic.TemplateView):
             'next': next,
             'form': self.form,
             'page': page,
-            'error_string': self.error_string
+            'error_string': self.error_string,
         })

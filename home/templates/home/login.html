@@ -29,7 +29,8 @@
       role="alert"
     >
       {% if form.errors %}
-        There were errors found
+        There were errors found:
+        {{ form.non_field_errors }}
       {% else %}
         {{ error_string }}
       {% endif %}

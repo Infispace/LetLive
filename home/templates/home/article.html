@@ -3,40 +3,8 @@
 {% block title %}Article{% endblock %}
 
 {% block menubar_links %}
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'home:index' %}">Home</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'home:topic_default' %}">Topics</a>
-  </li>
-  {% if user.author %}
-    <li class="nav-item {% if page == 'my_blog' %}active{% endif %}">
-      <a
-        class="nav-link"
-        href="{% if page == 'my_blog' %}#{% else %}
-          {% url 'home:article_default' %}
-        {% endif %}"
-      >
-        My Blog
-        {% if page == 'my_blog' %}
-          <span class="sr-only">(current)</span>
-        {% endif %}
-      </a>
-    </li>
-    <li class="nav-item {% if page == 'article_new' %}active{% endif %}">
-      <a
-        class="nav-link"
-        href="{% if page == 'article_new' %}#{% else %}
-          {% url 'home:article_new' %}
-        {% endif %}"
-      >
-        New Article
-        {% if page == 'article_new' %}
-          <span class="sr-only">(current)</span>
-        {% endif %}
-      </a>
-    </li>
-  {% endif %}
+  {% load menu_bar %}
+  {% menu_bar %}
 {% endblock %}
 
 {% block content %}

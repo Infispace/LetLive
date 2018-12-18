@@ -1,14 +1,19 @@
 from django import forms
+from django.forms import ModelForm
 from django.contrib.auth.models import User
 
-from ..models.userModel import Author, Publisher, Admin
+from ..models import Author, Publisher, Admin
 
-class UserForm(forms.ModelForm):
+class UserForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'readonly': True})
+
     class Meta:
         model = User
-        fields = ('last_login', 'username', 'first_name', 'last_name', 'email')
+        fields = ['username', 'first_name', 'last_name', 'email']
 
-class AppUserForm(forms.ModelForm):
+class AppUserForm(ModelForm):
     class Meta:
         exclude = ['user', 'user_level']
 
