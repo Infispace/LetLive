@@ -7,17 +7,23 @@ from .views import IndexView
 from .views import TopicView
 from .views import ProfileView
 from .views import UsersView
+from .views import PublishView
 
 app_name = 'home'
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
+    path('publish/', include([
+        path('', PublishView.as_view(), {'page': 'publish_article'}, name='publish_article'),
+        path('<int:article_id>/', PublishView.as_view(), name='publish_article_id'),
+    ])),
     path('article/', include([
         path('', ArticleView.as_view(), {'page': 'my_blog'}, name='article_default'),
+        path('filter/<str:filter>/', ArticleView.as_view(), {'page': 'article_filter'}, name='article_filter'),
         path('new/', ArticleView.as_view(), {'page': 'article_new'}, name='article_new'),
-        path('publish/', IndexView.as_view(), {'page': 'publish_articles'}, name='publish_articles'),
         path('<int:article_id>/', ArticleView.as_view(), name='article'),
         path('<int:article_id>/edit/', ArticleView.as_view(), {'page': 'article_edit'}, name='article_edit'),
         path('<int:article_id>/delete/', ArticleView.as_view(), {'page': 'article_delete'}, name='article_delete'),
+        path('<int:article_id>/publish/', ArticleView.as_view(), {'page': 'article_publish'}, name='article_publish'),
     ])),
     path('topic/', include([
         path('', TopicView.as_view(), {'page': 'topic_default'}, name='topic_default'),

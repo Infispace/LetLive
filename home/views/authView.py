@@ -3,10 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.views import generic
+from django.views.generic import TemplateView
 
 from ..forms import LoginForm, RegisterUserForm
-from ..models import Author
+from ..models import AppUser, Author
 
 @login_required()
 def user_logout(request):
@@ -16,7 +16,7 @@ def user_logout(request):
     else:
         return HttpResponse('Unknown Error')
 
-class UserLoginView(generic.TemplateView):
+class UserLoginView(TemplateView):
     template_name = 'home/login.html'
     form = None
     error_string = ''
@@ -45,6 +45,15 @@ class UserLoginView(generic.TemplateView):
         password = self.form.cleaned_data['password']
         password2 = self.form.cleaned_data['password2']
 
+        print(self.form.cleaned_data['user_author'])
+
+        user_level = AppUser.SUBSCRIBER
+        try:
+            if self.form.cleaned_data['user_author'] == "true":
+                user_level = AppUser.AUTHOR
+        except Exception as e:
+            pass
+
         password_match = False
         if password != '' and password2 != '' and password == password2:
             password_match = True
@@ -55,7 +64,7 @@ class UserLoginView(generic.TemplateView):
                     username=self.form.cleaned_data['username'],
                     email=self.form.cleaned_data['email'],
                     password=password,
-                    user_level= Author.AUTHOR
+                    user_level= user_level
                 )
                 success = self.login(request)
             except:

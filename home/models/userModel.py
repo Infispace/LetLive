@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from django.db import models, Error
 
 class AppUserManager(models.Manager):
     def create_user(self, username, email, password, user_level):
@@ -8,7 +8,9 @@ class AppUserManager(models.Manager):
         app_user = self.create(user=new_user, user_level=user_level)
 
         user_group = None
-        if(user_level == 'AUT'):
+        if(user_level == 'SUB'):
+            user_group = Group.objects.get(name='Subscribers')
+        elif(user_level == 'AUT'):
             user_group = Group.objects.get(name='Authors')
         elif(user_level == 'PUB'):
             user_group = Group.objects.get(name='Publishers')
@@ -28,20 +30,25 @@ class AppUser(models.Model):
     AUTHOR = 'AUT'
     PUBLISHER = 'PUB'
     ADMIN = 'ADM'
+    SUBSCRIBER = 'SUB'
     USER_LEVEL = (
         (AUTHOR, 'Author'),
         (PUBLISHER, 'Publisher'),
         (ADMIN, 'Administrator'),
+        (SUBSCRIBER, 'Subscriber'),
     )
     user_level = models.CharField(
         max_length=3,
         choices=USER_LEVEL,
-        default=AUTHOR,
+        default=SUBSCRIBER,
     )
 
     objects = AppUserManager()
 
     user_groups = {
+        'Subscribers': [
+            'view_article',
+        ],
         'Authors': [
             'add_article',
             'change_article',
@@ -49,6 +56,9 @@ class AppUser(models.Model):
             'view_article',
         ],
         'Administrators': [
+            'add_user',
+            'view_user',
+            'delete_user',
             'add_publisher',
             'delete_publisher',
             'view_publisher',
@@ -73,43 +83,58 @@ class AppUser(models.Model):
         try:
             user.author
             user.groups.set([Group.objects.get(name='Authors')])
+            user.save()
+            return
         except ObjectDoesNotExist:
             pass
 
         try:
             user.publisher
             user.groups.set([Group.objects.get(name='Publishers')])
+            user.save()
+            return
         except ObjectDoesNotExist:
             pass
 
         try:
             user.admin
             user.groups.set([Group.objects.get(name='Administrators')])
+            user.save()
+            return
         except ObjectDoesNotExist:
             pass
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def create_user_groups(self):
+        user_group = None
+        for group_name, perm_list in self.user_groups.items():
+            user_group = Group.objects.create(name=group_name)
+            permission_list = []
+            for perm_codename in perm_list:
+                permision = Permission.objects.get(codename=perm_codename)
+                permission_list.append(permision)
+            user_group.permissions.set(permission_list)
+            user_group.save()
+        for user in User.objects.all():
+            self.set_user_permmisions(user)
+
+    def test_user_groups(self):
         user_group = None
         try:
             for group_name, perm_list in self.user_groups.items():
                 user_group = Group.objects.get(name=group_name)
                 for perm_codename in perm_list:
                     user_group.permissions.get(codename=perm_codename)
-        except Exception as e:
-            Group.objects.all().delete()
-            for group_name, perm_list in self.user_groups.items():
-                user_group = Group.objects.create(name=group_name)
-                permission_list = []
-                for perm_codename in perm_list:
-                    perm = Permission.objects.get(codename=perm_codename)
-                    permission_list.append(perm)
+        except ObjectDoesNotExist as e:
+            if(len(Group.objects.all()) > 0):
+                Group.objects.all().delete()
+            self.create_user_groups()
 
-                user_group.permissions.set(permission_list)
-                user_group.save()
-
-            for user in User.objects.all():
-                self.set_user_permmisions(user)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            self.test_user_groups()
+        except Error as e:
+            print('>Database Error: ', e)
 
     def __str__(self):
         return self.user.username
@@ -132,4 +157,4 @@ class Publisher(AppUser):
 
 class Admin(AppUser):
     class Meta:
-        verbose_name = "Administrator"
+        verbose_name = "administrator"

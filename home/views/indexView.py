@@ -7,11 +7,11 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_http_methods
 from django.urls import reverse
-from django.views import generic
+from django.views.generic import ListView
 
 from ..models import Article
 
-class IndexView(generic.ListView):
+class IndexView(ListView):
     model = Article
     template_name = 'home/index.html'
     context_object_name = 'latest_articles_list'
@@ -21,5 +21,5 @@ class IndexView(generic.ListView):
         context['page'] = 'index'
         return context
 
-    #def get_queryset(self):
-        #Article.objects.all()
+    def get_queryset(self):
+        return Article.objects.published_articles_list(status=True)

@@ -33,15 +33,15 @@
 <!-- article menu item -->
 {% has_perm user 'home.add_article' as add_article %}
 {% if add_article %}
-<li class="nav-item {% if page == 'my_blog' %}active{% endif %}">
+<li class="nav-item {% if page == 'my_blog' or page == 'article_filter' %}active{% endif %}">
   <a
     class="nav-link"
-    href="{% if page == 'my_blog' %} # {% else %}
+    href="{% if page == 'my_blog' or page == 'article_filter' %} # {% else %}
       {% url 'home:article_default' %}
     {% endif %}"
   >
     My Blog
-    {% if page == 'my_blog' %}
+    {% if page == 'my_blog' or page == 'article_filter' %}
       <span class="sr-only">(current)</span>
     {% endif %}
   </a>
@@ -68,10 +68,13 @@
     <a
       class="nav-link"
       href="{% if page == 'publish_article' %} # {% else %}
-        #
+        {% url 'home:publish_article' %}
       {% endif %}"
     >
       Publish Articles
+      {% if page == 'publish_article' %}
+        <span class="sr-only">(current)</span>
+      {% endif %}
     </a>
   </li>
 {% endif %}
@@ -90,6 +93,18 @@
       {% if page == 'users' %}
         <span class="sr-only">(current)</span>
       {% endif %}
+    </a>
+  </li>
+{% endif %}
+
+<!-- django admin menu item -->
+{% if user.is_staff %}
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      href="/admin"
+    >
+      Django Administation
     </a>
   </li>
 {% endif %}

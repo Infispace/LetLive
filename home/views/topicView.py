@@ -1,29 +1,28 @@
-from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from django.views import generic
+from django.views.generic import TemplateView
 
 from ..models import Topic
 from ..forms import TopicForm, TopicDeleteForm
 
-class TopicView(generic.TemplateView):
+class TopicView(TemplateView):
     template_name = 'home/topic.html'
     topic = None
     topic_list = None
     topic_form = TopicForm()
 
-    def new_topic(self, request):
-        if(not request.user.has_perm('home.add_topic')):
+    def new_topic(self, user):
+        if(not user.has_perm('home.add_topic')):
             raise PermissionDenied
 
-    def edit_topic(self, request):
-        if(not request.user.has_perm('home.change_topic')):
+    def edit_topic(self, user):
+        if(not user.has_perm('home.change_topic')):
             raise PermissionDenied
 
-    def delete_topic(self, request):
-        if(not request.user.has_perm('home.delete_topic')):
+    def delete_topic(self, user):
+        if(not user.has_perm('home.delete_topic')):
             raise PermissionDenied
 
     def get(self, request, topic_id=0, page='topic'):
@@ -31,14 +30,14 @@ class TopicView(generic.TemplateView):
             self.topic = get_object_or_404(Topic, pk=topic_id)
 
         if page == 'topic_edit':
-            self.edit_topic(request)
+            self.edit_topic(request.user)
             self.topic_form = TopicForm(instance=self.topic)
         elif page == 'topic_new':
-            self.new_topic(request)
+            self.new_topic(request.user)
         elif page == 'topic_default':
             self.topic_list = Topic.objects.all()
         elif page == 'topic_delete':
-            self.delete_topic(request)
+            self.delete_topic(request.user)
             self.topic_form = TopicDeleteForm(instance=self.topic)
 
         return render(request, self.template_name, {
@@ -54,13 +53,13 @@ class TopicView(generic.TemplateView):
 
         error_string = None
         if page == 'topic_edit':
-            self.edit_topic(request)
+            self.edit_topic(request.user)
             self.topic_form = TopicForm(request.POST, instance=self.topic)
         elif page == 'topic_new':
-            self.new_topic(request)
+            self.new_topic(request.user)
             self.topic_form = TopicForm(request.POST)
         elif page == 'topic_delete':
-            self.delete_topic(request)
+            self.delete_topic(request.user)
             self.topic_form = TopicDeleteForm(request.POST, instance=self.topic)
             if self.topic_form.is_valid():
                 self.topic = get_object_or_404(

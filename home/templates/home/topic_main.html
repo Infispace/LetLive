@@ -1,0 +1,49 @@
+{% load has_perm %}
+{% has_perm user 'home.add_topic' as add_topic %}
+{% has_perm user 'home.change_topic' as change_topic %}
+{% has_perm user 'home.delete_topic' as delete_topic %}
+
+{% if add_topic %}
+  <a
+    class="btn btn-primary"
+    href="{% url 'home:topic_new' %}"
+    role="button"
+  >
+    Add Topic
+  </a>
+{% endif %}
+
+{% for topic in topic_list %}
+    <h2>{{ topic.topic_name }}</h2>
+    <p>{{ topic.intro }}</p>
+
+    <a
+      class="btn btn-primary btn-sm"
+      href="{% url 'home:topic' topic.id %}"
+      role="button"
+    >
+      View Topic '{{ topic.topic_name }}'
+    </a>
+
+    {% if change_topic %}
+      <a
+        class="btn btn-secondary btn-sm"
+        href="{% url 'home:topic_edit' topic.id %}"
+        role="button"
+      >
+        Edit Topic '{{ topic.topic_name }}'
+      </a>
+
+      {% if delete_topic %}
+        <a
+          class="btn btn-danger btn-sm"
+          href="{% url 'home:topic_delete' topic.id %}"
+          role="button"
+        >
+          Delete Topic '{{ topic.topic_name }}'
+        </a>
+      {% endif %}
+    {% endif %}
+
+    <hr>
+{% endfor %}

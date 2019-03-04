@@ -29,7 +29,7 @@ class DeleteUserForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'readonly': True})
-        
+
     class Meta:
         model = User
         fields = ['username']

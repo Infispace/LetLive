@@ -64,6 +64,15 @@
       </div>
     {% endfor %}
 
+    {% if page == 'signup' %}
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="user_author" value="true" id="authorCheckBox">
+        <label class="form-check-label" for="authorCheckBox">
+          Register Author Account
+        </label>
+      </div>
+    {% endif %}
+
     <input type="hidden" name="next" value="{{ next }}">
     {% if page != 'signup' %}
       <button type="submit" class="btn btn-primary" value="login">

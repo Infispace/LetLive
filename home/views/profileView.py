@@ -1,15 +1,14 @@
-from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.views import generic
+from django.views.generic import TemplateView
 
 from ..forms import UserForm, AuthorForm, PublisherForm, AdminForm
 
-class ProfileView(LoginRequiredMixin, generic.TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'home/account.html'
     view_user = None
     form = None
