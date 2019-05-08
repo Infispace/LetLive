@@ -4,9 +4,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import TemplateView
+from django.db import transaction
 
 from ..forms import LoginForm, RegisterUserForm
-from ..models import AppUser, Author
+from ..models import AppUser, Author, Subscriber
 
 @login_required()
 def user_logout(request):
@@ -40,35 +41,39 @@ class UserLoginView(TemplateView):
             {'next': next, 'form': self.form, 'page': page}
         )
 
+    @transaction.atomic
     def signup(self, request):
         success = False
         password = self.form.cleaned_data['password']
         password2 = self.form.cleaned_data['password2']
-
-        print(self.form.cleaned_data['user_author'])
+        is_author = self.form.cleaned_data['is_author']
 
         user_level = AppUser.SUBSCRIBER
-        try:
-            if self.form.cleaned_data['user_author'] == "true":
-                user_level = AppUser.AUTHOR
-        except Exception as e:
-            pass
+        if is_author:
+            user_level = AppUser.AUTHOR
 
-        password_match = False
         if password != '' and password2 != '' and password == password2:
-            password_match = True
-
-        if password_match:
             try:
-                author = Author.objects.create_user(
-                    username=self.form.cleaned_data['username'],
-                    email=self.form.cleaned_data['email'],
-                    password=password,
-                    user_level= user_level
-                )
+                if is_author:
+                    Author.objects.create_user(
+                        username=self.form.cleaned_data['username'],
+                        email=self.form.cleaned_data['email'],
+                        password=password,
+                        user_level= user_level
+                    )
+                else:
+                    Subscriber.objects.create_user(
+                        username=self.form.cleaned_data['username'],
+                        email=self.form.cleaned_data['email'],
+                        password=password,
+                        user_level= user_level
+                    )
+                    
                 success = self.login(request)
-            except:
-                self.error_string = 'Username already exist. Please try again.'
+            except Exception as e:
+                self.error_string = 'There was an error. Please try again.'
+                #self.error_string = e
+                
         else:
             self.error_string = "Passwords do not match."
 

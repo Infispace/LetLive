@@ -47,7 +47,7 @@
     {% for field in form.visible_fields %}
       <div class="form-group">
         <label for="{{field.id_for_label}}">
-          {{field.name.capitalize}}:
+          {{field.label.capitalize}}:
         </label>
         <input
           type="{{ field.field.widget.input_type }}"
@@ -66,9 +66,15 @@
 
     {% if page == 'signup' %}
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="user_author" value="true" id="authorCheckBox">
-        <label class="form-check-label" for="authorCheckBox">
-          Register Author Account
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          name="{{form.is_author.name}}" 
+          value="{{form.is_author.value}}" 
+          id="{{form.is_author.id_for_label}}"
+        >
+        <label class="form-check-label" for="{{form.is_author.id_for_label}}">
+          {{form.is_author.label.capitalize}}
         </label>
       </div>
     {% endif %}

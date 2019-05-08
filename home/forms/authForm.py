@@ -4,11 +4,21 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 
 class RegisterUserForm(ModelForm):
-    password2 = forms.CharField(label='Retype Password', max_length=25, widget=forms.PasswordInput)
+    password2 = forms.CharField(
+      label='Retype Password', 
+      max_length=25, 
+      widget=forms.PasswordInput,
+      required=True
+    )
+    
+    is_author = forms.BooleanField(
+      label ='Register as an author', 
+      required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].required = True
+        self.fields['is_author'].widget = forms.HiddenInput()
 
     def clean(self):
         super().clean()
@@ -22,8 +32,18 @@ class RegisterUserForm(ModelForm):
         }
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label='User Name', max_length=50)
-    password = forms.CharField(label='Password', max_length=25, widget=forms.PasswordInput)
+    username = forms.CharField(
+      label='User Name', 
+      max_length=50, 
+      required=True
+    )
+   
+    password = forms.CharField(
+      label='Password', 
+      max_length=25, 
+      widget=forms.PasswordInput, 
+      required=True
+    )   
 
 class DeleteUserForm(ModelForm):
     def __init__(self, *args, **kwargs):

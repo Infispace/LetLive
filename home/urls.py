@@ -2,7 +2,8 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 
 from .views import ArticleView
-from .views import UserLoginView, user_logout
+from .views import UserLoginView
+from .views import user_logout
 from .views import IndexView
 from .views import TopicView
 from .views import ProfileView

@@ -10,7 +10,7 @@ class AppUsersTests(TestCase):
         g_publ = Group.objects.create(name="Publishers")
         g_auth = Group.objects.create(name="Authors")
 
-    def test_create_admin(self):
+    def test_users(self):
         """
         Create app user in Administrator group
         """

@@ -37,6 +37,7 @@ class AppUser(models.Model):
         (ADMIN, 'Administrator'),
         (SUBSCRIBER, 'Subscriber'),
     )
+    
     user_level = models.CharField(
         max_length=3,
         choices=USER_LEVEL,
@@ -148,6 +149,22 @@ class AppUser(models.Model):
 
 def upload_location(instance, filename):
     return "%s/%s" %(instance.id, filename)
+
+class Subscriber(AppUser):
+    avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
+    
+    FREE = 'FREE'
+    PAID = 'PAID'
+    SUBCRIPTIONS = (
+        (FREE, FREE),
+        (PAID,PAID),
+    )
+    
+    subscription_type = models.CharField(
+        max_length=4, 
+        choices=SUBCRIPTIONS,
+        default=FREE,
+    )
 
 class Author(AppUser):
     avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
