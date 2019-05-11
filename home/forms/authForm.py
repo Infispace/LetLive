@@ -1,9 +1,8 @@
 from django import forms
-from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 
-class RegisterUserForm(ModelForm):
+class RegisterUserForm(forms.ModelForm):
     password2 = forms.CharField(
       label='Retype Password', 
       max_length=25, 
@@ -19,6 +18,24 @@ class RegisterUserForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['is_author'].widget = forms.HiddenInput()
+        self.fields['is_author'].widget.attrs.update({
+          'class': 'form-check-input',
+        })
+        self.fields['password2'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        self.fields['username'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        self.fields['password'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        self.fields['username'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        self.fields['email'].widget.attrs.update({
+          'class': 'form-control',
+        })     
 
     def clean(self):
         super().clean()
@@ -44,8 +61,17 @@ class LoginForm(forms.Form):
       widget=forms.PasswordInput, 
       required=True
     )   
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        self.fields['password'].widget.attrs.update({
+          'class': 'form-control',
+        })
 
-class DeleteUserForm(ModelForm):
+class DeleteUserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'readonly': True})

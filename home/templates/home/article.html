@@ -1,5 +1,6 @@
 {% extends "home/base.html" %}
 
+{% if page == 'article_new' or page == 'article_edit' %}
 {% block css %}
   <script type= text/javascript
     src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=vcxudi7k2pufauxhtxm8gj09wtbiotarvhvpj0zppph85f61">
@@ -10,6 +11,7 @@
     });
   </script>
 {% endblock %}
+{% endif %}
 
 {% block title %}Article{% endblock %}
 

@@ -114,7 +114,7 @@ dmypy.json
 *.sqlite3
 
 #migrations
-./home/migrations/0*.py
+home/migrations/0*.py
 
 # other files
 *~

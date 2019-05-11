@@ -49,16 +49,8 @@
         <label for="{{field.id_for_label}}">
           {{field.label.capitalize}}:
         </label>
-        <input
-          type="{{ field.field.widget.input_type }}"
-          class="form-control"
-          id="{{field.id_for_label}}"
-          name ="{{field.name}}"
-          {% if field.value != None %}
-            value="{{field.value}}"
-          {% endif %}
-        >
-        <small class="form-text text-muted">
+        {{ field }}
+        <small class="form-text text-danger">
           {{ field.errors }}
         </small>
       </div>
