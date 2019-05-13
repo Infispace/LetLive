@@ -7,7 +7,7 @@
     href="{% if page == 'index' %} # {% else %}
       {% url 'home:index' %}
     {% endif %}"
-  >
+  />
     Home
     {% if page == 'index' %}
       <span class="sr-only">(current)</span>
@@ -22,7 +22,7 @@
     href="{% if page == 'topic_default' %} # {% else %}
       {% url 'home:topic_default' %}
     {% endif %}"
-  >
+  />
     Topics
     {% if page == 'topic_default' %}
       <span class="sr-only">(current)</span>
@@ -39,7 +39,7 @@
     href="{% if page == 'my_blog' or page == 'article_filter' %} # {% else %}
       {% url 'home:article_default' %}
     {% endif %}"
-  >
+  />
     My Blog
     {% if page == 'my_blog' or page == 'article_filter' %}
       <span class="sr-only">(current)</span>
@@ -52,7 +52,7 @@
     href="{% if page == 'article_new' %} # {% else %}
       {% url 'home:article_new' %}
     {% endif %}"
-  >
+  />
     New Article
     {% if page == 'article_new' %}
       <span class="sr-only">(current)</span>
@@ -70,7 +70,7 @@
       href="{% if page == 'publish_article' %} # {% else %}
         {% url 'home:publish_article' %}
       {% endif %}"
-    >
+    />
       Publish Articles
       {% if page == 'publish_article' %}
         <span class="sr-only">(current)</span>
@@ -88,7 +88,7 @@
       href="{% if page == 'users' %} # {% else %}
         {% url 'home:users_default' %}
       {% endif %}"
-    >
+    />
       Users
       {% if page == 'users' %}
         <span class="sr-only">(current)</span>
@@ -103,7 +103,7 @@
     <a
       class="nav-link"
       href="/admin"
-    >
+    />
       Django Administation
     </a>
   </li>

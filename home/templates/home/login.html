@@ -27,7 +27,7 @@
         {% else %} alert-danger
       {% endif %}"
       role="alert"
-    >
+    />
       {% if form.errors %}
         There were errors found:
         {{ form.non_field_errors }}
@@ -64,7 +64,7 @@
           name="{{form.is_author.name}}" 
           value="{{form.is_author.value}}" 
           id="{{form.is_author.id_for_label}}"
-        >
+        />
         <label class="form-check-label" for="{{form.is_author.id_for_label}}">
           {{form.is_author.label.capitalize}}
         </label>
