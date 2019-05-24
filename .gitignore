@@ -122,3 +122,5 @@ home/migrations/0*.py
 node_modules/
 
 package-lock\.json
+
+letlive/settings\.py
