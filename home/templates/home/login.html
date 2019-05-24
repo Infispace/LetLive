@@ -6,44 +6,101 @@
 
 {% block content %}
 
-{% if form.errors or error_string %}
-<p>{{ error_string }}</p>
-{% endif %}
+<div class="container col-6 mx-auto mt-5 px-5 py-3 border shadow-lg">
+  <div class="d-flex flex-row border-bottom border-dark p-2 mb-3">
+    <a href="{% url 'home:index' %}">
+      <i class="fas fa-home fa-3x text-dark"></i>
+    </a>
 
-{% if next %}
-  {% if user.is_authenticated %}
-  <p>Your account doesn't have access to this page. To proceed,
-  please login with an account that has access.</p>
-  {% else %}
-  <p>Please login to see this page.</p>
+    <h1 class="ml-auto">
+    {% if page != 'signup' %}
+      Login
+    {% else %}
+      Register
+    {% endif %}
+    </h3>
+  </div>
+
+  {% if form.errors or error_string %}
+    <div
+      class="alert {% if form.errors %} alert-warning
+        {% else %} alert-danger
+      {% endif %}"
+      role="alert"
+    />
+      {% if form.errors %}
+        There were errors found:
+        {{ form.non_field_errors }}
+      {% else %}
+        {{ error_string }}
+      {% endif %}
+    </div>
   {% endif %}
-{% endif %}
 
-{% if page != 'signup' %}
-<form method="post" action="{% url 'home:user_login' %}">
-{% else %}
-<form method="post" action="{% url 'home:user_register' %}">
-{% endif %}
-{% csrf_token %}
+  {% if page != 'signup' %}
+    <form method="post" action="{% url 'home:user_login' %}">
+  {% else %}
+    <form method="post" action="{% url 'home:user_register' %}">
+  {% endif %}
 
-<table>
-  {{ form.as_table }}
-</table>
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+      <div class="form-group">
+        <label for="{{field.id_for_label}}">
+          {{field.label.capitalize}}:
+        </label>
+        {{ field }}
+        <small class="form-text text-danger">
+          {{ field.errors }}
+        </small>
+      </div>
+    {% endfor %}
 
-{% if page != 'signup' %}
-<input type="submit" value="login">
-{% else %}
-<input type="submit" value="register">
-{% endif %}
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+    {% if page == 'signup' %}
+      <div class="form-check">
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          name="{{form.is_author.name}}" 
+          value="{{form.is_author.value}}" 
+          id="{{form.is_author.id_for_label}}"
+        />
+        <label class="form-check-label" for="{{form.is_author.id_for_label}}">
+          {{form.is_author.label.capitalize}}
+        </label>
+      </div>
+    {% endif %}
 
-{% if page != 'signup' %}
-<p><a href="{% url 'home:user_register' %}{% if next %}?next={{ next }}{% endif %}">New around here? Sign up</a></p>
-<p><a href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">Lost password?</a></p>
-{% else %}
-<p><a href="{% url 'home:user_login' %}{% if next %}?next={{ next }}{% endif %}">Sign in</a></p>
-{% endif %}
+    <input type="hidden" name="next" value="{{ next }}">
+    {% if page != 'signup' %}
+      <button type="submit" class="btn btn-primary" value="login">
+        Login
+      </button>
+    {% else %}
+    <button type="submit" class="btn btn-primary" value="register">
+      Register
+    </button>
+    {% endif %}
+  </form>
 
+  {% if page != 'signup' %}
+  <p>
+    <a href="{% url 'home:user_register' %}{% if next %}?next={{ next }}{% endif %}">
+      New around here? Sign up
+    </a>
+  </p>
+  <p>
+    <a href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">
+      Lost password?
+    </a>
+  </p>
+  {% else %}
+  <p>
+    <a href="{% url 'home:user_login' %}{% if next %}?next={{ next }}{% endif %}">
+      Sign in
+    </a>
+  </p>
+  {% endif %}
+</div>
 
 {% endblock %}

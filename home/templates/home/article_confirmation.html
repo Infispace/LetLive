@@ -1,0 +1,19 @@
+{% if page == 'article_delete'%}
+  <form action="{% url 'home:article_delete' article.id %}" method="post">
+{% elif page == 'article_publish' %}
+  <form action="{% url 'home:article_publish' article.id %}" method="post">
+{% else %}
+  <form action="{% url 'home:publish_article_id' article.id %}" method="post">
+{% endif %}
+  {% csrf_token %}
+
+  <table>
+    {{form.as_table}}
+  </table>
+
+  {% if page == 'article_delete'%}
+    <button type="submit" name="button">Delete</button>
+  {% else %}
+    <button type="submit" name="button">Publish</button>
+  {% endif %}
+</form>

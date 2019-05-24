@@ -1,40 +1,123 @@
 {% extends "home/base.html" %}
 
+{% if page == 'article_new' or page == 'article_edit' %}
+{% block css %}
+  <!-- using an api key ?apiKey=
+  <script type= text/javascript
+    src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=vcxudi7k2pufauxhtxm8gj09wtbiotarvhvpj0zppph85f61">
+  </script>
+  -->
+  <!-- using local -->  
+  <script src="{{ STATIC_PREFIX }}home/tinymce/tinymce.min.js"></script>
+
+  <!--  -->
+  <script>
+    tinymce.init({
+      selector:'textarea',
+      plugins : 'advlist autolink link image lists charmap print preview'
+    });
+  </script>
+{% endblock %}
+{% endif %}
+
 {% block title %}Article{% endblock %}
 
 {% block menubar_links %}
-<li class="nav-item">
-  <a class="nav-link" href="{% url 'home:index' %}">Home</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="{% url 'home:topic_default' %}">Topics</a>
-</li>
-{% if user.is_authenticated %}
-<li class="nav-item {% if page == 'my_blog' %}active{% endif %}">
-  <a class="nav-link"
-    href="{% if page == 'my_blog' %}#{% else %}{% url 'home:article_default' %}{% endif %}">
-    My Blog
-    {% if page == 'my_blog' %}<span class="sr-only">(current)</span>{% endif %}
-  </a>
-</li>
-<li class="nav-item {% if page == 'article_new' %}active{% endif %}">
-  <a class="nav-link" href="{% if page == 'article_new' %}#{% else %}{% url 'home:article_new' %}{% endif %}">
-    New Article
-    {% if page == 'article_new' %}<span class="sr-only">(current)</span>{% endif %}
-  </a>
-</li>
-{% endif %}
+  {% load menu_bar %}
+  {% menu_bar %}
 {% endblock %}
 
 {% block content %}
 
-{% if page == 'article_new' or page == 'article_edit' %}
-  {% include 'home/article_form.html' %}
-{% elif page == 'my_blog' %}
-  {% include 'home/article_blog.html' %}
-{% else %}
-  {{ article }}
-{% endif %}
-
+  {% if page == 'article_new' or page == 'article_edit' %}
+    {% include 'home/article_form.html' %}
+  {% elif page == 'my_blog' or page == 'article_filter' %}
+    {% include 'home/article_blog.html' %}
+  {% elif page == 'article_delete' or page == 'article_publish' %}
+    {% include 'home/article_confirmation.html' %}
+  {% else %}
+    {% include 'home/article_view.html' %}
+  {% endif %}
 
 {% endblock %}
+
+
+{% block js %}
+{% if page == 'article_new' or page == 'article_new_view' %}
+  <script type= text/javascript>
+    var confirm_leave = (event) => {
+      $(window).bind('beforeunload', function (event) {
+        event.preventDefault();
+      });
+    };
+    
+    var remove_confirmation = (event) => {
+      $(window).unbind('beforeunload');
+    };
+  </script>
+{% endif %}
+
+{% if page == 'article_new' %}
+  <script type= text/javascript>
+  $(document).ready(function(){
+    $('#preview-btn').click(function (e) {
+      remove_confirmation(e);
+      $('#new-article-form').prop('action', "{% url 'home:article_new_view' %}");
+      $('#new-article-form').submit();
+    });
+    
+    $('#save-btn,#new-cancel-btn').click(function(e){
+      remove_confirmation(e);
+    });
+    
+    $('#save-btn').click(function () {
+      $('#new-article-form').prop('action', "{% url 'home:article_new' %}");
+      $('#new-article-form').submit();
+    });
+  });
+  
+  $('#new-article-form').change(function (e) {
+    confirm_leave(e);
+  });      
+  
+  // Create an observer instance linked to the callback function
+  var changes = 0;      // The first 3 changes are for init tinymce
+  var observer = new MutationObserver(function (e) {
+    changes++;
+    if(changes > 3) {
+      confirm_leave(e);
+    }
+  });
+  
+  // Select the node that will be observed for mutations
+  var targetNode = document.getElementById('content-div');
+
+  // Options for the observer (which mutations to observe)
+  var config = { attributes: true, childList: true, subtree: true };
+  
+  // Start observing the target node for configured mutations
+  observer.observe(targetNode, config);
+  </script>
+
+  {% if article_.title %}
+  <script type= text/javascript>
+  $(document).ready(function(){
+    confirm_leave();
+  });
+  </script>
+  {% endif %}
+{% endif %}
+
+{% if page == 'article_new_view' and article_.title %}
+  <script type= text/javascript>
+  $(document).ready(function(e){
+    confirm_leave(e);
+    
+    $('#edit-view-btn, #save-view-btn').click(function(e){
+      remove_confirmation(e);
+    });
+  });
+  </script>
+{% endif %}
+{% endblock %}
+

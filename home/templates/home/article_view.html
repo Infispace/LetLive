@@ -1,0 +1,107 @@
+<div class="container my-5 border border-dark rounded shadow p-2 bg-white">
+  <p class="d-flex">
+    <small class="text-capitalize">
+      Title: 
+      {% if article_.title %}
+        {{ article_.title }}
+      {% elif article.id %}
+        {{ article.title }}
+      {% endif %}
+    </small>
+    
+    <small class="ml-auto text-capitalize">
+      Category: 
+      {% if article_.title %}
+        {{ article_.topic }}
+      {% elif article.id %}
+        {{ article.topic }}
+      {% endif %}      
+    </small>
+  </p>
+
+  {% if article_.title %}
+    {{ article_.content|safe }}
+  {% elif article.id %}
+    {{ article.content|safe }}
+  {% endif %} 
+  
+  <br>      
+
+  {% if article.id %}
+    {{ article.updated_date_time }} <br>
+    {{ article.created_date_time }} <br>
+    Draft? {{ article.draft }} <br>
+    <div class="d-flex">
+    {% if article.publisher is None %}  
+      <a
+        class="btn btn-secondary btn-sm"
+        role="button"
+        href="{% url 'home:article_edit' article.id %}"
+      />
+        Edit Article
+      </a>
+      <a
+        class="btn btn-danger btn-sm ml-1"
+        role="button"
+        href="{% url 'home:article_delete' article.id %}"
+      />
+        Delete Article
+      </a>
+    {% endif %}
+
+    {% if article.draft %}
+      <a
+        class="btn btn-success btn-sm ml-auto"
+        role="button"
+        href="{% url 'home:article_publish' article.id %}"
+      />
+        Request Publish
+      </a>
+    {% endif %}
+
+    {% load has_perm %}
+    {% has_perm user 'home.publish_article' as publish_article %}
+
+    {% if publish_article %}
+      <a
+        class="btn btn-success btn-sm ml-auto"
+        role="button"
+        href="{% url 'home:publish_article_id' article.id %}"
+      />
+        Publish Article
+      </a>
+    {% endif %}
+    </div>
+  {% elif page == 'article_new_view' and article_.title %}
+    <form 
+      method="post" 
+      action="{% url 'home:article_new' %}"
+      id="view-article-form" 
+      autocomplete="off" 
+      class="d-none"
+    />
+      {% csrf_token %}
+      {% for field in form.visible_fields %}
+        {{ field }}
+      {% endfor %}
+    </form>
+    <div class="d-flex">
+      <a 
+        type="button" 
+        class="btn btn-primary btn-sm"
+        id="edit-view-btn"
+        href="{% url 'home:article_new' %}"
+      />
+        Continue Editing
+      </a>
+      <button 
+        type="submit" 
+        class="btn btn-success btn-sm ml-auto" 
+        id="save-view-btn"
+        form="view-article-form"
+      />
+        Save
+      </button>
+    </div>      
+  {% endif %}
+</div>

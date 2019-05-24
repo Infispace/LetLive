@@ -1,0 +1,105 @@
+LETLIVE
+DRAFT WORKFLFOW/ALGORITHM
+1.BACKEND
+Language/ Framework : Python/Django
+APP NAME = HOME
+MVC
+1.MODELS
+Model 1 - User(Author):
+Fields:
+Username(Unique),First name, Second Name, email
+
+Model 2 - Topics
+Fields:
+-Topic Name e.g sports, Fashion
+-Topic Logo
+-Topic Introduction - A brief description about the topic
+
+
+Model 3 – Articles
+
+Fields:
+Topic as FK, so that if a topic is deleted, then the relevant articles about it should also cease to exist
+ALTERNATIVE USER (Django gives us a user using the settings.AUTH_USER_MODEL)
+user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, null= True,on_delete=models.SET_NULL)
+Article Status – draft/ published
+publish in date-field format
+Updated in date-field format
+timestamp in date-field format
+Height of article is an integer field
+Width of article is also an integer field
+Content – is a text field
+image is an image field and should allow blank/null images. It should also specifiy the height and width fields of the image and it is preferred if they are equal to the 
+height and width fields of the articles respectively.
+
+2.VIEWS
+-->one index view in the form of a List View for all Topics in LetLive, i.e:-
+		Technology, Fashion, Sports, Health & Fitness and Entertainment
+	Index View should return all topics
+	template name of this view is index.html
+
+--> A detail view for viewing the topics in detail.
+	Model is Topic
+	template name for this view is detail.html
+
+--> Another detail view for viewing the articles
+	Model is Article
+	template for this view is also detail.html since the model Article will act as a foreign key to the model Topic
+
+CRUD
+--> Create a Topic View which inherits form the class CreateView
+	Topic is the model/object we are creating
+	include all topic Fields
+
+-->Update the Topic View by inheriting from UpdateView
+	Topic is the model/object
+	include all topic fields
+
+-->Delete the Topic View by inheriting from the DeleteView class
+	Topic is the object we are deleting
+	After deletion, reverse/redirect back to the detail.html template
+
+Do a CRUD process for each Topic's Articles similar to the one above.
+
+--------------------Follow these steps after we have created forms.py ------------------------------- 
+--> from forms.py import the UserForm class
+--> create a class UserFormView that inherits from the view class
+--> assign UserForm to a variable e.g form_class = UserForm
+--> create a new template called registration_form.html and assign it to a varible template_name
+--> display the blank form via a get method
+--> process form data via a post method
+	check if the form is valid and if so, save it but do not commit(form.save(commit=False))
+--> clean/normalize the form data for consistency
+--> return user objects if credentials are correct
+--> check if user exists
+--> if user exists and is active, then log in the user and redirect to the index.html page
+--> render the template template_name plus all the content
+
+
+
+3.FORMS
+--> Create a UserForm class that inherits from the forms.ModelForm
+    set the password encryption
+	create a Meta class, where the model is User and the fields are username, email and password
+
+--> Create an Article Form class that also inherts from forms.ModelForm
+	content is a character field
+	Publish is a date field showing when the article was posted
+	create another Meta class:
+		The Fields include:
+			-Title  -Status(draft/publish)
+			-Content -publish
+			-Image
+
+//This is a draft - It needs a lot of Improvement and I have already started getting some more ideas.
+//Looking forward to your feedback
+
+
+--------------------------------------- Copyright Infispace 2018 -------------------------------------------------------------------------------
+
+
+
+
+
+
+	

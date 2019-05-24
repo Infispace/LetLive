@@ -109,3 +109,16 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# sqlite database
+*.sqlite3
+
+#migrations
+home/migrations/0*.py
+
+# other files
+*~
+
+node_modules/
+
+package-lock\.json

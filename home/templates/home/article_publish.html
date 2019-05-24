@@ -1,6 +1,6 @@
 {% extends "home/base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Publish{% endblock %}
 
 {% block menubar_links %}
   {% load menu_bar %}
@@ -8,16 +8,22 @@
 {% endblock %}
 
 {% block content %}
-  {% for article in latest_articles_list %}
+  <div class="container p-3">
+  {% if page == 'publish_article' %}
+    {% for article in article_list %}
       <h2>{{ article.title }}</h2>
-      <p><small>{{ article.publish_date_time }}</small></p>
+      <p>{{ article.publish_date }}</p>
       <a
         class="btn btn-primary btn-sm ml-auto"
         role="button"
         href="{% url 'home:article' article.id %}"
-      />
+      >
         View Article
       </a>
       <hr>
-  {% endfor %}
+    {% endfor %}
+  {% else %}
+    {% include 'home/article_confirmation.html' %}
+  {% endif %}
+  </div>
 {% endblock %}
