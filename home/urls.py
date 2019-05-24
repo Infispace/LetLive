@@ -10,6 +10,12 @@ from .views import ProfileView
 from .views import UsersView
 from .views import PublishView
 
+'''
+Page 
+----
+represents the page to be shown used by the Views
+'''
+
 app_name = 'home'
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -21,6 +27,7 @@ urlpatterns = [
         path('', ArticleView.as_view(), {'page': 'my_blog'}, name='article_default'),
         path('filter/<str:filter>/', ArticleView.as_view(), {'page': 'article_filter'}, name='article_filter'),
         path('new/', ArticleView.as_view(), {'page': 'article_new'}, name='article_new'),
+        path('new/view', ArticleView.as_view(), {'page': 'article_new_view'}, name='article_new_view'),
         path('<int:article_id>/', ArticleView.as_view(), name='article'),
         path('<int:article_id>/edit/', ArticleView.as_view(), {'page': 'article_edit'}, name='article_edit'),
         path('<int:article_id>/delete/', ArticleView.as_view(), {'page': 'article_delete'}, name='article_delete'),

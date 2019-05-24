@@ -2,12 +2,19 @@
 
 {% if page == 'article_new' or page == 'article_edit' %}
 {% block css %}
+  <!-- using an api key ?apiKey=
   <script type= text/javascript
     src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=vcxudi7k2pufauxhtxm8gj09wtbiotarvhvpj0zppph85f61">
   </script>
+  -->
+  <!-- using local -->  
+  <script src="{{ STATIC_PREFIX }}home/tinymce/tinymce.min.js"></script>
+
+  <!--  -->
   <script>
     tinymce.init({
-      selector:'textarea'
+      selector:'textarea',
+      plugins : 'advlist autolink link image lists charmap print preview'
     });
   </script>
 {% endblock %}
@@ -33,3 +40,84 @@
   {% endif %}
 
 {% endblock %}
+
+
+{% block js %}
+{% if page == 'article_new' or page == 'article_new_view' %}
+  <script type= text/javascript>
+    var confirm_leave = (event) => {
+      $(window).bind('beforeunload', function (event) {
+        event.preventDefault();
+      });
+    };
+    
+    var remove_confirmation = (event) => {
+      $(window).unbind('beforeunload');
+    };
+  </script>
+{% endif %}
+
+{% if page == 'article_new' %}
+  <script type= text/javascript>
+  $(document).ready(function(){
+    $('#preview-btn').click(function (e) {
+      remove_confirmation(e);
+      $('#new-article-form').prop('action', "{% url 'home:article_new_view' %}");
+      $('#new-article-form').submit();
+    });
+    
+    $('#save-btn,#new-cancel-btn').click(function(e){
+      remove_confirmation(e);
+    });
+    
+    $('#save-btn').click(function () {
+      $('#new-article-form').prop('action', "{% url 'home:article_new' %}");
+      $('#new-article-form').submit();
+    });
+  });
+  
+  $('#new-article-form').change(function (e) {
+    confirm_leave(e);
+  });      
+  
+  // Create an observer instance linked to the callback function
+  var changes = 0;      // The first 3 changes are for init tinymce
+  var observer = new MutationObserver(function (e) {
+    changes++;
+    if(changes > 3) {
+      confirm_leave(e);
+    }
+  });
+  
+  // Select the node that will be observed for mutations
+  var targetNode = document.getElementById('content-div');
+
+  // Options for the observer (which mutations to observe)
+  var config = { attributes: true, childList: true, subtree: true };
+  
+  // Start observing the target node for configured mutations
+  observer.observe(targetNode, config);
+  </script>
+
+  {% if article_.title %}
+  <script type= text/javascript>
+  $(document).ready(function(){
+    confirm_leave();
+  });
+  </script>
+  {% endif %}
+{% endif %}
+
+{% if page == 'article_new_view' and article_.title %}
+  <script type= text/javascript>
+  $(document).ready(function(e){
+    confirm_leave(e);
+    
+    $('#edit-view-btn, #save-view-btn').click(function(e){
+      remove_confirmation(e);
+    });
+  });
+  </script>
+{% endif %}
+{% endblock %}
+

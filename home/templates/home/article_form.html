@@ -1,9 +1,8 @@
-<div class="container my-5 border border-dark rounded shadow p-2">
-  {% if page == 'article_new' %}
-    <form action="{% url 'home:article_new' %}" method="post">
-  {% elif page == 'article_edit' %}
-    <form action="{% url 'home:article_edit' article.id %}" method="post">
-  {% endif %}
+<div class="container my-5 border border-dark rounded shadow p-2 bg-white">
+  <form action="{% if page == 'article_new' %} {% url 'home:article_new' %}
+    {% elif page == 'article_edit' %} {% url 'home:article_edit' article.id %}
+    {% endif %}" method="post" id="new-article-form" autocomplete="off"
+  />
     {% csrf_token %}
 
     <div class="form-group">
@@ -20,18 +19,27 @@
         {{ form.title.errors }}
       </small>
     </div>
-    <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
-    {{ form.content }}
+    <div id="content-div">
+      <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
+      {{ form.content }}
+    </div>  
 
-    <button type="submit" class="btn btn-primary">
-      Save
-    </button>
-    <a
-      class="btn btn-secondary"
-      role="button"
-      href="{% url 'home:article_default' %}"
-    >
-      Cancel
-    </a>
+    <div class="d-flex bd-highlight p-3">
+      <button type="submit" class="btn btn-success" id="save-btn">
+        Save
+      </button>
+      <a
+        id="new-cancel-btn"
+        class="btn btn-secondary ml-1"
+        role="button"
+        href="{% url 'home:article_default' %}"
+      />
+        Cancel
+      </a>
+      
+      <button type="submit" class="btn btn-primary ml-auto" id="preview-btn"> 
+        Preview
+      </button>
+    </div>
   </form>
 </div>
