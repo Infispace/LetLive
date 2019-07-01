@@ -117,6 +117,9 @@ dmypy.json
 home/migrations/0*.py
 
 # other files
+# -----------
+
+# backup files
 *~
 
 node_modules/

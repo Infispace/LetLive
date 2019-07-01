@@ -5,8 +5,8 @@ from django.contrib.auth.models import User, Group
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from ..forms import RegisterUserForm, DeleteUserForm
-from ..models import Publisher, Author
+from home.forms import RegisterUserForm, DeleteUserForm
+from home.models import Publisher, Author
 
 class UsersView(PermissionRequiredMixin, TemplateView):
     permission_required = (

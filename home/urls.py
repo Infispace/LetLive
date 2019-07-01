@@ -1,30 +1,30 @@
 from django.urls import path, include
 from django.views.generic import TemplateView
 
-from .views import ArticleView
-from .views import UserLoginView
-from .views import user_logout
-from .views import IndexView
-from .views import TopicView
-from .views import ProfileView
-from .views import UsersView
-from .views import PublishView
+from home.views import ArticleView
+from home.views import UserLoginView
+from home.views import user_logout
+from home.views import IndexView
+from home.views import TopicView
+from home.views import ProfileView
+from home.views import UsersView
+from home.views import PublishView
 
-'''
-Page 
-----
-represents the page to be shown used by the Views
-'''
+# @page 
+# Represents the page to be shown used by the Views
 
 app_name = 'home'
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
-    path('publish/', include([
+    path('publishers/', include([
         path('', PublishView.as_view(), {'page': 'publish_article'}, name='publish_article'),
         path('<int:article_id>/', PublishView.as_view(), name='publish_article_id'),
     ])),
-    path('article/', include([
-        path('', ArticleView.as_view(), {'page': 'my_blog'}, name='article_default'),
+    path('blogs/', include([
+        path('<str:user_name>/', ArticleView.as_view(), {'page': 'blog'}, name='user_blog'),
+    ])),
+    path('articles/', include([
+        path('', ArticleView.as_view(), {'page': 'my_blog'}, name='article_default'),        
         path('filter/<str:filter>/', ArticleView.as_view(), {'page': 'article_filter'}, name='article_filter'),
         path('new/', ArticleView.as_view(), {'page': 'article_new'}, name='article_new'),
         path('new/view', ArticleView.as_view(), {'page': 'article_new_view'}, name='article_new_view'),
@@ -33,14 +33,14 @@ urlpatterns = [
         path('<int:article_id>/delete/', ArticleView.as_view(), {'page': 'article_delete'}, name='article_delete'),
         path('<int:article_id>/publish/', ArticleView.as_view(), {'page': 'article_publish'}, name='article_publish'),
     ])),
-    path('topic/', include([
+    path('topics/', include([
         path('', TopicView.as_view(), {'page': 'topic_default'}, name='topic_default'),
         path('new/', TopicView.as_view(), {'page': 'topic_new'}, name='topic_new'),
         path('<int:topic_id>/', TopicView.as_view(), name='topic'),
         path('<int:topic_id>/edit/', TopicView.as_view(), {'page': 'topic_edit'}, name='topic_edit'),
         path('<int:topic_id>/delete/', TopicView.as_view(), {'page': 'topic_delete'}, name='topic_delete'),
     ])),
-    path('account/', include([
+    path('accounts/', include([
         path('', ProfileView.as_view(), {'page': 'user_default'}, name='user_default'),
         path('<int:user_id>/', ProfileView.as_view(), {'page': 'user_view'}, name='user_view'),
         path('<int:user_id>/delete/', UsersView.as_view(), {'page': 'user_delete'}, name='user_delete'),

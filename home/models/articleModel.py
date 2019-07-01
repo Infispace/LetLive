@@ -2,8 +2,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
-#from django.utils.safestring import mark_safe
-#from markdown_deux import markdown
 
 from .topicModel import Topic
 from .userModel import Publisher

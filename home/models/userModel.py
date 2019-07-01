@@ -17,6 +17,9 @@ class AppUserManager(models.Manager):
         elif(user_level == 'ADM'):
             new_user.is_staff = True
             user_group = Group.objects.get(name='Administrators')
+        elif(user_level == 'SU'):
+            new_user.is_superuser = True
+            user_group = Group.objects.get(name='Super_users')
 
         new_user.groups.set([user_group])
         new_user.save()
@@ -31,11 +34,14 @@ class AppUser(models.Model):
     PUBLISHER = 'PUB'
     ADMIN = 'ADM'
     SUBSCRIBER = 'SUB'
+    SUPER_USER = 'SU'
+    
     USER_LEVEL = (
         (AUTHOR, 'Author'),
         (PUBLISHER, 'Publisher'),
         (ADMIN, 'Administrator'),
         (SUBSCRIBER, 'Subscriber'),
+        (SUPER_USER, 'Super_user'),
     )
     
     user_level = models.CharField(
@@ -47,6 +53,7 @@ class AppUser(models.Model):
     objects = AppUserManager()
 
     user_groups = {
+        'Super_users': [],
         'Subscribers': [
             'view_article',
         ],
@@ -66,6 +73,7 @@ class AppUser(models.Model):
             'view_admin',
             'view_author',
             'delete_author',
+            'view_article',
         ],
         'Publishers': [
             'add_article',
@@ -81,6 +89,14 @@ class AppUser(models.Model):
     }
 
     def set_user_permmisions(self, user):
+        try:
+            user.admin
+            user.groups.set([Group.objects.get(name='Subscribers')])
+            user.save()
+            return
+        except ObjectDoesNotExist:
+            pass
+            
         try:
             user.author
             user.groups.set([Group.objects.get(name='Authors')])

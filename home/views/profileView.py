@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from ..forms import UserForm, AuthorForm, PublisherForm, AdminForm
+from home.forms import UserForm, AuthorForm, PublisherForm, AdminForm
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'home/account.html'

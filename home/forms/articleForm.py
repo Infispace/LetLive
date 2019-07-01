@@ -1,6 +1,6 @@
 from django.forms import ModelForm
-from ..models import Article
-from ..models import Topic
+from home.models import Article
+from home.models import Topic
 
 class ArticleForm(ModelForm):
     def __init__(self, *args, **kwargs):

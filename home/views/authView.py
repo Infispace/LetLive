@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 from django.db import transaction
 
-from ..forms import LoginForm, RegisterUserForm
-from ..models import AppUser, Author, Subscriber
+from home.forms import LoginForm, RegisterUserForm
+from home.models import AppUser, Author, Subscriber
 
 @login_required()
 def user_logout(request):
@@ -107,6 +107,10 @@ class UserLoginView(TemplateView):
             self.form = LoginForm(request.POST)
             if self.form.is_valid():
                 success = self.login(request)
+                if self.form.cleaned_data['keep_loged']:
+                    request.session['user'] = {
+                        'keep_loged': 'true'
+                    }
 
         if success and next is not '':
             return HttpResponseRedirect(next)

@@ -4,8 +4,8 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from ..models import Topic
-from ..forms import TopicForm, TopicDeleteForm
+from home.models import Topic
+from home.forms import TopicForm, TopicDeleteForm
 
 class TopicView(TemplateView):
     template_name = 'home/topic.html'
