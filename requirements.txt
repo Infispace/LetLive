@@ -3,3 +3,4 @@ djecrety
 djangorestframework
 markdown
 django-filter
+Pillow

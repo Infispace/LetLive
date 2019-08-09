@@ -1,4 +1,6 @@
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, Error
 
@@ -26,8 +28,8 @@ class AppUserManager(models.Manager):
         return new_user
 
 class AppUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
-    telephone = models.IntegerField(null = True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, blank=False)
+    telephone = models.CharField(max_length=100, null = True, blank=True)
     address = models.CharField(max_length=100, null = True, blank=True)
 
     AUTHOR = 'AUT'
