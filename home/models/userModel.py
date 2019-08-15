@@ -32,9 +32,9 @@ class AppUser(models.Model):
     telephone = models.CharField(max_length=100, null = True, blank=True)
     address = models.CharField(max_length=100, null = True, blank=True)
 
+    ADMIN = 'ADM'
     AUTHOR = 'AUT'
     PUBLISHER = 'PUB'
-    ADMIN = 'ADM'
     SUBSCRIBER = 'SUB'
     SUPER_USER = 'SU'
     
