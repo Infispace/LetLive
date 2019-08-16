@@ -9,7 +9,7 @@ from django.views.decorators.http import require_http_methods
 from django.urls import reverse
 from django.views.generic import ListView
 
-from ..models import Article
+from home.models import Article
 
 class IndexView(ListView):
     model = Article

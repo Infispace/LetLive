@@ -1,12 +1,17 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.models import User, Group
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from ..forms import RegisterUserForm, DeleteUserForm
-from ..models import Publisher, Author
+from home.forms import RegisterUserForm
+from home.forms import DeleteUserForm
+from home.models import Publisher
+from home.models import Author
 
 class UsersView(PermissionRequiredMixin, TemplateView):
     permission_required = (

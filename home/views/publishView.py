@@ -5,8 +5,8 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from django.utils import timezone
 
-from ..models import Article
-from ..forms import ArticleConfirmForm
+from home.models import Article
+from home.forms import ArticleConfirmForm
 
 class PublishView(PermissionRequiredMixin, TemplateView):
     permission_required = (

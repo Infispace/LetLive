@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 
-from ..models import Author, Publisher, Admin
+from home.models import Author, Publisher, Admin
 
 class UserForm(ModelForm):
     def __init__(self, *args, **kwargs):

@@ -1,4 +1,4 @@
-{% load has_perm %}
+{% load has_perm view_blog_menu %}
 
 <!-- index menu item -->
 <li class="nav-item {% if page == 'index' %}active{% endif %}" >
@@ -31,8 +31,9 @@
 </li>
 
 <!-- article menu item -->
-{% has_perm user 'home.add_article' as add_article %}
-{% if add_article %}
+{% view_blog_menu user as view_blog_menu %}
+{% has_perm user 'home.view_article' as view_article %}
+{% if view_article and view_blog_menu %}
 <li class="nav-item {% if page == 'my_blog' or page == 'article_filter' %}active{% endif %}">
   <a
     class="nav-link"
@@ -46,6 +47,10 @@
     {% endif %}
   </a>
 </li>
+{% endif %}
+
+{% has_perm user 'home.add_article' as add_article %}
+{% if add_article %}
 <li class="nav-item {% if page == 'article_new' %}active{% endif %}">
   <a
     class="nav-link"

@@ -4,14 +4,14 @@ from django.contrib.auth.password_validation import validate_password
 
 class RegisterUserForm(forms.ModelForm):
     password2 = forms.CharField(
-      label='Retype Password', 
+      label= 'Retype Password', 
       max_length=25, 
       widget=forms.PasswordInput,
       required=True
     )
     
     is_author = forms.BooleanField(
-      label ='Register as an author', 
+      label = 'Register as an author', 
       required=False,
     )
 
@@ -50,7 +50,7 @@ class RegisterUserForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     username = forms.CharField(
-      label='User Name', 
+      label='Username', 
       max_length=50, 
       required=True
     )
@@ -61,6 +61,11 @@ class LoginForm(forms.Form):
       widget=forms.PasswordInput, 
       required=True
     )   
+    
+    keep_loged = forms.BooleanField(
+      label = 'Remember me', 
+      required=False,
+    )
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
