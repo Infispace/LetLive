@@ -1,8 +1,12 @@
 from django.test import TestCase
-from django.db import IntegrityError, transaction, Error
-from django.contrib.auth.models import User, AnonymousUser, Group, Permission
+from django.db import transaction
+from django.db import Error
+from django.contrib.auth.models import User
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
+from home.models import userModel
 
-from .models.userModel import AppUser, Author, Publisher, Admin
 
 class AppUsersTests(TestCase):
     def setUp(self):
@@ -15,13 +19,12 @@ class AppUsersTests(TestCase):
         Create app user in Administrator group
         """
         try:
-            with transaction.atomic():
-                admin = Admin.objects.create_user(
-                    username='admin',
-                    email='admin@email.com',
-                    password='adminpass',
-                    user_level= AppUser.ADMIN,
-                )
+            admin = userModel.Admin.objects.create_user(
+                username='admin',
+                email='admin@email.com',
+                password='adminpass',
+                user_level= userModel.AppUser.ADMIN,
+            )
         except Error as e:
             print('>Test Error: ', e)
 
@@ -46,20 +49,3 @@ class AppUsersTests(TestCase):
     #def test_anon_users_can_only_view(self):
         # Anonymous users can only view articles using GET
 
-#class ArticleModelTest(TestCase):
-    #def test_article_created_is_not_published(self):
-        # A new article is not published
-
-    #def test_future_published_article_not_shown(self):
-        # An article can be published in the future
-        # but should not be shown till published date
-
-    #def test_published_article_cannot_be_deleted(self):
-        # A published article cannot be deleted except by an admin
-
-    #def test_article_can_be_deleted_by_owner_or_editor_or_admin(self):
-        # An article can only be deleted by the owner or editor or admin
-
-#class AppClientTestCase(TestCase):
-    #def test_client_Example(self):
-        #pass

@@ -21,6 +21,6 @@ router.register(r'topics', views.TopicViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path(r'', include(router.urls)),
-    path(r'api-token-auth/', authviews.obtain_auth_token),
-    #path(r'auth/', include('rest_framework.urls', namespace='api_v1')),
+    path(r'auth/', include('rest_auth.urls')),
+    path(r'api-token-auth/', authviews.obtain_auth_token),    
 ]

@@ -1,6 +1,9 @@
 django
 djecrety
 djangorestframework
-markdown
+django-rest-auth
 django-filter
+django-faker
+django-seed
+markdown
 Pillow

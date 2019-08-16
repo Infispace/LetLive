@@ -115,15 +115,18 @@ dmypy.json
 
 #migrations
 home/migrations/0*.py
-
-# other files
-# -----------
+api_v1/migrations/0*.py
 
 # backup files
 *~
 
+#node modules
 node_modules/
-
 package-lock\.json
 
+#django settings file
 letlive/settings\.py
+
+#pipenv files
+Pipfile\.lock
+Pipfile

@@ -2,32 +2,44 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models, Error
+from django.db import Error
+from django.db import models
+from django.db import transaction
 
 class AppUserManager(models.Manager):
+    '''
+    Creates an app user using the given user level.
+    '''
     def create_user(self, username, email, password, user_level):
-        new_user = User.objects.create_user(username, email, password)
-        app_user = self.create(user=new_user, user_level=user_level)
+        new_user = None
+        with transaction.atomic():
+            new_user = User.objects.create_user(username, email, password)
+            app_user = self.create(user=new_user, user_level=user_level)
 
-        user_group = None
-        if(user_level == 'SUB'):
-            user_group = Group.objects.get(name='Subscribers')
-        elif(user_level == 'AUT'):
-            user_group = Group.objects.get(name='Authors')
-        elif(user_level == 'PUB'):
-            user_group = Group.objects.get(name='Publishers')
-        elif(user_level == 'ADM'):
-            new_user.is_staff = True
-            user_group = Group.objects.get(name='Administrators')
-        elif(user_level == 'SU'):
-            new_user.is_superuser = True
-            user_group = Group.objects.get(name='Super_users')
+            user_group = None
+            if(user_level == 'SUB'):
+                user_group = Group.objects.get(name='Subscribers')
+            elif(user_level == 'AUT'):
+                user_group = Group.objects.get(name='Authors')
+            elif(user_level == 'PUB'):
+                user_group = Group.objects.get(name='Publishers')
+            elif(user_level == 'ADM'):
+                new_user.is_staff = True
+                user_group = Group.objects.get(name='Administrators')
+            elif(user_level == 'SU'):
+                new_user.is_superuser = True
+                user_group = Group.objects.get(name='Super_users')
 
-        new_user.groups.set([user_group])
-        new_user.save()
+            new_user.groups.set([user_group])
+            new_user.save()
+
         return new_user
 
 class AppUser(models.Model):
+    '''
+    Virtual object for the app user, inherits models. 
+    Has one to one relationship with django auth user.
+    '''
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, blank=False)
     telephone = models.CharField(max_length=100, null = True, blank=True)
     address = models.CharField(max_length=100, null = True, blank=True)
@@ -54,6 +66,7 @@ class AppUser(models.Model):
 
     objects = AppUserManager()
 
+    #The available user groups and their permissions
     user_groups = {
         'Super_users': [],
         'Subscribers': [
@@ -91,6 +104,9 @@ class AppUser(models.Model):
     }
 
     def set_user_permmisions(self, user):
+        '''
+        Set the user group permissions
+        '''
         try:
             user.admin
             user.groups.set([Group.objects.get(name='Subscribers')])
@@ -124,6 +140,9 @@ class AppUser(models.Model):
             pass
 
     def create_user_groups(self):
+        '''
+        Create and store the available user groups
+        '''
         user_group = None
         for group_name, perm_list in self.user_groups.items():
             user_group = Group.objects.create(name=group_name)
@@ -137,6 +156,9 @@ class AppUser(models.Model):
             self.set_user_permmisions(user)
 
     def test_user_groups(self):
+        '''
+        Verify if the user groups are available in the database
+        '''
         user_group = None
         try:
             for group_name, perm_list in self.user_groups.items():
@@ -159,6 +181,9 @@ class AppUser(models.Model):
         return self.user.username
 
     def delete(self, *args, **kwargs):
+        '''
+        Delete the app user as well as django user model instances
+        '''
         super().delete(*args, **kwargs)
         User.objects.get(username=self.user.username).delete()
 
@@ -169,6 +194,10 @@ def upload_location(instance, filename):
     return "%s/%s" %(instance.id, filename)
 
 class Subscriber(AppUser):
+    '''
+    Inherits the app user.
+    Should have a user level 'SUB'
+    '''
     avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
     
     FREE = 'FREE'
@@ -185,11 +214,23 @@ class Subscriber(AppUser):
     )
 
 class Author(AppUser):
+    '''
+    Inherits the app user.
+    Should have a user level 'AUT'
+    '''
     avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
 
 class Publisher(AppUser):
+    '''
+    Inherits the app user.
+    Should have a user level 'PUB'
+    '''
     avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
 
 class Admin(AppUser):
+    '''
+    Inherits the app user.
+    Should have a user level 'ADM'
+    '''
     class Meta:
         verbose_name = "administrator"
