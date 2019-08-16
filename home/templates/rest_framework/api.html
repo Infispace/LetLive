@@ -1,0 +1,10 @@
+{% extends "rest_framework/base.html" %}
+
+{% block bootstrap_theme %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'my_app/example.jpg' %}" type="text/css">
+{% endblock %}}
+
+{% block branding %}
+    <h3 style="margin: 0 0 20px;">My Site Name</h3>
+{% endblock %}

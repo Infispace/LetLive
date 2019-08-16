@@ -25,6 +25,4 @@ class TopicSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'pk'
             },
         }
-        
-        ordering = ['id']
 
