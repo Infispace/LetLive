@@ -3,6 +3,9 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    '''
+    Serializer for the django User model
+    '''
     groups = serializers.HyperlinkedIdentityField(
         many=True,
         view_name='api_v1:group-detail',
