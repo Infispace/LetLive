@@ -20,7 +20,7 @@ django.setup()
 # -- Project information -----------------------------------------------------
 
 project = 'LetLive'
-copyright = '2019, LetLive Ent.'
+copyright = '2019, LetLive Ent'
 author = 'Kioko Kennedy, Mark Mbugua'
 
 # The full version, including alpha/beta/rc tags
