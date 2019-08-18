@@ -1,25 +1,5 @@
 {% extends "home/base.html" %}
 
-{% if page == 'article_new' or page == 'article_edit' %}
-{% block css %}
-  <!-- using an api key ?apiKey=
-  <script type= text/javascript
-    src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=vcxudi7k2pufauxhtxm8gj09wtbiotarvhvpj0zppph85f61">
-  </script>
-  -->
-  <!-- using local -->  
-  <script src="{{ STATIC_PREFIX }}home/tinymce/tinymce.min.js"></script>
-
-  <!--  -->
-  <script>
-    tinymce.init({
-      selector:'textarea',
-      plugins : 'advlist autolink link image lists charmap print preview'
-    });
-  </script>
-{% endblock %}
-{% endif %}
-
 {% block title %}Article{% endblock %}
 
 {% block menubar_links %}
@@ -43,6 +23,25 @@
 
 
 {% block js %}
+{% if page == 'article_new' or page == 'article_edit' %}
+  {% load static %}
+  <!-- using an api key ?apiKey=
+  <script type= text/javascript
+    src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=vcxudi7k2pufauxhtxm8gj09wtbiotarvhvpj0zppph85f61">
+  </script>
+  -->
+  <!-- using local -->  
+  <script src="{% static 'home/tinymce/tinymce.min.js' %}"></script>
+
+  <!--  -->
+  <script>
+    tinymce.init({
+      selector:'textarea',
+      plugins : 'advlist autolink link image lists charmap print preview'
+    });
+  </script>
+{% endif %}  
+
 {% if page == 'article_new' or page == 'article_new_view' %}
   <script type= text/javascript>
     var confirm_leave = (event) => {
