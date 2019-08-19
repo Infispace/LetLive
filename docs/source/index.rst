@@ -6,6 +6,8 @@
 Welcome to LetLive's documentation!
 ===================================
 
+.. literalinclude:: ../../README.md
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

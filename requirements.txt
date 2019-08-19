@@ -3,7 +3,8 @@ djecrety
 djangorestframework
 django-rest-auth
 django-filter
-django-faker
 django-seed
-Pillow
 sphinx
+sphinx-rtd-theme
+recommonmark
+Pillow

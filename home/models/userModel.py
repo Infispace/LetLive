@@ -1,3 +1,6 @@
+"""
+:synopsis: Used to define the `home.models.userModel` models
+"""
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
@@ -6,50 +9,71 @@ from django.db import Error
 from django.db import models
 from django.db import transaction
 
+def upload_location(instance, filename):
+    return "%s/%s" %(instance.id, filename)
+    
 class AppUserManager(models.Manager):
     """
-    Creates an app user using the given user level.
+    AppUser objects manager.
     """
+    @transaction.atomic
     def create_user(self, username, email, password, user_level):
+        """
+        Creates an app user using the given user level.
+        
+        :param str username: the user's user name
+        :param str email: the user's email
+        :param str password: the user's password
+        :param str user_level: one of user's user name
+        :return: the new user object
+        :rtype: home.models.userModel.AppUser
+        """
         new_user = None
-        with transaction.atomic():
-            new_user = User.objects.create_user(username, email, password)
-            app_user = self.create(user=new_user, user_level=user_level)
+        new_user = User.objects.create_user(username, email, password)
+        app_user = self.create(user=new_user, user_level=user_level)
 
-            user_group = None
-            if(user_level == 'SUB'):
-                user_group = Group.objects.get(name='Subscribers')
-            elif(user_level == 'AUT'):
-                user_group = Group.objects.get(name='Authors')
-            elif(user_level == 'PUB'):
-                user_group = Group.objects.get(name='Publishers')
-            elif(user_level == 'ADM'):
-                new_user.is_staff = True
-                user_group = Group.objects.get(name='Administrators')
-            elif(user_level == 'SU'):
-                new_user.is_superuser = True
-                user_group = Group.objects.get(name='Super_users')
+        user_group = None
+        if(user_level == AppUser.SUBSCRIBER):
+            user_group = Group.objects.get(name='Subscribers')
+        elif(user_level == AppUser.AUTHOR):
+            user_group = Group.objects.get(name='Authors')
+        elif(user_level == AppUser.PUBLISHER):
+            user_group = Group.objects.get(name='Publishers')
+        elif(user_level == AppUser.ADMIN):
+            new_user.is_staff = True
+            user_group = Group.objects.get(name='Administrators')
+        elif(user_level == AppUser.SUPER_USER):
+            new_user.is_superuser = True
+            user_group = Group.objects.get(name='Super_users')
 
-            new_user.groups.set([user_group])
-            new_user.save()
+        new_user.groups.set([user_group])
+        new_user.save()
 
-        return new_user
+        return app_user
 
 class AppUser(models.Model):
     """
-    Virtual object for the app user, inherits models. 
+    Virtual object for the app user. 
     Has one to one relationship with django auth user.
+    
+    It is inherited by the models:
+    
+    * home.models.userModel.Admin
+    * home.models.userModel.Author
+    * home.models.userModel.Subscriber
+    * home.models.userModel.Publisher
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, blank=False)
     telephone = models.CharField(max_length=100, null = True, blank=True)
     address = models.CharField(max_length=100, null = True, blank=True)
 
-    ADMIN = 'ADM'
-    AUTHOR = 'AUT'
-    PUBLISHER = 'PUB'
-    SUBSCRIBER = 'SUB'
-    SUPER_USER = 'SU'
+    ADMIN = 'ADM'       #: Admin user level.
+    AUTHOR = 'AUT'      #: Author user level.
+    PUBLISHER = 'PUB'   #: publisher user level.
+    SUBSCRIBER = 'SUB'  #: subscriber user level.
+    SUPER_USER = 'SU'   #: `'super user'` user level.
     
+    #: AppUser user levels
     USER_LEVEL = (
         (AUTHOR, 'Author'),
         (PUBLISHER, 'Publisher'),
@@ -64,9 +88,10 @@ class AppUser(models.Model):
         default=SUBSCRIBER,
     )
 
+    #: AppUser objects manager.
     objects = AppUserManager()
 
-    #: The available user groups and their permissions
+    #: The available user groups and their permissions.
     user_groups = {
         'Super_users': [],
         'Subscribers': [
@@ -105,7 +130,10 @@ class AppUser(models.Model):
 
     def set_user_permmisions(self, user):
         """
-        Set the user group permissions
+        Set the user group permissions.
+        
+        :param user: Django user object to be set permission
+        :type user: django.contrib.auth.models.User
         """
         try:
             user.admin
@@ -141,7 +169,7 @@ class AppUser(models.Model):
 
     def create_user_groups(self):
         """
-        Create and store the available user groups
+        Create and store the available user groups.
         """
         user_group = None
         for group_name, perm_list in self.user_groups.items():
@@ -157,7 +185,7 @@ class AppUser(models.Model):
 
     def test_user_groups(self):
         """
-        Verify if the user groups are available in the database
+        Verify if the user groups are available in the database.
         """
         user_group = None
         try:
@@ -181,17 +209,16 @@ class AppUser(models.Model):
         return self.user.username
 
     def delete(self, *args, **kwargs):
-        """"
-        Delete the app user as well as django user model instances
+        """
+        Delete the app user as well as django user model instances.
+        
+        calls ``super().delete(*args, **kwargs)``
         """
         super().delete(*args, **kwargs)
         User.objects.get(username=self.user.username).delete()
 
     class Meta:
         abstract = True
-
-def upload_location(instance, filename):
-    return "%s/%s" %(instance.id, filename)
 
 class Subscriber(AppUser):
     """
@@ -200,9 +227,11 @@ class Subscriber(AppUser):
     """
     avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
     
-    FREE = 'FREE'
-    PAID = 'PAID'
-    SUBCRIPTIONS = (
+    FREE = 'FREE'     #: Free subscription type
+    PAID = 'PAID'     #: Paid subscription type
+    
+    #: Subscriber subscription types
+    SUBCRIPTIONS = (  
         (FREE, FREE),
         (PAID,PAID),
     )
@@ -234,3 +263,4 @@ class Admin(AppUser):
     """
     class Meta:
         verbose_name = "administrator"
+

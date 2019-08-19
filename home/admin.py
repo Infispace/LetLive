@@ -1,3 +1,15 @@
+"""
+Register the Web application models with Django admin.
+
+The models registered are
+
+* home.models.articleModel.Article
+* home.models.topicModel.Topic
+* home.models.userModel.Author
+* home.models.userModel.Publisher
+* home.models.userModel.Admin
+* home.models.userModel.Subscriber
+"""
 from django.contrib import admin
 from home.models.articleModel import Article
 from home.models.topicModel import Topic

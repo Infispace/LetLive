@@ -1,3 +1,7 @@
+"""
+:synopsis: Used to define the `home.views.userView` views
+The view is coupled with `home.models.userModel.AppUser`
+"""
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse

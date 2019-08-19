@@ -1,5 +1,7 @@
 """
-Api Version 1 Urls
+Api Version 1 Urls.
+
+Extents the urls from ``http:://domain/api_v1/``.
 """
 from django.urls import include 
 from django.urls import path
@@ -25,5 +27,5 @@ router.register(r'topics', views.TopicViewSet)
 urlpatterns = [
     path(r'', include(router.urls)),
     path(r'auth/', include('rest_auth.urls')),
-    path(r'api-token-auth/', authviews.obtain_auth_token),    
+    path(r'api-token-auth/', authviews.obtain_auth_token, name='api-token-auth'),    
 ]

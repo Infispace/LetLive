@@ -1,3 +1,8 @@
+"""
+Web Aplication Urls.
+
+Extents the urls from ``http:://domain/``.
+"""
 from django.urls import path, include
 from django.views.generic import TemplateView
 
@@ -10,10 +15,10 @@ from home.views import ProfileView
 from home.views import UsersView
 from home.views import PublishView
 
-# @page 
-# Represents the page to be shown used by the Views
-
 app_name = 'home'
+
+#: :page:  
+#: Represents the page to be shown used by the Views
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('publishers/', include([

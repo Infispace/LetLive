@@ -1,16 +1,31 @@
+"""
+:synopsis: Used for authenticating the users.
+"""
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView
 from django.db import transaction
-
-from home.forms import LoginForm, RegisterUserForm
-from home.models import AppUser, Author, Subscriber
+from home.forms import LoginForm
+from home.forms import RegisterUserForm
+from home.models import AppUser
+from home.models import Author
+from home.models import Subscriber
 
 @login_required()
 def user_logout(request):
+    """
+    Logout user from the app.
+    User should be authenticated
+    
+    :param request: the django HttpRequest object
+    :type request: django.http.request.HttpRequest
+    """
     if request.user.is_authenticated:
         logout(request)
         return HttpResponseRedirect(reverse('home:index'))
@@ -18,11 +33,28 @@ def user_logout(request):
         return HttpResponse('Unknown Error')
 
 class UserLoginView(TemplateView):
+    """
+    Class for authenticating users.
+    Used for login and registering users.
+    """
+    #: The html template to render.
     template_name = 'home/login.html'
+    #: The html form to render
     form = None
+    #: The error string if an error occurs
     error_string = ''
 
-    def get(self, request, page='login', next=''):
+    def get(self, request, next='', page='login'):
+        """
+        Called if HTTP GET is requested.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest        
+        :param str next: the next url after HTTP POST
+        :param str page: the page to render, default is 'login'
+        :return: renders the html template
+        :rtype: django.shortcuts.render
+        """
         if 'next' in request.GET:
             next = request.GET['next']
 
@@ -43,11 +75,20 @@ class UserLoginView(TemplateView):
 
     @transaction.atomic
     def signup(self, request):
+        """
+        Creates a new user.
+        The new user is either `SUBSCRIBER` or `AUTHOR`
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        :return: True or False
+        :rtype: bool
+        """
         success = False
         password = self.form.cleaned_data['password']
         password2 = self.form.cleaned_data['password2']
         is_author = self.form.cleaned_data['is_author']
-
+        
         user_level = AppUser.SUBSCRIBER
         if is_author:
             user_level = AppUser.AUTHOR
@@ -80,6 +121,14 @@ class UserLoginView(TemplateView):
         return success
 
     def login(self, request):
+        """
+        Authenticates the user using the form data.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        :return: True or False
+        :rtype: bool
+        """
         success = False
         user = authenticate(
             username=self.form.cleaned_data['username'],
@@ -94,6 +143,17 @@ class UserLoginView(TemplateView):
         return success
 
     def post(self, request, next='', page='login'):
+        """
+        Called if HTTP POST is requested.
+        Either creates a new user or authenticate an existing user.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        :param str next: the next url after HTTP POST
+        :param str page: the page to render, default is 'login'        
+        :return: renders the html template
+        :rtype: django.shortcuts.render
+        """
         if 'next' in request.POST:
             next = request.POST['next']
 
@@ -116,10 +176,10 @@ class UserLoginView(TemplateView):
             return HttpResponseRedirect(next)
         elif success:
             return HttpResponseRedirect(reverse('home:index'))
-
-        return render(request, self.template_name,{
-            'next': next,
-            'form': self.form,
-            'page': page,
-            'error_string': self.error_string,
-        })
+        else:
+            return render(request, self.template_name,{
+                'next': next,
+                'form': self.form,
+                'page': page,
+                'error_string': self.error_string,
+            })
