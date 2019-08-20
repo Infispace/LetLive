@@ -1,6 +1,20 @@
+<!--
+Html template to view and edit user profile
+
+context:
+{
+  'page': 'page passed from urls.py',
+}
+-->
 {% extends "home/base.html" %}
 
-{% block title %}User{% endblock %}
+{% block title %}
+  {% if page == 'user_profile' or page == 'user_profile_edit' %}
+    Profile
+  {% else %}
+    Users
+  {% endif %}
+{% endblock %}
 
 {% block menubar_links %}
   {% load menu_bar %}
@@ -10,11 +24,25 @@
 {% block content %}
   <div class="container p-3">
 
-    {% if editable %}
-      {% include 'home/account_edit.html' %}
-    {% else %}
-      {% include 'home/account_view.html' %}
-    {% endif %}
+    <div class="row">
+      {% if page == 'user_profile' or page == 'user_profile_edit' %}
+      <!-- side menu -->
+      <div class="col-3">
+        <div class="card shadow">
+          //
+        </div>
+      </div>
+      {% endif %}
+      
+      <!-- main body -->
+      <div class="col">
+        {% if page == 'user_profile_edit' %}
+          {% include 'home/account_edit.html' %}
+        {% else %}
+          {% include 'home/account_view.html' %}
+        {% endif %}
+      </div>
+    </div>
 
   </div>
 {% endblock %}

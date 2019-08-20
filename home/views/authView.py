@@ -17,21 +17,6 @@ from home.models import AppUser
 from home.models import Author
 from home.models import Subscriber
 
-@login_required()
-def user_logout(request):
-    """
-    Logout user from the app.
-    User should be authenticated
-    
-    :param request: the django HttpRequest object
-    :type request: django.http.request.HttpRequest
-    """
-    if request.user.is_authenticated:
-        logout(request)
-        return HttpResponseRedirect(reverse('home:index'))
-    else:
-        return HttpResponse('Unknown Error')
-
 class UserLoginView(TemplateView):
     """
     Class for authenticating users.
@@ -47,6 +32,7 @@ class UserLoginView(TemplateView):
     def get(self, request, next='', page='login'):
         """
         Called if HTTP GET is requested.
+        Renders the authentication forms.
         
         :param request: the django HttpRequest object
         :type request: django.http.request.HttpRequest        
@@ -69,9 +55,11 @@ class UserLoginView(TemplateView):
         else:
             self.form = LoginForm()
 
-        return render(request, self.template_name,
-            {'next': next, 'form': self.form, 'page': page}
-        )
+        return render(request, self.template_name,{
+            'next': next, 
+            'form': self.form, 
+            'page': page
+        })
 
     @transaction.atomic
     def signup(self, request):

@@ -1,5 +1,13 @@
 <!-- 
-Authentication page  with login form template 
+Authentication page  with login form template
+
+context:
+{
+  'next': 'next page url',
+  'form': 'authentication form',
+  'page': 'page passed from urls.py',
+  'error_string': 'Error to be displayed',
+}
 -->
 {% extends "home/base.html" %}
 
@@ -23,7 +31,7 @@ Authentication page  with login form template
       <i class="fas fa-home fa-3x"></i>
     </a>
 
-    <h1 class="ml-auto"><!-- Card Header -->
+    <h1 class="ml-auto font-weight-bold"><!-- Card Header -->
     {% if page != 'signup' %}
       Login
     {% else %}

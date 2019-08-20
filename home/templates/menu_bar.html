@@ -1,3 +1,13 @@
+<!--
+Html template to render the top menu bar links.
+Gets context from 'menu_bar.py' templatetag
+
+context:
+{
+  'page': 'page passed from urls.py',
+  'user': 'the authenticated user'
+}
+-->
 {% load has_perm view_blog_menu %}
 
 <!-- index menu item -->

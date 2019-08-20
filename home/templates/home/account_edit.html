@@ -1,6 +1,17 @@
-<form action="{% url 'home:user_default' %}" method="post">
+<!--
+Html template to edit user. Displays user forms
+
+context:
+{
+  'form_user': 'User model form',
+  'form_profile': 'AppUser form',
+  'error_string': 'Error to be displayed',
+}
+-->
+<form action="{% url 'home:user_profile' %}" method="post">
   {% csrf_token %}
 
+  <!-- User Model Attributes -->
   {% for field in form_user.visible_fields %}
     <div class="form-group row">
       <label
@@ -33,6 +44,7 @@
     </div>
   {% endfor %}
 
+  <!-- AppUser Model Attributes -->
   {% for field in form_profile.visible_fields %}
     {% if field.name == "avatar" %}
     <div class="custom-file mt-2 mb-3">
@@ -79,7 +91,7 @@
   <a
     class="btn btn-secondary"
     role="button"
-    href="{% url 'home:user_default' %}"
+    href="{% url 'home:user_profile' %}"
   >
     Cancel
   </a>
