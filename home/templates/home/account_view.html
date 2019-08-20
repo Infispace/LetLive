@@ -21,5 +21,12 @@ context:
     >
       Delete {{ view_user.username.capitalize }}
     </a>
+    <a
+      class="btn btn-secondary btn-sm"
+      role="button"
+      href="{% url 'home:user_default' %}"
+    >
+      Cancel
+    </a>
   {% endif %}
 {% endif %}

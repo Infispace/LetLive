@@ -14,6 +14,7 @@ from django.views.generic import TemplateView
 from home.forms import UserForm
 from home.forms import AuthorForm
 from home.forms import PublisherForm
+from home.forms import SubscriberForm
 from home.forms import AdminForm
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -48,6 +49,15 @@ class ProfileView(LoginRequiredMixin, TemplateView):
                 self.form = PublisherForm(request.POST, instance=user.publisher)
             else:
                 self.form = PublisherForm(instance=user.publisher)
+        except ObjectDoesNotExist:
+            pass
+
+        try:
+            user.subscriber
+            if request is not None:
+                self.form = SubscriberForm(request.POST, instance=user.subscriber)
+            else:
+                self.form = SubscriberForm(instance=user.subscriber)
         except ObjectDoesNotExist:
             pass
 

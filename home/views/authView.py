@@ -138,7 +138,7 @@ class UserLoginView(TemplateView):
         :param request: the django HttpRequest object
         :type request: django.http.request.HttpRequest
         :param str next: the next url after HTTP POST
-        :param str page: the page to render, default is 'login'        
+        :param str page: the page to render, default is 'login'
         :return: renders the html template
         :rtype: django.shortcuts.render
         """

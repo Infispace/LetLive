@@ -39,7 +39,7 @@ class RegisterUserForm(forms.ModelForm):
         self.fields['is_author'].widget.attrs.update({
           'class': 'form-check-input',
         })
-        
+
         self.fields['password2'].widget.attrs.update({
           'class': 'form-control',
         })
@@ -47,14 +47,25 @@ class RegisterUserForm(forms.ModelForm):
         self.fields['password'].widget.attrs.update({
           'class': 'form-control',
         })
-        
+
         self.fields['username'].widget.attrs.update({
           'class': 'form-control',
         })
-        
+
         self.fields['email'].widget.attrs.update({
           'class': 'form-control',
-        })     
+        })
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password2 = cleaned_data.get("password2")
+
+        if password != confirm_password:
+            msg = "passwords do not match"
+            self.add_error('password', msg)
+            self.add_error('password2', msg)
+            raise forms.ValidationError(msg)
 
     def clean(self):
         super().clean()

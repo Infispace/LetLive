@@ -8,7 +8,7 @@ context:
   'error_string': 'Error to be displayed',
 }
 -->
-<form action="{% url 'home:user_profile' %}" method="post">
+<form action="{% url 'home:user_profile_edit' %}" method="post">
   {% csrf_token %}
 
   <!-- User Model Attributes -->

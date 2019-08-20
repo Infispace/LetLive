@@ -1,29 +1,41 @@
+<!--
+Html Template for deleting user
+
+context:
+{
+  'page': 'page passed from urls.py',
+  'user_form': 'for the user form errors'
+  'view_user': 'user to delete',
+  'error_string': 'Error to be displayed',
+}
+-->
+
 <h2>DELETE USER</h2>
 <hr>
 
-{% if form.errors or error_string %}
+{% if user_form.errors or error_string %}
   <div
-    class="alert {% if form.errors %} alert-warning
+    class="alert {% if user_form.errors %} alert-warning
       {% else %} alert-danger
     {% endif %}"
     role="alert"
   >
-    {% if form.errors %}
+    {% if user_form.errors %}
       There were errors found:
-      {{ form.non_field_errors }}
+      {{ user_form.non_field_errors }}
     {% else %}
       {{ error_string }}
     {% endif %}
   </div>
 {% endif %}
 
-<form action="{% url 'home:user_delete' user_delete.id %}" method="post">
+<form action="{% url 'home:user_delete' view_user.id %}" method="post">
   {% csrf_token %}
-  <label for="user_delete_form">
-    Are you sure want to delete user "{{ user_delete.username }}"?
+  <label for="user_form">
+    Are you sure want to delete user "{{ view_user.username }}"?
   </label>
   <table class="d-none">
-    {{form.as_table}}
+    {{user_form.as_table}}
   </table>
   <button type="submit" class="btn btn-danger">
     Delete
@@ -31,7 +43,7 @@
   <a
     class="btn btn-secondary"
     role="button"
-    href="{% url 'home:user_view' user_delete.id%}"
+    href="{% url 'home:user_view' view_user.id %}"
   >
     Cancel
   </a>

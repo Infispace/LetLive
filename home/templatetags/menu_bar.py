@@ -16,7 +16,22 @@ def menu_bar(context):
         'user' : 'the authenticated user'
       }
     """
+    page = context['page']
+    # set users menu item
+    if (page == 'user_default' 
+        or page == 'user_new'
+        or page == 'user_author'
+        or page == 'user_publisher'
+        or page == 'user_view'
+        or page == 'user_delete'
+    ):
+        page = 'users'
+        
+    # set my blog menu item
+    if page == 'my_blog' or page == 'article_filter':
+        page == 'my_blog'
+    
     return {
-        'page': context['page'],
+        'page': page,
         'user': context['user'],
     }

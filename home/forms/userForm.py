@@ -1,11 +1,11 @@
-from django.forms import ModelForm
+from django import forms
 from django.contrib.auth.models import User
-
 from home.models import Author
 from home.models import Publisher
+from home.models import Subscriber
 from home.models import Admin
 
-class UserForm(ModelForm):
+class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'readonly': True})
@@ -14,7 +14,7 @@ class UserForm(ModelForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
 
-class AppUserForm(ModelForm):
+class AppUserForm(forms.ModelForm):
     class Meta:
         exclude = ['user', 'user_level']
 
@@ -28,12 +28,17 @@ class PublisherForm(AppUserForm):
         model = Author
         fields = '__all__'
 
+class SubscriberForm(AppUserForm):
+    class Meta(AppUserForm.Meta):
+        model = Subscriber
+        exclude = ['user', 'user_level', 'subscription_type']
+        
 class AdminForm(AppUserForm):
     class Meta(AppUserForm.Meta):
         model = Author
         fields = '__all__'
 
-class DeleteUserForm(ModelForm):
+class DeleteUserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'readonly': True})

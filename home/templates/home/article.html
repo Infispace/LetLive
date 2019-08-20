@@ -9,15 +9,17 @@
 
 {% block content %}
 
-  {% if page == 'article_new' or page == 'article_edit' %}
-    {% include 'home/article_form.html' %}
-  {% elif page == 'blog' or page == 'my_blog' or page == 'article_filter' %}
-    {% include 'home/article_blog.html' %}
-  {% elif page == 'article_delete' or page == 'article_publish' %}
-    {% include 'home/article_confirmation.html' %}
-  {% else %}
-    {% include 'home/article_view.html' %}
-  {% endif %}
+  <div class="container p-3">
+    {% if page == 'article_new' or page == 'article_edit' %}
+      {% include 'home/article_form.html' %}
+    {% elif page == 'blog' or page == 'my_blog' or page == 'article_filter' %}
+      {% include 'home/article_blog.html' %}
+    {% elif page == 'article_delete' or page == 'article_publish' %}
+      {% include 'home/article_confirmation.html' %}
+    {% else %}
+      {% include 'home/article_view.html' %}
+    {% endif %}
+  </div>
 
 {% endblock %}
 
