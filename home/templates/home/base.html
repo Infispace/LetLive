@@ -50,6 +50,7 @@
             <i class="fas fa-user mr-2"></i>
           {% endif %}
         </button>
+        
         <!-- drop down user menu -->
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuOffset">
         {% if user.is_authenticated %}        
@@ -67,27 +68,8 @@
             Logout
           </a>
         {% else %}
-          <form class="px-4 py-3" method="post" action="{% url 'home:user_login' %}">
-            {% csrf_token %}
-            <div class="form-group">
-              <label for="loginDropdownFormName">Username</label>
-              <input type="text" name="username" class="form-control" id="loginDropdownFormName" placeholder="username">
-            </div>
-            <div class="form-group">
-              <label for="loginDropdownFormPassword">Password</label>
-              <input type="password" name="password" class="form-control" id="loginDropdownFormPassword" placeholder="Password">
-            </div>
-            <div class="form-check">
-              <input type="checkbox" name="keep_loged" class="form-check-input" id="loginDropdownCheck">
-              <label class="form-check-label" for="loginDropdownCheck">
-                Remember me
-              </label>
-            </div>
-            <button type="submit" class="btn btn-primary my-1">Sign in</button>
-          </form>
-          <div class="dropdown-divider border-primary"></div>
-          <a class="dropdown-item" href="{% url 'home:user_register' %}">New around here? Sign up</a>
-          <a class="dropdown-item" href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">Forgot password?</a>
+          {% load base_login_form %}
+          {% base_login_form %}         
         {% endif %}
         </div>
         <!-- end of drop down user menu -->

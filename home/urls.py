@@ -7,7 +7,6 @@ from django.urls import path
 from django.urls import include
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
-
 from home.views import ArticleView
 from home.views import UserLoginView
 from home.views import IndexView
@@ -15,12 +14,40 @@ from home.views import TopicView
 from home.views import ProfileView
 from home.views import UsersView
 from home.views import PublishView
+from home.forms import LoginForm
 
 app_name = 'home'
 
 #: :page: Represents the page to be shown used by the Views and Templates.
 urlpatterns = [
-    path('', IndexView.as_view(), name='index'),
+    path('', IndexView.as_view(), name='index'),    
+    path('profile/', include([
+        path('', ProfileView.as_view(), {'page': 'user_profile'}, name='user_profile'),
+        path('edit/', ProfileView.as_view(), {'page': 'user_profile_edit'}, name='user_profile_edit'),
+    ])),
+    path('users/', include([
+        path('', UsersView.as_view(), {'page': 'user_default'}, name='user_default'),
+        path('new/', UsersView.as_view(), {'page': 'user_new'}, name='user_new'),
+        path('authors/', UsersView.as_view(), {'page': 'user_author'}, name='user_author'),
+        path('publishers/', UsersView.as_view(), {'page': 'user_publisher'}, name='user_publisher'),
+        path('<int:user_id>/', UsersView.as_view(), {'page': 'user_view'}, name='user_view'),
+        path('<int:user_id>/delete/', UsersView.as_view(), {'page': 'user_delete'}, name='user_delete'),
+    ])),
+    path('accounts/', include([
+        path('login/', auth_views.LoginView.as_view(
+            template_name='home/login.html',
+            authentication_form=LoginForm
+        ), name='user_login'),
+        path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
+        path('register/', UserLoginView.as_view(), {'page': 'signup'}, name='user_register'),        
+        path('password_change/', auth_views.PasswordChangeView.as_view()),
+        path('password_change/done/', auth_views.PasswordChangeDoneView.as_view()),
+        path('password_reset/', auth_views.PasswordResetView.as_view()),
+        path('password_reset/done/', auth_views.PasswordResetDoneView.as_view()),
+        path('reset/<uidb64>/<token>/ /', auth_views.PasswordResetConfirmView.as_view()),
+        path('reset/done/', auth_views.PasswordResetCompleteView.as_view()),
+        #path('password_reset/', auth_views.PasswordResetView.as_view(template_name='home/login.html'),
+    ])),
     path('articles/', include([
         path('', ArticleView.as_view(), {'page': 'my_blog'}, name='article_default'),
         path('<int:article_id>/', ArticleView.as_view(), name='article'),
@@ -37,24 +64,6 @@ urlpatterns = [
         path('<int:topic_id>/', TopicView.as_view(), name='topic'),
         path('<int:topic_id>/edit/', TopicView.as_view(), {'page': 'topic_edit'}, name='topic_edit'),
         path('<int:topic_id>/delete/', TopicView.as_view(), {'page': 'topic_delete'}, name='topic_delete'),
-    ])),
-    path('accounts/', include([
-        path('login/', UserLoginView.as_view(), name='user_login'),
-        path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
-        path('register/', UserLoginView.as_view(), {'page': 'signup'}, name='user_register'),
-        #path('password_reset/', auth_views.PasswordResetView.as_view(template_name='home/login.html'),
-    ])),
-    path('profile/', include([
-        path('', ProfileView.as_view(), {'page': 'user_profile'}, name='user_profile'),
-        path('edit/', ProfileView.as_view(), {'page': 'user_profile_edit'}, name='user_profile_edit'),
-    ])),
-    path('users/', include([
-        path('', UsersView.as_view(), {'page': 'user_default'}, name='user_default'),
-        path('new/', UsersView.as_view(), {'page': 'user_new'}, name='user_new'),
-        path('authors/', UsersView.as_view(), {'page': 'user_author'}, name='user_author'),
-        path('publishers/', UsersView.as_view(), {'page': 'user_publisher'}, name='user_publisher'),
-        path('<int:user_id>/', UsersView.as_view(), {'page': 'user_view'}, name='user_view'),
-        path('<int:user_id>/delete/', UsersView.as_view(), {'page': 'user_delete'}, name='user_delete'),
     ])),
     path('publishers/', include([
         path('', PublishView.as_view(), {'page': 'publish_article'}, name='publish_article'),

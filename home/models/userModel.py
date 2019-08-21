@@ -63,9 +63,14 @@ class AppUser(models.Model):
     * home.models.userModel.Subscriber
     * home.models.userModel.Publisher
     """
+    #: The user model which belongs to the AppUser.
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, blank=False)
+    #: The user's telephone number.
     telephone = models.CharField(max_length=100, null = True, blank=True)
+    #: The user's physical address.
     address = models.CharField(max_length=100, null = True, blank=True)
+    #: The user's profile picture.
+    avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
 
     ADMIN = 'ADM'       #: Admin user level.
     AUTHOR = 'AUT'      #: Author user level.
@@ -224,18 +229,17 @@ class Subscriber(AppUser):
     """
     Inherits the app user.
     Should have a user level 'SUB'
-    """
-    avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
+    """    
+    FREE = 'FREE'     #: Free subscription type.
+    PAID = 'PAID'     #: Paid subscription type.
     
-    FREE = 'FREE'     #: Free subscription type
-    PAID = 'PAID'     #: Paid subscription type
-    
-    #: Subscriber subscription types
+    #: Subscriber subscription types.
     SUBCRIPTIONS = (  
         (FREE, FREE),
         (PAID,PAID),
     )
     
+    #: The subscription types.
     subscription_type = models.CharField(
         max_length=4, 
         choices=SUBCRIPTIONS,
@@ -247,14 +251,30 @@ class Author(AppUser):
     Inherits the app user.
     Should have a user level 'AUT'
     """
-    avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
+    FREE = 'FREE'     #: Free subscription type.
+    PAID = 'PAID'     #: Paid subscription type.
+    PREMIUM = 'PREMIUM'     #: Premium subscription type.
+    
+    #: Author subscription types.
+    AUTHOR_LEVELS = (  
+        (FREE, FREE),
+        (PAID,PAID),
+        (PREMIUM,PREMIUM)
+    )
+    
+    #: The author types.
+    author_type = models.CharField(
+        max_length=10, 
+        choices=AUTHOR_LEVELS,
+        default=FREE,
+    )
 
 class Publisher(AppUser):
     """
     Inherits the app user.
     Should have a user level 'PUB'
     """
-    avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
+    pass
 
 class Admin(AppUser):
     """

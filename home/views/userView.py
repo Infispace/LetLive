@@ -141,7 +141,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         
         :param str user_level: the new user level
         :return: returns true if a new user is created
-        "rtype: True or False
+        :rtype: True or False
         """
         saved = False
         if self.user_form.is_valid():

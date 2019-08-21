@@ -1,0 +1,32 @@
+<!--
+Html template for login form. used in the menu bar
+
+context:
+{
+  'login_form': 'the login form',
+}
+-->
+
+<form class="px-4 py-3" method="post" action="{% url 'home:user_login' %}">
+  {% csrf_token %}
+
+  {% for field in login_form.visible_fields %}
+    <div class="form-group">
+      <label for="{{field.id_for_label}}">
+        {{field.label.capitalize}}:
+      </label>
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
+
+  <button type="submit" class="btn btn-primary my-1">Sign in</button>
+</form>
+
+<!-- register and password reset buttons -->
+<div class="dropdown-divider border-primary"></div>
+<a class="dropdown-item" href="{% url 'home:user_register' %}">New around here? Sign up</a>
+<a class="dropdown-item" href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">Forgot password?</a>
+

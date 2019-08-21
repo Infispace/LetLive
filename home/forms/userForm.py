@@ -9,19 +9,46 @@ class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'readonly': True})
+        self.fields['username'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        
+        self.fields['first_name'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        
+        self.fields['last_name'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        
+        self.fields['email'].widget.attrs.update({
+          'class': 'form-control',
+        })
 
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
 
 class AppUserForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['avatar'].widget = forms.HiddenInput()
+        
+        self.fields['telephone'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        
+        self.fields['address'].widget.attrs.update({
+          'class': 'form-control',
+        })
+         
     class Meta:
         exclude = ['user', 'user_level']
 
 class AuthorForm(AppUserForm):
     class Meta(AppUserForm.Meta):
         model = Author
-        fields = '__all__'
+        exclude = ['user', 'user_level', 'author_type']
 
 class PublisherForm(AppUserForm):
     class Meta(AppUserForm.Meta):
@@ -32,7 +59,7 @@ class SubscriberForm(AppUserForm):
     class Meta(AppUserForm.Meta):
         model = Subscriber
         exclude = ['user', 'user_level', 'subscription_type']
-        
+
 class AdminForm(AppUserForm):
     class Meta(AppUserForm.Meta):
         model = Author

@@ -8,7 +8,7 @@ register = template.Library()
 @register.inclusion_tag('menu_bar.html', takes_context=True)
 def menu_bar(context):
     """
-    Passes context to template.    
+    Passes context to template `menu_bar.html`.
     ::
     
       {

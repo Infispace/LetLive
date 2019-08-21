@@ -1,5 +1,5 @@
 """
-:synopsis: Used for authenticating the users.
+:synopsis: Used for Registering new users.
 """
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
@@ -19,8 +19,7 @@ from home.models import Subscriber
 
 class UserLoginView(TemplateView):
     """
-    Class for authenticating users.
-    Used for login and registering users.
+    Class for registering new users and authenticating them.
     """
     #: The html template to render.
     template_name = 'home/login.html'
@@ -32,7 +31,7 @@ class UserLoginView(TemplateView):
     def get(self, request, next='', page='login'):
         """
         Called if HTTP GET is requested.
-        Renders the authentication forms.
+        Renders the registration form.
         
         :param request: the django HttpRequest object
         :type request: django.http.request.HttpRequest        
@@ -41,25 +40,61 @@ class UserLoginView(TemplateView):
         :return: renders the html template
         :rtype: django.shortcuts.render
         """
+        # get next page url
         if 'next' in request.GET:
             next = request.GET['next']
 
+        # redirect authenticated users
         if request.user.is_authenticated:
             if next != '':
                 return HttpResponseRedirect(next)
             else:
                 return HttpResponseRedirect(reverse('home:index'))
 
-        if page == 'signup':
-            self.form = RegisterUserForm()
-        else:
-            self.form = LoginForm()
+        # set form to render
+        self.form = RegisterUserForm()
 
+        # render the template
         return render(request, self.template_name,{
             'next': next, 
             'form': self.form, 
             'page': page
         })
+
+    def post(self, request, next='', page='login'):
+        """
+        Called if HTTP POST is requested.
+        Either creates a new user or authenticate an existing user.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        :param str next: the next url after HTTP POST
+        :param str page: the page to render, default is 'login'
+        :return: renders the html template
+        :rtype: django.shortcuts.render
+        """
+        # get next page url
+        if 'next' in request.POST:
+            next = request.POST['next']
+
+        # register new user
+        success = False
+        self.form = RegisterUserForm(request.POST)
+        if self.form.is_valid():
+            success = self.signup(request);
+
+        # render template
+        if success and next is not '':
+            return HttpResponseRedirect(next)
+        elif success:
+            return HttpResponseRedirect(reverse('home:index'))
+        else:
+            return render(request, self.template_name,{
+                'next': next,
+                'form': self.form,
+                'page': page,
+                'error_string': self.error_string,
+            })
 
     @transaction.atomic
     def signup(self, request):
@@ -77,10 +112,12 @@ class UserLoginView(TemplateView):
         password2 = self.form.cleaned_data['password2']
         is_author = self.form.cleaned_data['is_author']
         
+        # set user level of the new user
         user_level = AppUser.SUBSCRIBER
         if is_author:
             user_level = AppUser.AUTHOR
 
+        # compare passwords
         if password != '' and password2 != '' and password == password2:
             try:
                 if is_author:
@@ -98,6 +135,7 @@ class UserLoginView(TemplateView):
                         user_level= user_level
                     )
                     
+                # authenticate new user
                 success = self.login(request)
             except Exception as e:
                 self.error_string = 'There was an error. Please try again.'
@@ -108,66 +146,3 @@ class UserLoginView(TemplateView):
 
         return success
 
-    def login(self, request):
-        """
-        Authenticates the user using the form data.
-        
-        :param request: the django HttpRequest object
-        :type request: django.http.request.HttpRequest
-        :return: True or False
-        :rtype: bool
-        """
-        success = False
-        user = authenticate(
-            username=self.form.cleaned_data['username'],
-            password= self.form.cleaned_data['password']
-        )
-        if user is not None:
-            login(request, user)
-            success = True
-        else:
-            self.error_string = "Your username and/or password didn't match. Please try again."
-
-        return success
-
-    def post(self, request, next='', page='login'):
-        """
-        Called if HTTP POST is requested.
-        Either creates a new user or authenticate an existing user.
-        
-        :param request: the django HttpRequest object
-        :type request: django.http.request.HttpRequest
-        :param str next: the next url after HTTP POST
-        :param str page: the page to render, default is 'login'
-        :return: renders the html template
-        :rtype: django.shortcuts.render
-        """
-        if 'next' in request.POST:
-            next = request.POST['next']
-
-        success = False
-        errors = []
-        if page == 'signup':
-            self.form = RegisterUserForm(request.POST)
-            if self.form.is_valid():
-                success = self.signup(request);
-        else:
-            self.form = LoginForm(request.POST)
-            if self.form.is_valid():
-                success = self.login(request)
-                if self.form.cleaned_data['keep_loged']:
-                    request.session['user'] = {
-                        'keep_loged': 'true'
-                    }
-
-        if success and next is not '':
-            return HttpResponseRedirect(next)
-        elif success:
-            return HttpResponseRedirect(reverse('home:index'))
-        else:
-            return render(request, self.template_name,{
-                'next': next,
-                'form': self.form,
-                'page': page,
-                'error_string': self.error_string,
-            })

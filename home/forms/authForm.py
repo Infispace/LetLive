@@ -4,6 +4,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.forms import AuthenticationForm
 
 class RegisterUserForm(forms.ModelForm):
     """
@@ -57,19 +58,15 @@ class RegisterUserForm(forms.ModelForm):
         })
         
     def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password2 = cleaned_data.get("password2")
-
-        if password != confirm_password:
-            msg = "passwords do not match"
-            self.add_error('password', msg)
-            self.add_error('password2', msg)
-            raise forms.ValidationError(msg)
-
-    def clean(self):
         super().clean()
         validate_password(self.cleaned_data.get("password"))
+        
+        # passwords should match
+        password = self.cleaned_data.get("password")
+        password2 = self.cleaned_data.get("password2")
+        if password != password2:
+            msg = "passwords did not match"
+            raise forms.ValidationError(msg)
 
     class Meta:
         model = User
@@ -78,29 +75,16 @@ class RegisterUserForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
-class LoginForm(forms.Form):
+class LoginForm(AuthenticationForm):
     """
-    Login Form with the following fields:
+    Login Form inherits from `django.contrib.auth.forms.AuthenticationForm`.
+    
+    Has the following fields:
 
     * username
     * password
     * keep_loged
     """
-    #: username confirmation field
-    username = forms.CharField(
-      label='Username', 
-      max_length=50, 
-      required=True
-    )
-
-    #: password field
-    password = forms.CharField(
-      label='Password', 
-      max_length=25, 
-      widget=forms.PasswordInput, 
-      required=True
-    )   
-    
     #: keep session login field
     keep_loged = forms.BooleanField(
       label = 'Remember me', 

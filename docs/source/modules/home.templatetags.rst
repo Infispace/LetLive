@@ -9,6 +9,14 @@ home.templatetags package
 Submodules
 ----------
 
+home.templatetags.base\_login\_form module
+------------------------------------------
+
+.. automodule:: home.templatetags.base_login_form
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 home.templatetags.has\_perm module
 ----------------------------------
 
