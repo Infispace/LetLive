@@ -2,7 +2,7 @@
 Web Aplication Urls.
 
 Extents the urls from root directory.
-Extents the urls from ``http:://domain/api_v1/``.
+Extents the urls from ``http:://domain/``.
 """
 from django.urls import path
 from django.urls import include

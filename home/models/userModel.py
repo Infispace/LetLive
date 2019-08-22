@@ -31,9 +31,6 @@ def set_user_groups(user, user_level):
     elif(user_level == AppUser.ADMIN):
         user.is_staff = True
         user_group = Group.objects.get(name='Administrators')
-    elif(user_level == AppUser.SUPER_USER):
-        user.is_superuser = True
-        user_group = Group.objects.get(name='Super_users')
 
     user.groups.set([user_group])
     user.save()
@@ -82,11 +79,10 @@ class AppUser(models.Model):
         blank=True
     )
 
-    ADMIN = 'ADM'       #: Admin user level.
-    AUTHOR = 'AUT'      #: Author user level.
-    PUBLISHER = 'PUB'   #: publisher user level.
-    SUBSCRIBER = 'SUB'  #: subscriber user level.
-    SUPER_USER = 'SU'   #: `'super user'` user level.
+    ADMIN = 'ADM'       #: Admin user level. Manages users.
+    AUTHOR = 'AUT'      #: Author user level. Creates articles.
+    PUBLISHER = 'PUB'   #: publisher user level. Publishes articles.
+    SUBSCRIBER = 'SUB'  #: subscriber user level. Views articles.
     
     #: AppUser user levels
     USER_LEVEL = (
@@ -94,7 +90,6 @@ class AppUser(models.Model):
         (PUBLISHER, 'Publisher'),
         (ADMIN, 'Administrator'),
         (SUBSCRIBER, 'Subscriber'),
-        (SUPER_USER, 'Super_user'),
     )
     
     #: The user's user level
@@ -109,38 +104,42 @@ class AppUser(models.Model):
 
     #: The available user groups and their permissions.
     user_groups = {
-        'Super_users': [],
         'Subscribers': [
             'view_article',
         ],
         'Authors': [
+            # all permissions for articles except publish
             'add_article',
             'change_article',
             'delete_article',
             'view_article',
         ],
-        'Administrators': [
-            'add_user',
-            'view_user',
-            'delete_user',
-            'add_publisher',
-            'delete_publisher',
-            'view_publisher',
-            'view_admin',
-            'view_author',
-            'delete_author',
-            'view_article',
-        ],
         'Publishers': [
-            'add_article',
+            # all permissions for articles except add
             'change_article',
             'delete_article',
             'publish_article',
             'view_article',
+            # all permissions for topics
             'add_topic',
             'change_topic',
             'delete_topic',
             'view_topic',
+        ],
+        'Administrators': [
+            # all permissions for users except edit
+            'add_user',
+            'view_user',
+            'delete_user',
+            # all permissions for publishers except edit
+            'add_publisher',
+            'delete_publisher',
+            'view_publisher',
+            #can view and delete author
+            'view_author',
+            'delete_author',
+            # can view admin
+            'view_admin',
         ],
     }
 
@@ -263,6 +262,7 @@ class AppUser(models.Model):
 
     class Meta:
         abstract = True
+        #ordering = ['-created_date_time', 'updated_date_time']
 
 class Subscriber(AppUser):
     """
