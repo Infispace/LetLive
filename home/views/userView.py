@@ -9,12 +9,14 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.urls import reverse
 from django.views.generic import TemplateView
 from home.forms import RegisterUserForm
 from home.forms import DeleteUserForm
 from home.models import Publisher
 from home.models import Author
+from home.models import AppUser
 
 class UsersView(PermissionRequiredMixin, TemplateView):
     """
@@ -112,15 +114,16 @@ class UsersView(PermissionRequiredMixin, TemplateView):
             )
         
         # make db edits
-        success = self.user_form.is_valid()
-        
-        print(success, self.user_form, self.view_user)
-        
-        if success and page == 'user_delete':
-            self.view_user.delete()
-            success = True
-        elif success and page == 'user_new':
-            success = self.add_user('')
+        try:
+            success = self.user_form.is_valid()
+            if success and page == 'user_delete':
+                self.view_user.delete()
+                success = True
+            elif success and page == 'user_new':
+                success = self.add_publisher()
+        except Exception as e:
+            self.error_string = 'There was an error. Please try again.' 
+            self.error_string = e #for debug
         
         # render template
         if success:
@@ -133,37 +136,25 @@ class UsersView(PermissionRequiredMixin, TemplateView):
                 'error_string': self.error_string,
             })
 
-    def add_user(self, user_level=''):
+    @transaction.atomic
+    def add_publisher(self):
         """
-        Adds a new user
+        Adds a new user of publisher user_level
         
         Edit a specific users filtered with `/pk/`
         
-        :param str user_level: the new user level
         :return: returns true if a new user is created
         :rtype: True or False
         """
-        saved = False
-        if self.user_form.is_valid():
-            password = self.user_form.cleaned_data['password']
-            password2 = self.user_form.cleaned_data['password2']
+        success = False
+        # create new user
+        user = self.user_form.save()
+        print(user, AppUser.PUBLISHER)
+        
+        success = Publisher.objects.create(
+            user=user, 
+            user_level=AppUser.PUBLISHER
+        )
+        
+        return success
 
-            password_match = False
-            if password != '' and password2 != '' and password == password2:
-                password_match = True
-
-            if password_match:
-                try:
-                    publisher = Publisher.objects.create_user(
-                        username=self.user_form.cleaned_data['username'],
-                        email=self.user_form.cleaned_data['email'],
-                        password=password,
-                        user_level= Publisher.PUBLISHER
-                    )
-                    saved = True
-                except:
-                    self.error_string = 'Username already exist. Please try again.'
-            else:
-                self.error_string = "Passwords do not match."
-
-        return saved

@@ -65,3 +65,11 @@ home.migrations.0007\_admin\_avatar module
    :undoc-members:
    :show-inheritance:
 
+home.migrations.0008\_auto\_20190821\_1721 module
+-------------------------------------------------
+
+.. automodule:: home.migrations.0008_auto_20190821_1721
+   :members:
+   :undoc-members:
+   :show-inheritance:
+

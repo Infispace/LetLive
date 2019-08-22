@@ -8,17 +8,20 @@ from django.urls import include
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 from home.views import ArticleView
-from home.views import UserLoginView
 from home.views import IndexView
 from home.views import TopicView
 from home.views import ProfileView
 from home.views import UsersView
 from home.views import PublishView
+from home.views import UserRegistrationView
 from home.forms import LoginForm
+from home.forms import PasswordResetForm
+from home.forms import PasswordChangeForm
+
 
 app_name = 'home'
 
-#: :page: Represents the page to be shown used by the Views and Templates.
+#: :page: Represents the page to be shown used by the Templates.
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),    
     path('profile/', include([
@@ -34,19 +37,30 @@ urlpatterns = [
         path('<int:user_id>/delete/', UsersView.as_view(), {'page': 'user_delete'}, name='user_delete'),
     ])),
     path('accounts/', include([
+        path('register/', UserRegistrationView.as_view(), {'page': 'signup'}, name='user_register'),        
+        path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
         path('login/', auth_views.LoginView.as_view(
             template_name='home/login.html',
             authentication_form=LoginForm
         ), name='user_login'),
-        path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
-        path('register/', UserLoginView.as_view(), {'page': 'signup'}, name='user_register'),        
-        path('password_change/', auth_views.PasswordChangeView.as_view()),
-        path('password_change/done/', auth_views.PasswordChangeDoneView.as_view()),
-        path('password_reset/', auth_views.PasswordResetView.as_view()),
-        path('password_reset/done/', auth_views.PasswordResetDoneView.as_view()),
-        path('reset/<uidb64>/<token>/ /', auth_views.PasswordResetConfirmView.as_view()),
-        path('reset/done/', auth_views.PasswordResetCompleteView.as_view()),
-        #path('password_reset/', auth_views.PasswordResetView.as_view(template_name='home/login.html'),
+        path('password_change/', auth_views.PasswordChangeView.as_view(
+            template_name='home/account.html',
+            form_class=PasswordChangeForm,
+            success_url='/accounts/password_change/done/',
+            extra_context={'page': 'password_change'}
+        ), name='password_change'),
+        path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(
+            template_name='home/account.html',
+            extra_context={'page': 'password_change_done'}
+        ), name='password_change_done'),
+        path('password_reset/', auth_views.PasswordResetView.as_view(
+            template_name='home/password_reset.html',
+            form_class=PasswordResetForm,
+            email_template_name='home/password_reset_email.html'
+        ), name='password_reset'),
+        path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+        path('reset/<uidb64>/<token>/ /', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+        path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     ])),
     path('articles/', include([
         path('', ArticleView.as_view(), {'page': 'my_blog'}, name='article_default'),

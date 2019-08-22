@@ -10,9 +10,9 @@ LetLive Web Application Views:
 * home.views.publishView.PublishView
 """
 from .articleView import ArticleView
-from .authView import UserLoginView
 from .indexView import IndexView
 from .profileView import ProfileView
 from .topicView import TopicView
 from .userView import UsersView
 from .publishView import PublishView
+from .registrationView import UserRegistrationView

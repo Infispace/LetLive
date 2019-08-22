@@ -17,39 +17,28 @@ class AppUserManager(models.Manager):
     AppUser objects manager.
     """
     @transaction.atomic
-    def create_user(self, username, email, password, user_level):
-        """
-        Creates an app user using the given user level.
+    def create(self, *args, **kwargs):
+        obj = super().create(*args, **kwargs)
         
-        :param str username: the user's user name
-        :param str email: the user's email
-        :param str password: the user's password
-        :param str user_level: one of user's user name
-        :return: the new user object
-        :rtype: home.models.userModel.AppUser
-        """
-        new_user = None
-        new_user = User.objects.create_user(username, email, password)
-        app_user = self.create(user=new_user, user_level=user_level)
-
+        # set user group
         user_group = None
-        if(user_level == AppUser.SUBSCRIBER):
+        if(kwargs['user_level'] == AppUser.SUBSCRIBER):
             user_group = Group.objects.get(name='Subscribers')
-        elif(user_level == AppUser.AUTHOR):
+        elif(kwargs['user_level'] == AppUser.AUTHOR):
             user_group = Group.objects.get(name='Authors')
-        elif(user_level == AppUser.PUBLISHER):
+        elif(kwargs['user_level'] == AppUser.PUBLISHER):
             user_group = Group.objects.get(name='Publishers')
-        elif(user_level == AppUser.ADMIN):
+        elif(kwargs['user_level'] == AppUser.ADMIN):
             new_user.is_staff = True
             user_group = Group.objects.get(name='Administrators')
-        elif(user_level == AppUser.SUPER_USER):
+        elif(kwargs['user_level'] == AppUser.SUPER_USER):
             new_user.is_superuser = True
             user_group = Group.objects.get(name='Super_users')
 
-        new_user.groups.set([user_group])
-        new_user.save()
-
-        return app_user
+        kwargs['user'].groups.set([user_group])
+        kwargs['user'].save()
+        
+        return obj
 
 class AppUser(models.Model):
     """
@@ -90,7 +79,6 @@ class AppUser(models.Model):
     user_level = models.CharField(
         max_length=3,
         choices=USER_LEVEL,
-        default=SUBSCRIBER,
     )
 
     #: AppUser objects manager.
@@ -205,6 +193,8 @@ class AppUser(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # initial user_level
+        self.__user_level = self.user_level
         try:
             self.test_user_groups()
         except Error as e:
@@ -221,6 +211,19 @@ class AppUser(models.Model):
         """
         super().delete(*args, **kwargs)
         User.objects.get(username=self.user.username).delete()
+
+    def save(self, *args, **kwargs):
+        """
+        Prevents changing user levels.
+        
+        calls ``super().save(*args, **kwargs)``
+        """
+        # reset user_level to original
+        if self.id and self.user_level != self.__user_level:
+            self.user_level = self.__user_level
+        
+        # save and return
+        return super().save(*args, **kwargs)
 
     class Meta:
         abstract = True

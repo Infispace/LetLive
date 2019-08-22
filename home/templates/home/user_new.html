@@ -9,19 +9,40 @@ context:
 -->
 
 {% if user_form.errors or error_string %}
+  <!-- Form Alerts -->
   <div
-    class="alert alert-warning "
+    class="alert {% if user_form.errors %} alert-warning
+      {% else %} alert-danger
+    {% endif %}"
     role="alert"
-  >
-    
+  />
+    {% if user_form.errors %}
+      There were errors found:
+      {{ user_form.non_field_errors }}
+    {% else %}
+      {{ error_string }}
+    {% endif %}
   </div>
 {% endif %}
 
 <form action="{% url 'home:user_new' %}" method="post">
   {% csrf_token %}
-  <table>
-    {{ user_form.as_table }}
-  </table>
+
+  {% for field in user_form.visible_fields %}
+    <div class="form-group">
+      <label for="{{field.id_for_label}}">
+        {{field.label.capitalize}}:
+      </label>
+      {{ field }}
+      <small class="form-text text-muted">
+        {{ field.help_text }}
+      </small>
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
+  
   <button
     class="btn btn-primary"
     type="submit"

@@ -17,14 +17,6 @@ home.views.articleView module
    :undoc-members:
    :show-inheritance:
 
-home.views.authView module
---------------------------
-
-.. automodule:: home.views.authView
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 home.views.indexView module
 ---------------------------
 
@@ -45,6 +37,14 @@ home.views.publishView module
 -----------------------------
 
 .. automodule:: home.views.publishView
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+home.views.registrationView module
+----------------------------------
+
+.. automodule:: home.views.registrationView
    :members:
    :undoc-members:
    :show-inheritance:

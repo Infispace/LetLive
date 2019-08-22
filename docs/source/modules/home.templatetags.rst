@@ -33,6 +33,14 @@ home.templatetags.menu\_bar module
    :undoc-members:
    :show-inheritance:
 
+home.templatetags.nav\_branding module
+--------------------------------------
+
+.. automodule:: home.templatetags.nav_branding
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 home.templatetags.view\_blog\_menu module
 -----------------------------------------
 

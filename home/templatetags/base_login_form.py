@@ -12,9 +12,7 @@ def base_login_form(context):
     Passes context to template `base_login_form.html`.    
     ::
     
-      {
-        'login_form' : 'user login form',
-      }
+      {'login_form' : 'user login form'}
     """
     form = LoginForm()
     return {'login_form': form}

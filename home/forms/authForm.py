@@ -5,26 +5,24 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordResetForm
 
-class RegisterUserForm(forms.ModelForm):
+class RegisterUserForm(UserCreationForm):
     """
-    Register Form with the following fields:
+    Register Form inherits from `django.contrib.auth.forms.UserCreationForm`
+    
+    Has the following fields:
     
     * email
     * username
-    * password
-    * password 2
+    * password1
+    * password2
     * is_author
-    
-    `username` and `password` is inherited from `home.forms.LoginForm`
     """
-    #: password confirmation field
-    password2 = forms.CharField(
-      label= 'Retype Password', 
-      max_length=25, 
-      widget=forms.PasswordInput,
-      required=True
-    )
+    #: Email field for new user email
+    email = forms.EmailField()
     
     #: is_author field to choose between 
     #: `home.models.UserModel.Author` or
@@ -45,7 +43,7 @@ class RegisterUserForm(forms.ModelForm):
           'class': 'form-control',
         })
 
-        self.fields['password'].widget.attrs.update({
+        self.fields['password1'].widget.attrs.update({
           'class': 'form-control',
         })
 
@@ -56,28 +54,17 @@ class RegisterUserForm(forms.ModelForm):
         self.fields['email'].widget.attrs.update({
           'class': 'form-control',
         })
-        
-    def clean(self):
-        super().clean()
-        validate_password(self.cleaned_data.get("password"))
-        
-        # passwords should match
-        password = self.cleaned_data.get("password")
-        password2 = self.cleaned_data.get("password2")
-        if password != password2:
-            msg = "passwords did not match"
-            raise forms.ValidationError(msg)
 
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['email', 'username', 'password']
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
+        fields = [
+           'email', 
+           'username',
+        ]
 
 class LoginForm(AuthenticationForm):
     """
-    Login Form inherits from `django.contrib.auth.forms.AuthenticationForm`.
+    Login form inherits from `django.contrib.auth.forms.AuthenticationForm`.
     
     Has the following fields:
 
@@ -87,8 +74,8 @@ class LoginForm(AuthenticationForm):
     """
     #: keep session login field
     keep_loged = forms.BooleanField(
-      label = 'Remember me', 
-      required=False,
+        label = 'Remember me', 
+        required=False,
     )
     
     def __init__(self, *args, **kwargs):
@@ -99,4 +86,41 @@ class LoginForm(AuthenticationForm):
         self.fields['password'].widget.attrs.update({
           'class': 'form-control',
         })
+
+class PasswordResetForm(PasswordResetForm):
+    """
+    Password reset form inherits from `django.contrib.auth.forms.PasswordResetForm`.
+    
+    Has the following fields:
+
+    * email
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({
+          'class': 'form-control',
+        })
+
+class PasswordChangeForm(PasswordChangeForm):
+    """
+    Password change form inherits from `django.contrib.auth.forms.PasswordChangeForm`.
+    
+    Has the following fields:
+
+    * old_password
+    * new_password1
+    * new_password2
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs.update({
+          'class': 'form-control',
+        })
         
+        self.fields['new_password1'].widget.attrs.update({
+          'class': 'form-control',
+        })
+        
+        self.fields['new_password2'].widget.attrs.update({
+          'class': 'form-control',
+        })

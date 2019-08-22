@@ -17,7 +17,7 @@ from home.models import AppUser
 from home.models import Author
 from home.models import Subscriber
 
-class UserLoginView(TemplateView):
+class UserRegistrationView(TemplateView):
     """
     Class for registering new users and authenticating them.
     """
@@ -64,7 +64,7 @@ class UserLoginView(TemplateView):
     def post(self, request, next='', page='login'):
         """
         Called if HTTP POST is requested.
-        Either creates a new user or authenticate an existing user.
+        Creates a new user.
         
         :param request: the django HttpRequest object
         :type request: django.http.request.HttpRequest
@@ -79,15 +79,18 @@ class UserLoginView(TemplateView):
 
         # register new user
         success = False
-        self.form = RegisterUserForm(request.POST)
-        if self.form.is_valid():
-            success = self.signup(request);
+        try: 
+            self.form = RegisterUserForm(request.POST)
+            success = self.signup(request)
+        except Exception as e:
+            self.error_string = 'There was an error. Please try again.' 
+            #self.error_string = e #for debug
 
         # render template
         if success and next is not '':
             return HttpResponseRedirect(next)
         elif success:
-            return HttpResponseRedirect(reverse('home:index'))
+            return HttpResponseRedirect(reverse('home:user_login'))
         else:
             return render(request, self.template_name,{
                 'next': next,
@@ -108,41 +111,22 @@ class UserLoginView(TemplateView):
         :rtype: bool
         """
         success = False
-        password = self.form.cleaned_data['password']
-        password2 = self.form.cleaned_data['password2']
-        is_author = self.form.cleaned_data['is_author']
-        
-        # set user level of the new user
-        user_level = AppUser.SUBSCRIBER
-        if is_author:
-            user_level = AppUser.AUTHOR
-
-        # compare passwords
-        if password != '' and password2 != '' and password == password2:
-            try:
-                if is_author:
-                    Author.objects.create_user(
-                        username=self.form.cleaned_data['username'],
-                        email=self.form.cleaned_data['email'],
-                        password=password,
-                        user_level= user_level
-                    )
-                else:
-                    Subscriber.objects.create_user(
-                        username=self.form.cleaned_data['username'],
-                        email=self.form.cleaned_data['email'],
-                        password=password,
-                        user_level= user_level
-                    )
-                    
-                # authenticate new user
-                success = self.login(request)
-            except Exception as e:
-                self.error_string = 'There was an error. Please try again.'
-                #self.error_string = e
-                
-        else:
-            self.error_string = "Passwords do not match."
+        if self.form.is_valid():
+            # create new user
+            user = self.form.save()
+            
+            # set user level of the new user
+            user_level = AppUser.SUBSCRIBER
+            if self.form.cleaned_data['is_author']:
+                success = Author.objects.create(
+                    user=user, 
+                    user_level=AppUser.AUTHOR
+                )
+            else:
+                success = Subscriber.objects.create(
+                    user=user, 
+                    user_level=AppUser.SUBSCRIBER
+                )
 
         return success
 

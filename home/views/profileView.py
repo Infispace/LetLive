@@ -103,17 +103,21 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         self.set_form(request.user, request)
         saved = False
 
-        # save User model attributes
-        if self.user_form.has_changed():
-            if self.user_form.is_valid():
-                self.user_form.save()
-                saved = True
+        try:
+            # save User model attributes
+            if self.user_form.has_changed():
+                if self.user_form.is_valid():
+                    self.user_form.save()
+                    saved = True
 
-        #: save AppUser model attributes
-        if self.form.has_changed():
-            if self.form.is_valid():
-                self.form.save()
-                saved = True
+            #: save AppUser model attributes
+            if self.form.has_changed():
+                if self.form.is_valid():
+                    self.form.save()
+                    saved = True
+        except Exception as e:
+            self.error_string = 'There was an error. Please try again.' 
+            self.error_string = e #for debug
 
         # render template
         if saved:
