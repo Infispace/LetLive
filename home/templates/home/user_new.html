@@ -7,22 +7,21 @@ context:
   'error_string': 'Error to be displayed',
 }
 -->
-
 {% if user_form.errors or error_string %}
-  <!-- Form Alerts -->
-  <div
-    class="alert {% if user_form.errors %} alert-warning
-      {% else %} alert-danger
-    {% endif %}"
-    role="alert"
-  />
-    {% if user_form.errors %}
+  {% if error_string %}
+    <!-- display error string -->
+    <div class="alert alert-danger role="alert" >
+      {{ error_string }}
+    </div>
+  {% endif %}
+  
+  {% if user_form.errors %}
+    <!-- Form Alerts -->
+    <div class="alert alert-warning role="alert" >
       There were errors found:
       {{ user_form.non_field_errors }}
-    {% else %}
-      {{ error_string }}
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
 {% endif %}
 
 <form action="{% url 'home:user_new' %}" method="post">
@@ -30,9 +29,7 @@ context:
 
   {% for field in user_form.visible_fields %}
     <div class="form-group">
-      <label for="{{field.id_for_label}}">
-        {{field.label.capitalize}}:
-      </label>
+      {{ field.label_tag }}
       {{ field }}
       <small class="form-text text-muted">
         {{ field.help_text }}

@@ -8,14 +8,53 @@ context:
   'error_string': 'Error to be displayed',
 }
 -->
-<form action="{% url 'home:user_profile_edit' %}" method="post">
+{% if error_string %}
+  <!-- display error string -->
+  <div class="alert alert-danger role="alert" >
+    {{ error_string }}
+  </div>
+{% endif %}
+
+{% if form_profile.errors or form_user.errors %}
+  <!-- Form Alerts -->
+  <div class="alert alert-warning role="alert" >
+    There were errors found:
+    {% if form_profile.errors %}
+      {{ form_profile.non_field_errors }}
+    {% elif form_user.errors %}
+      {{ form_user.non_field_errors }}
+    {% endif %}
+  </div>
+{% endif %}
+  
+<form 
+  action="{% url 'home:user_profile_edit' %}" 
+  method="post"
+  enctype=multipart/form-data
+>
   {% csrf_token %}
 
   <!-- User Model Attributes -->
-  {{ form_user.as_p }}
+  {% for field in form_user.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
 
   <!-- AppUser Model Attributes -->
-  {{ form_profile.as_p }}
+  {% for field in form_profile.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
     
   <!-- User Avator -->
   <div class="custom-file mt-2 mb-3">

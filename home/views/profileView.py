@@ -29,6 +29,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     form = None
     #: form for the user model
     user_form = None
+    #: The errors found
+    error_string = None
 
     def set_form(self, user, request=None):
         """
@@ -126,6 +128,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
           return render(request, self.template_name, {
               'form_user': self.user_form,
               'form_profile': self.form,
-              'error_string': 'Check the following form errors!',
+              'error_string': self.error_string,
               'page': page,
           })

@@ -41,7 +41,8 @@ urlpatterns = [
         path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
         path('login/', auth_views.LoginView.as_view(
             template_name='home/login.html',
-            authentication_form=LoginForm
+            authentication_form=LoginForm,
+            extra_context={'page': 'login'}
         ), name='user_login'),
         path('password_change/', auth_views.PasswordChangeView.as_view(
             template_name='home/account.html',

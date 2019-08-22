@@ -10,35 +10,48 @@ from django.db import models
 from django.db import transaction
 
 def upload_location(instance, filename):
-    return "%s/%s" %(instance.id, filename)
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'user_{0}/{1}'.format(instance.user.id, filename)
+
+def set_user_groups(user, user_level):
+    """
+    Set user groups using the given user level
     
+    :param user: the user to set group
+    :type user: django.contrib.auth.models.User
+    :param str user_level: the user level string
+    """
+    user_group = None
+    if(user_level == AppUser.SUBSCRIBER):
+        user_group = Group.objects.get(name='Subscribers')
+    elif(user_level == AppUser.AUTHOR):
+        user_group = Group.objects.get(name='Authors')
+    elif(user_level == AppUser.PUBLISHER):
+        user_group = Group.objects.get(name='Publishers')
+    elif(user_level == AppUser.ADMIN):
+        user.is_staff = True
+        user_group = Group.objects.get(name='Administrators')
+    elif(user_level == AppUser.SUPER_USER):
+        user.is_superuser = True
+        user_group = Group.objects.get(name='Super_users')
+
+    user.groups.set([user_group])
+    user.save()
+
 class AppUserManager(models.Manager):
     """
     AppUser objects manager.
     """
     @transaction.atomic
     def create(self, *args, **kwargs):
-        obj = super().create(*args, **kwargs)
-        
         # set user group
-        user_group = None
-        if(kwargs['user_level'] == AppUser.SUBSCRIBER):
-            user_group = Group.objects.get(name='Subscribers')
-        elif(kwargs['user_level'] == AppUser.AUTHOR):
-            user_group = Group.objects.get(name='Authors')
-        elif(kwargs['user_level'] == AppUser.PUBLISHER):
-            user_group = Group.objects.get(name='Publishers')
-        elif(kwargs['user_level'] == AppUser.ADMIN):
-            new_user.is_staff = True
-            user_group = Group.objects.get(name='Administrators')
-        elif(kwargs['user_level'] == AppUser.SUPER_USER):
-            new_user.is_superuser = True
-            user_group = Group.objects.get(name='Super_users')
-
-        kwargs['user'].groups.set([user_group])
-        kwargs['user'].save()
+        set_user_groups(
+            kwargs['user'],
+            kwargs['user_level']
+        )
         
-        return obj
+        # create and return
+        return super().create(*args, **kwargs)
 
 class AppUser(models.Model):
     """
@@ -55,11 +68,19 @@ class AppUser(models.Model):
     #: The user model which belongs to the AppUser.
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, blank=False)
     #: The user's telephone number.
-    telephone = models.CharField(max_length=100, null = True, blank=True)
+    telephone = models.CharField(max_length=100, null=True, blank=True)
     #: The user's physical address.
-    address = models.CharField(max_length=100, null = True, blank=True)
+    address = models.CharField(max_length=100, null=True, blank=True)
+    #: The user's date of birth
+    dob = models.DateField(null=True, blank=True)
     #: The user's profile picture.
-    avatar = models.ImageField(upload_to = upload_location, null = True, blank=True)
+    avatar = models.ImageField(
+        upload_to=upload_location, 
+        #height_field=250, 
+        #width_field=250, 
+        null=True, 
+        blank=True
+    )
 
     ADMIN = 'ADM'       #: Admin user level.
     AUTHOR = 'AUT'      #: Author user level.
@@ -76,9 +97,11 @@ class AppUser(models.Model):
         (SUPER_USER, 'Super_user'),
     )
     
+    #: The user's user level
     user_level = models.CharField(
         max_length=3,
         choices=USER_LEVEL,
+        blank=False
     )
 
     #: AppUser objects manager.
@@ -160,6 +183,7 @@ class AppUser(models.Model):
         except ObjectDoesNotExist:
             pass
 
+    @transaction.atomic
     def create_user_groups(self):
         """
         Create and store the available user groups.
@@ -192,9 +216,13 @@ class AppUser(models.Model):
             self.create_user_groups()
 
     def __init__(self, *args, **kwargs):
+        # call super class method
         super().__init__(*args, **kwargs)
+        
         # initial user_level
         self.__user_level = self.user_level
+        
+        # test user groups saved in db
         try:
             self.test_user_groups()
         except Error as e:
@@ -203,6 +231,7 @@ class AppUser(models.Model):
     def __str__(self):
         return self.user.username
 
+    @transaction.atomic
     def delete(self, *args, **kwargs):
         """
         Delete the app user as well as django user model instances.
@@ -212,9 +241,11 @@ class AppUser(models.Model):
         super().delete(*args, **kwargs)
         User.objects.get(username=self.user.username).delete()
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
         """
         Prevents changing user levels.
+        Also sets new user group.
         
         calls ``super().save(*args, **kwargs)``
         """
@@ -222,6 +253,11 @@ class AppUser(models.Model):
         if self.id and self.user_level != self.__user_level:
             self.user_level = self.__user_level
         
+        # set user group for new AppUser
+        if self.id == None:
+            set_user_groups(self.user, self.user_level)
+            self.__user_level = self.user_level
+
         # save and return
         return super().save(*args, **kwargs)
 
@@ -231,7 +267,7 @@ class AppUser(models.Model):
 class Subscriber(AppUser):
     """
     Inherits the app user.
-    Should have a user level 'SUB'
+    Should have a user level 'SUB'.
     """    
     FREE = 'FREE'     #: Free subscription type.
     PAID = 'PAID'     #: Paid subscription type.
