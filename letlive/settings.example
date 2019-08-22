@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Uncomment variable 'SECRET_KEY' below
-# Then run the command $python manage.py djecrety -spd letlive
+# Then run the command `python manage.py djecrety -spd letlive`
 #
 # SECRET_KEY = 'random-chars'
 
@@ -37,18 +37,33 @@ ALLOWED_HOSTS = [
 
 # Application definition
 
+# for rest_auth.registration
+SITE_ID = 1
+
 INSTALLED_APPS = [
     'djecrety',
-    'rest_auth',
     'django_seed',
+    
+    # django rest auth framework
+    'allauth',
+    'allauth.account',
+    'rest_auth',
+    'rest_auth.registration',
+    
+    # django rest framework
     'rest_framework',
     'rest_framework.authtoken',
+
+    # django default
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # my registered apps
     'api_v1.apps.ApiV1Config',
     'home.apps.HomeConfig',
 ]
@@ -131,19 +146,22 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
 STATIC_URL = '/static/'
+# STATIC_ROOT = ''
+
+
+# Media files uploads
+# MEDIA_ROOT = ''
+# MEDIA_URL
 
 
 # login redirects
 LOGIN_URL = '/accounts/login/'
-
 LOGIN_REDIRECT_URL = '/'
-
 LOGOUT_REDIRECT_URL = '/'
 
 
-# LetLive Email
+# LetLive default email
 # DEFAULT_FROM_EMAIL = ''
 
 

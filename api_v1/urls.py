@@ -3,10 +3,10 @@ Api Version 1 Urls.
 
 Extents the urls from ``http:://domain/api_v1/``.
 """
+from rest_framework.authtoken import views as authviews
+from rest_framework import routers
 from django.urls import include 
 from django.urls import path
-from rest_framework import routers
-from rest_framework.authtoken import views as authviews
 from api_v1 import views
 
 app_name = 'api_v1'
@@ -26,6 +26,9 @@ router.register(r'topics', views.TopicViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path(r'', include(router.urls)),
-    path(r'auth/', include('rest_auth.urls')),
-    path(r'api-token-auth/', authviews.obtain_auth_token, name='api-token-auth'),    
+    path(r'auth/', include([
+        path(r'', include('rest_auth.urls')),
+        path(r'registration/', include('rest_auth.registration.urls')),
+        path(r'api-token/', authviews.obtain_auth_token, name='rest_api_token'),
+    ])),  
 ]

@@ -1,10 +1,26 @@
+#
+### Django framework
 django
-djecrety
+#
+### Django REST framework
 djangorestframework
-django-rest-auth
-django-filter
+#
+### Django REST authentication framework
+django-rest-auth[with_social]
+#
+### Django model and db seeder with faker
 django-seed
+#
+### Django filter queryset
+django-filter
+#
+### Django generating secret key
+djecrety
+#
+### Sphinx documentation
 sphinx
 sphinx-rtd-theme
 recommonmark
+#
+### Required for Django managing files
 Pillow
