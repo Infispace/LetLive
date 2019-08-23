@@ -37,7 +37,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         Initialize the form to use to edit user profile.
         """
         try:
-            user.author
             if request is not None:
                 self.form = AuthorForm(request.POST, instance=user.author)
             else:
@@ -46,7 +45,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             pass
 
         try:
-            user.publisher
             if request is not None:
                 self.form = PublisherForm(request.POST, instance=user.publisher)
             else:
@@ -55,7 +53,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             pass
 
         try:
-            user.subscriber
             if request is not None:
                 self.form = SubscriberForm(request.POST, instance=user.subscriber)
             else:
@@ -64,7 +61,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             pass
 
         try:
-            user.admin
             if request is not None:
                 self.form = AdminForm(request.POST, instance=user.admin)
             else:
@@ -72,7 +68,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         except ObjectDoesNotExist:
             pass
 
-    def get(self, request, page):
+    def get(self, request, page=None, *args, **kwargs):
         """
         Called when HTTP GET method is used.
         Displays the edit user profile form.
@@ -91,7 +87,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             'page': page,
         })
 
-    def post(self, request, page):
+    def post(self, request, page=None, *args, **kwargs):
         """
         Called when HTTP POST method is used.
         Edits the user profile from the form data.

@@ -28,7 +28,7 @@ class UserRegistrationView(TemplateView):
     #: The error string if an error occurs
     error_string = ''
 
-    def get(self, request, next='', page='login'):
+    def get(self, request, next='', page='login', *args, **kwargs):
         """
         Called if HTTP GET is requested.
         Renders the registration form.
@@ -61,7 +61,7 @@ class UserRegistrationView(TemplateView):
             'page': page
         })
 
-    def post(self, request, next='', page='login'):
+    def post(self, request, next='', page='login', *args, **kwargs):
         """
         Called if HTTP POST is requested.
         Creates a new user.
@@ -83,6 +83,7 @@ class UserRegistrationView(TemplateView):
             self.form = RegisterUserForm(request.POST)
             success = self.signup(request)
         except Exception as e:
+            success = False
             self.error_string = 'There was an error. Please try again.' 
             #self.error_string = e #for debug
 
@@ -118,15 +119,9 @@ class UserRegistrationView(TemplateView):
             # set user level of the new user
             user_level = AppUser.SUBSCRIBER
             if self.form.cleaned_data['is_author']:
-                success = Author.objects.create(
-                    user=user, 
-                    user_level=AppUser.AUTHOR
-                )
+                success = Author.objects.create(user=user)
             else:
-                success = Subscriber.objects.create(
-                    user=user, 
-                    user_level=AppUser.SUBSCRIBER
-                )
+                success = Subscriber.objects.create(user=user)
 
         return success
 

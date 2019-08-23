@@ -1,12 +1,18 @@
-#
+#############################
+# LetLive Pipy Requirements #
+#############################
 ### Django framework
 django
+#
+### Django extensions
+django-extensions
 #
 ### Django REST framework
 djangorestframework
 #
 ### Django REST authentication framework
-django-rest-auth[with_social]
+django-rest-auth[with_social]>=0.3.3
+django-allauth
 #
 ### Django model and db seeder with faker
 django-seed

@@ -10,14 +10,15 @@ It has the following endpoints:
 ::
 
   {
+    "articles": "http://domain/api_v1/articles/",
+    "topics": "http://domain/api_v1/topics/",
+    "admins": "http://domain/api_v1/admins/",
+    "authors": "http://domain/api_v1/authors/",
+    "subscribers": "http://domain/api_v1/subscribers/",
+    "publishers": "http://domain/api_v1/publishers/",
     "users": "http:://domain/api_v1/users/",
     "groups": "http://domain/api_v1/groups/",
-    "subscribers": "http://domain/api_v1/subscribers/",
-    "authors": "http://domain/api_v1/authors/",
-    "publishers": "http://domain/api_v1/publishers/",
-    "admins": "http://domain/api_v1/admins/",
-    "articles": "http://domain/api_v1/articles/",
-    "topics": "http://domain/api_v1/topics/"
+    "profile": "http://domain/api_v1/profile/",
   }
   
 Has Authentication using Django authentication
@@ -39,6 +40,6 @@ and a route for getting the user token:
     "user": "http:://domain/api_v1/auth/user",
     "rest_password_change": "http:://domain/api_v1/auth/password/change",
     "rest_password_reset": "http:://domain/api_v1/auth/password/reset/confirm",
-    "api-token-auth": "http:://domain/api_v1/api-token-auth/",
+    "api-token": "http:://domain/api_v1/auth/api-token-auth/",
   }
 """

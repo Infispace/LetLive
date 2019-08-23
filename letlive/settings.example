@@ -35,19 +35,29 @@ ALLOWED_HOSTS = [
 ]
 
 
-# Application definition
-
 # for rest_auth.registration
 SITE_ID = 1
 
+
+# Always use IPython for shell_plus
+SHELL_PLUS = "plain"
+
+# Application definition
 INSTALLED_APPS = [
+    # generate secrate key
     'djecrety',
+    
+    # generate db seed data and faker
     'django_seed',
+    
+    # django extensions
+    'django_extensions',
     
     # django rest auth framework
     'allauth',
-    'allauth.account',
     'rest_auth',
+    'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     
     # django rest framework
@@ -146,26 +156,31 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+
 STATIC_URL = '/static/'
 # STATIC_ROOT = ''
 
 
 # Media files uploads
+#
 # MEDIA_ROOT = ''
 # MEDIA_URL
 
 
 # login redirects
+
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
 # LetLive default email
+#
 # DEFAULT_FROM_EMAIL = ''
 
 
 #Django Rest Framework
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,

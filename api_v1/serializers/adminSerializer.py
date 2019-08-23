@@ -7,21 +7,13 @@ from home.models import AppUser
 class AdminSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.HyperlinkedRelatedField(
         many=False,
-        #read_only=True,
         view_name='api_v1:user-detail',
-        queryset=User.objects.filter(is_active=True),
+        queryset=User.objects.all(),
     )
 
     class Meta:
         model = Admin
-        fields = (
-            'url', 
-            'id', 
-            'user', 
-            'telephone', 
-            'address', 
-            'user_level',
-        )
+        fields = '__all__'
         extra_kwargs = {
             'url': {
                 'view_name': 'api_v1:admin-detail',

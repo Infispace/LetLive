@@ -57,11 +57,11 @@ context:
 <!-- Display 'Author' users list  -->
 {% if page == 'user_author' or page == 'user_default' %}
 {% for user_detail in authors_list %}
-    <h4>{{ user_detail.username }}</h4>
+    <h4>{{ user_detail }}</h4>
     <a
       class="btn btn-secondary btn-sm"
       role="button"
-      href="{% url 'home:user_view' user_detail.id %}"
+      href="{% url 'home:user_view' user_detail.user.id %}"
     >
       View Author
     </a>
@@ -72,11 +72,11 @@ context:
 <!-- Display 'Publisher' users list -->
 {% if page == 'user_publisher' or page == 'user_default' %}
 {% for user_detail in publishers_list %}
-    <h4>{{ user_detail.username }}</h4>
+    <h4>{{ user_detail }}</h4>
     <a
       class="btn btn-secondary btn-sm"
       role="button"
-      href="{% url 'home:user_view' user_detail.id %}"
+      href="{% url 'home:user_view' user_detail.user.id %}"
     >
       View Publisher
     </a>

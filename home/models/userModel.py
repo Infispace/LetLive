@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 from django.db import Error
 from django.db import models
 from django.db import transaction
@@ -41,14 +42,17 @@ class AppUserManager(models.Manager):
     """
     @transaction.atomic
     def create(self, *args, **kwargs):
-        # set user group
+        # create object
+        obj = super().create(*args, **kwargs)
+        
+        # set user groups
         set_user_groups(
             kwargs['user'],
-            kwargs['user_level']
+            obj.user_level
         )
         
         # create and return
-        return super().create(*args, **kwargs)
+        return obj
 
 class AppUser(models.Model):
     """
@@ -62,14 +66,23 @@ class AppUser(models.Model):
     * home.models.userModel.Subscriber
     * home.models.userModel.Publisher
     """
-    #: The user model which belongs to the AppUser.
-    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, blank=False)
     #: The user's telephone number.
     telephone = models.CharField(max_length=100, null=True, blank=True)
     #: The user's physical address.
     address = models.CharField(max_length=100, null=True, blank=True)
     #: The user's date of birth
     dob = models.DateField(null=True, blank=True)
+    #: Timestamps
+    created_date_time = models.DateTimeField(auto_now_add=True)
+    updated_date_time = models.DateTimeField(auto_now=True)
+    #: The user model OneToOne relationship with the AppUser.
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE, 
+        unique=True, 
+        blank=False, 
+        editable=False
+    )
     #: The user's profile picture.
     avatar = models.ImageField(
         upload_to=upload_location, 
@@ -84,19 +97,12 @@ class AppUser(models.Model):
     PUBLISHER = 'PUB'   #: publisher user level. Publishes articles.
     SUBSCRIBER = 'SUB'  #: subscriber user level. Views articles.
     
-    #: AppUser user levels
+    #: AppUser user level choices.
     USER_LEVEL = (
         (AUTHOR, 'Author'),
         (PUBLISHER, 'Publisher'),
         (ADMIN, 'Administrator'),
         (SUBSCRIBER, 'Subscriber'),
-    )
-    
-    #: The user's user level
-    user_level = models.CharField(
-        max_length=3,
-        choices=USER_LEVEL,
-        blank=False
     )
 
     #: AppUser objects manager.
@@ -151,7 +157,7 @@ class AppUser(models.Model):
         :type user: django.contrib.auth.models.User
         """
         try:
-            user.admin
+            user.subscriber
             user.groups.set([Group.objects.get(name='Subscribers')])
             user.save()
             return
@@ -237,8 +243,8 @@ class AppUser(models.Model):
         
         calls ``super().delete(*args, **kwargs)``
         """
-        super().delete(*args, **kwargs)
-        User.objects.get(username=self.user.username).delete()
+        self.user.delete()
+        return super().delete(*args, **kwargs)
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -262,64 +268,77 @@ class AppUser(models.Model):
 
     class Meta:
         abstract = True
-        #ordering = ['-created_date_time', 'updated_date_time']
+        ordering = ['-created_date_time', 'updated_date_time']
+
 
 class Subscriber(AppUser):
     """
     Inherits the app user.
     Should have a user level 'SUB'.
     """    
-    FREE = 'FREE'     #: Free subscription type.
-    PAID = 'PAID'     #: Paid subscription type.
+    FREE = 'FREE'           #: Free subscription type.
+    PAID = 'PAID'           #: Paid subscription type.
+    SPONSOR = 'SPONSOR'     #: Sponsored subscription type.
     
     #: Subscriber subscription types.
     SUBCRIPTIONS = (  
         (FREE, FREE),
         (PAID,PAID),
+        (SPONSOR,SPONSOR)
     )
     
-    #: The subscription types.
+    #: The subscription types, default free.
     subscription_type = models.CharField(
-        max_length=4, 
+        max_length=10, 
         choices=SUBCRIPTIONS,
         default=FREE,
     )
+    
+    #: The user's user level, read only.
+    user_level = models.CharField(
+        max_length=3,
+        default=AppUser.SUBSCRIBER, 
+        editable=False
+    )
+
 
 class Author(AppUser):
     """
     Inherits the app user.
     Should have a user level 'AUT'
     """
-    FREE = 'FREE'     #: Free subscription type.
-    PAID = 'PAID'     #: Paid subscription type.
-    PREMIUM = 'PREMIUM'     #: Premium subscription type.
-    
-    #: Author subscription types.
-    AUTHOR_LEVELS = (  
-        (FREE, FREE),
-        (PAID,PAID),
-        (PREMIUM,PREMIUM)
+    #: The user's user level, read only.
+    user_level = models.CharField(
+        max_length=3,
+        default=AppUser.AUTHOR, 
+        editable=False
     )
     
-    #: The author types.
-    author_type = models.CharField(
-        max_length=10, 
-        choices=AUTHOR_LEVELS,
-        default=FREE,
-    )
-
+    
 class Publisher(AppUser):
     """
     Inherits the app user.
     Should have a user level 'PUB'
     """
-    pass
+    #: The user's user level, read only.
+    user_level = models.CharField(
+        max_length=3,
+        default=AppUser.PUBLISHER, 
+        editable=False
+    )
 
 class Admin(AppUser):
     """
     Inherits the app user.
     Should have a user level 'ADM'
     """
+#: The user's user level, read only.
+    user_level = models.CharField(
+        max_length=3,
+        default=AppUser.ADMIN, 
+        editable=False
+    )
+
     class Meta:
         verbose_name = "administrator"
 

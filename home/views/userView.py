@@ -16,7 +16,6 @@ from home.forms import RegisterUserForm
 from home.forms import DeleteUserForm
 from home.models import Publisher
 from home.models import Author
-from home.models import AppUser
 
 class UsersView(PermissionRequiredMixin, TemplateView):
     """
@@ -42,7 +41,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
     #: The user to view or edit
     view_user = None
 
-    def get(self, request, page, user_id=0):
+    def get(self, request, page, user_id=0, *args, **kwargs):
         """
         Display users list with filters `/authors/` and `/publishers/`.
         
@@ -55,12 +54,8 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         """
         # get user list or user with pk
         if user_id == 0:
-            self.authors_list = User.objects.filter(
-                groups=Group.objects.get(name='Authors')
-            )
-            self.publisers_list = User.objects.filter(
-                groups=Group.objects.get(name='Publishers')
-            )
+            self.authors_list = Author.objects.all()
+            self.publisers_list = Publisher.objects.all()
         else :
             self.view_user = get_object_or_404(User, pk=user_id)
             
@@ -82,7 +77,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
             'view_user': self.view_user,
         })
 
-    def post(self, request, page, user_id=0):
+    def post(self, request, page, user_id=0, *args, **kwargs):
         """
         Creates a new user `/new/`.
         
@@ -110,7 +105,8 @@ class UsersView(PermissionRequiredMixin, TemplateView):
             self.user_form = RegisterUserForm(request.POST)
         elif page == 'user_delete':
             self.user_form = DeleteUserForm(
-                request.POST, instance=self.view_user
+                request.POST, 
+                instance=self.view_user
             )
         
         # make db edits
@@ -122,6 +118,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
             elif success and page == 'user_new':
                 success = self.add_publisher()
         except Exception as e:
+            success = False
             self.error_string = 'There was an error. Please try again.' 
             self.error_string = e #for debug
         
@@ -149,12 +146,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         success = False
         # create new user
         user = self.user_form.save()
-        print(user, AppUser.PUBLISHER)
-        
-        success = Publisher.objects.create(
-            user=user, 
-            user_level=AppUser.PUBLISHER
-        )
+        success = Publisher.objects.create(user=user)
         
         return success
 

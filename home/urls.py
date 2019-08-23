@@ -24,11 +24,8 @@ app_name = 'home'
 
 #: :page: Represents the page to be shown used by the Templates.
 urlpatterns = [
-    path('', IndexView.as_view(), name='index'),    
-    path('profile/', include([
-        path('', ProfileView.as_view(), {'page': 'user_profile'}, name='user_profile'),
-        path('edit/', ProfileView.as_view(), {'page': 'user_profile_edit'}, name='user_profile_edit'),
-    ])),
+    path('', IndexView.as_view(), name='index'),
+    # `/users/` for managing users
     path('users/', include([
         path('', UsersView.as_view(), {'page': 'user_default'}, name='user_default'),
         path('new/', UsersView.as_view(), {'page': 'user_new'}, name='user_new'),
@@ -37,7 +34,14 @@ urlpatterns = [
         path('<int:user_id>/', UsersView.as_view(), {'page': 'user_view'}, name='user_view'),
         path('<int:user_id>/delete/', UsersView.as_view(), {'page': 'user_delete'}, name='user_delete'),
     ])),
+    # `/account/` for managing user accounts
     path('accounts/', include([
+        # user profile view and edit
+        path('profile/', include([
+            path('', ProfileView.as_view(), {'page': 'user_profile'}, name='user_profile'),
+            path('edit/', ProfileView.as_view(), {'page': 'user_profile_edit'}, name='user_profile_edit'),
+        ])),
+        # user register, login and logout
         path('register/', UserRegistrationView.as_view(), {'page': 'signup'}, name='user_register'),        
         path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
         path('login/', auth_views.LoginView.as_view(
@@ -45,24 +49,33 @@ urlpatterns = [
             authentication_form=LoginForm,
             extra_context={'page': 'login'}
         ), name='user_login'),
-        path('password_change/', auth_views.PasswordChangeView.as_view(
-            template_name='home/account.html',
-            form_class=PasswordChangeForm,
-            success_url='/accounts/password_change/done/',
-            extra_context={'page': 'password_change'}
-        ), name='password_change'),
-        path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(
-            template_name='home/account.html',
-            extra_context={'page': 'password_change_done'}
-        ), name='password_change_done'),
-        path('password_reset/', auth_views.PasswordResetView.as_view(
-            template_name='home/password_reset.html',
-            form_class=PasswordResetForm,
-            email_template_name='home/password_reset_email.html'
-        ), name='password_reset'),
-        path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-        path('reset/<uidb64>/<token>/ /', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-        path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+        # user change password
+        path('password_change/', include([
+            path('', auth_views.PasswordChangeView.as_view(
+                template_name='home/account.html',
+                form_class=PasswordChangeForm,
+                success_url='/accounts/password_change/done/',
+                extra_context={'page': 'password_change'}
+            ), name='password_change'),
+            path('done/', auth_views.PasswordChangeDoneView.as_view(
+                template_name='home/account.html',
+                extra_context={'page': 'password_change_done'}
+            ), name='password_change_done'),
+        ])),
+        # user reset password
+        path('password_reset/', include([
+            path('', auth_views.PasswordResetView.as_view(
+                template_name='home/password_reset.html',
+                form_class=PasswordResetForm,
+                email_template_name='home/password_reset_email.html'
+            ), name='password_reset'),
+            path('done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+        ])),
+        # user reset password finish
+        path('reset/', include([
+            path('<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+            path('done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+        ])),
     ])),
     path('articles/', include([
         path('', ArticleView.as_view(), {'page': 'my_blog'}, name='article_default'),

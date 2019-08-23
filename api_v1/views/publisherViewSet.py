@@ -1,11 +1,9 @@
-from django.contrib.auth.models import User
-from rest_framework import viewsets
-from rest_framework import generics
-from home.models import Publisher
+from rest_framework.viewsets import ModelViewSet
 from api_v1.serializers import PublisherSerializer
+from home.models import Publisher
 
 
-class PublisherViewSet(viewsets.ModelViewSet):
+class PublisherViewSet(ModelViewSet):
     """
     API endpoint that allows publisher users to be viewed or edited.
     """

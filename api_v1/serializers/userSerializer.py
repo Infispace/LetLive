@@ -13,7 +13,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('url', 'id', 'username', 'email', 'groups')
+        fields = (
+          'url',
+          'id',
+          'username',
+          'email',
+          'first_name',
+          'last_name',
+          'groups'
+        )
         extra_kwargs = {
             'url': {
                 'view_name': 'api_v1:user-detail',

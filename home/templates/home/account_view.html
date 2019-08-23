@@ -13,20 +13,18 @@ context:
 {% has_perm user 'home.delete_author' as delete_author %}
 
 {% if delete_publisher and delete_author %}
-  {% if view_user.publisher or view_user.author %}
-    <a
-      class="btn btn-danger btn-sm"
-      role="button"
-      href="{% url 'home:user_delete' view_user.id %}"
-    >
-      Delete {{ view_user.username.capitalize }}
-    </a>
-    <a
-      class="btn btn-secondary btn-sm"
-      role="button"
-      href="{% url 'home:user_default' %}"
-    >
-      Cancel
-    </a>
-  {% endif %}
+  <a
+    class="btn btn-danger btn-sm"
+    role="button"
+    href="{% url 'home:user_delete' view_user.id %}"
+  >
+    Delete {{ view_user.username.capitalize }}
+  </a>
+  <a
+    class="btn btn-secondary btn-sm"
+    role="button"
+    href="{% url 'home:user_default' %}"
+  >
+    Back To Users
+  </a>
 {% endif %}

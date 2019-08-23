@@ -67,7 +67,7 @@ class AppUserForm(forms.ModelForm):
         print(self.fields['dob'].widget.input_type)
 
     class Meta:
-        exclude = ['user', 'user_level']
+        exclude = ['user']
 
 class AuthorForm(AppUserForm):
     """
@@ -77,7 +77,7 @@ class AuthorForm(AppUserForm):
     """
     class Meta(AppUserForm.Meta):
         model = Author
-        exclude = ['user', 'user_level', 'author_type']
+        exclude = ['user', 'author_type']
 
 class PublisherForm(AppUserForm):
     """
@@ -97,7 +97,7 @@ class SubscriberForm(AppUserForm):
     """
     class Meta(AppUserForm.Meta):
         model = Subscriber
-        exclude = ['user', 'user_level', 'subscription_type']
+        exclude = ['user', 'subscription_type']
 
 class AdminForm(AppUserForm):
     """
