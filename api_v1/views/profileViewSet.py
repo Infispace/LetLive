@@ -7,124 +7,147 @@ from api_v1.serializers import AdminSerializer
 from api_v1.serializers import AuthorSerializer
 from api_v1.serializers import PublisherSerializer
 from api_v1.serializers import SubscriberSerializer
-from home.models import Admin
-from home.models import Author
-from home.models import Publisher
-from home.models import Subscriber
 
 
 class ProfileViewSet(RetrieveUpdateDestroyAPIView):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows users view and edit their profile data.
     """
     permission_classes = [
         IsAuthenticated,
     ]
     
-    def get_queryset(self):
+    def get_object(self):
         """
         Return the serializer instance that should be used for validating and
         deserializing input, and for serializing output.
         """
-        queryset = None
+        obj = None
         try:
-            self.request.user.author
-            queryset = Author.objects.get(
-                user=self.request.user
-            )
+            obj = self.request.user.author
         except ObjectDoesNotExist:
             pass
 
         try:
-            self.request.user.admin
-            queryset = Admin.objects.get(
-                user=self.request.user
-            )
+            obj = self.request.user.admin
         except ObjectDoesNotExist:
             pass
 
         try:
-            self.request.user.publisher
-            queryset = Publisher.objects.get(
-                user=self.request.user
-            )
+            obj = self.request.user.publisher
         except ObjectDoesNotExist:
             pass
 
         try:
-            self.request.user.subscriber
-            queryset = Subscriber.objects.get(
-                user=self.request.user
-            )
+            obj = self.request.user.subscriber
         except ObjectDoesNotExist:
             pass
 
+        # throw ObjectDoesNotExist if no obj
+        if obj == None:
+            raise ObjectDoesNotExist('Profile data does not exist')
+
+        return obj
         
-        if queryset == None:
-            raise ObjectDoesNotExist
-
-        return queryset
-        
-    def get_serializer(self, *args, **kwargs):
-        """
-        Return the serializer instance that should be used for validating and
-        deserializing input, and for serializing output.
-        """
-        serializer_class = self.get_serializer_class()
-        kwargs['context'] = self.get_serializer_context()
-        return serializer_class
-    
     def get_serializer_class(self):
         """
         Return the class to use for the serializer.
         """
         serializer_class = None
         try:
-            serializer_class = AuthorSerializer(
-                self.request.user.author,
-                context={'request': self.request}
-            )
+            self.request.user.author
+            serializer_class = AuthorSerializer
         except ObjectDoesNotExist:
             pass
 
         try:
-            serializer_class = AdminSerializer(
-                self.request.user.admin,
-                context={'request': self.request}
-            )
+            self.request.user.admin
+            serializer_class = AdminSerializer
         except ObjectDoesNotExist:
             pass
 
         try:
-            serializer_class = SubscriberSerializer(
-                self.request.user.subscriber,
-                context={'request': self.request}
-            )
+            self.request.user.subscriber
+            serializer_class = SubscriberSerializer
         except ObjectDoesNotExist:
             pass
 
         try:
-            serializer_class = PublisherSerializer(
-                self.request.user.publisher,
-                context={'request': self.request}
-            )
+            self.request.user.publisher
+            serializer_class = PublisherSerializer
         except ObjectDoesNotExist:
             pass
 
-        # make user readonly
-        serializer_class.fields['user'].read_only = True
         return serializer_class
     
+    def perform_update(self, serializer):
+        """
+        Update the existing AppUser instance.
+        """
+        response_data = None
+        status_code = 200
+        if serializer.is_valid():
+            serializer.save()
+            response_data = serializer.data
+        else:
+            response_data = serializer.errors
+            status_code = 400
+
+        return {
+            'data': response_data,
+            'status': status_code
+        }
+
     def retrieve(self, request, *args, **kwargs):
         """
         Retrieve a the user profile, An instance of AppUser model.
         """
+        obj = self.get_object()
         serializer_class = self.get_serializer_class()
-        return Response(serializer_class.data)
+        
+        # get the AppUser instance from serializer
+        instance = serializer_class(
+            obj,
+            context={'request': self.request}
+        )
+
+        return Response(instance.data)
 
     def update(self, request, *args, **kwargs):
-        self.get_queryset()
-        self.get_serializer_class()
+        """
+        Edit the user profile.
+        """
+        obj = self.get_object()
+        serializer_class = self.get_serializer_class()
+        
+        # get the AppUser instance from serializer
+        instance = serializer_class(
+            obj,
+            exclude={'user'},
+            data=request.data,
+            context={'request': self.request},
+        )
+        
+        # update and return
+        update = self.perform_update(instance)
+        return Response(update['data'], update['status'])
+        
+    def partial_update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        serializer_class = self.get_serializer_class()
+
+        # get the AppUser instance from serializer
+        instance = serializer_class(
+            obj,
+            exclude={'user'},
+            data=request.data,
+            partial=True,
+            context={'request': self.request}
+        )
+        
+        # update and return
+        update = self.perform_update(instance)
+        return Response(update['data'], update['status'])
         
     def destroy(self, request, *args, **kwargs):
         pass

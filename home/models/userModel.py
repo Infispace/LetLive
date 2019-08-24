@@ -11,8 +11,8 @@ from django.db import models
 from django.db import transaction
 
 def upload_location(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'user_{0}/{1}'.format(instance.user.id, filename)
+    # file will be uploaded to MEDIA_ROOT/avatar/user_<id>/<filename>
+    return '/avatar/user_{0}/{1}'.format(instance.user.id, filename)
 
 def set_user_groups(user, user_level):
     """
@@ -121,7 +121,8 @@ class AppUser(models.Model):
             'view_article',
         ],
         'Publishers': [
-            # all permissions for articles except add
+            # all permissions for articles
+            'add_article',
             'change_article',
             'delete_article',
             'publish_article',
@@ -224,7 +225,8 @@ class AppUser(models.Model):
         # call super class method
         super().__init__(*args, **kwargs)
         
-        # initial user_level
+        # initial user and user_level
+        self.__user = self.user
         self.__user_level = self.user_level
         
         # test user groups saved in db
@@ -249,11 +251,15 @@ class AppUser(models.Model):
     @transaction.atomic
     def save(self, *args, **kwargs):
         """
-        Prevents changing user levels.
+        Prevents changing the user relationship and user levels.
         Also sets new user group.
         
         calls ``super().save(*args, **kwargs)``
         """
+        # reset user to original
+        if self.id and self.user != self.__user:
+            self.user = self.__user
+        
         # reset user_level to original
         if self.id and self.user_level != self.__user_level:
             self.user_level = self.__user_level
@@ -262,6 +268,7 @@ class AppUser(models.Model):
         if self.id == None:
             set_user_groups(self.user, self.user_level)
             self.__user_level = self.user_level
+            self.__user = self.user
 
         # save and return
         return super().save(*args, **kwargs)

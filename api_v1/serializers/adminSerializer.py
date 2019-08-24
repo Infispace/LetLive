@@ -1,11 +1,12 @@
+from .dynamicFieldsHModelSerializer import DynamicFieldsHModelSerializer
+from rest_framework.serializers import HyperlinkedRelatedField
 from django.contrib.auth.models import User
-from rest_framework import serializers
 from home.models import Admin
 from home.models import AppUser
 
 
-class AdminSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.HyperlinkedRelatedField(
+class AdminSerializer(DynamicFieldsHModelSerializer):
+    user = HyperlinkedRelatedField(
         many=False,
         view_name='api_v1:user-detail',
         queryset=User.objects.all(),

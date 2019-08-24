@@ -33,6 +33,14 @@ api\_v1.serializers.authorSerializer module
    :undoc-members:
    :show-inheritance:
 
+api\_v1.serializers.dynamicFieldsHModelSerializer module
+--------------------------------------------------------
+
+.. automodule:: api_v1.serializers.dynamicFieldsHModelSerializer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 api\_v1.serializers.groupSerializer module
 ------------------------------------------
 
