@@ -8,8 +8,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import PasswordResetForm
+from .bootstrapForm import BootstrapForm
 
-class RegisterUserForm(UserCreationForm):
+class RegisterUserForm(UserCreationForm, BootstrapForm):
     """
     Register Form inherits from `django.contrib.auth.forms.UserCreationForm`
     
@@ -35,25 +36,7 @@ class RegisterUserForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['is_author'].widget = forms.HiddenInput()
-        self.fields['is_author'].widget.attrs.update({
-          'class': 'form-check-input',
-        })
-
-        self.fields['password2'].widget.attrs.update({
-          'class': 'form-control',
-        })
-
-        self.fields['password1'].widget.attrs.update({
-          'class': 'form-control',
-        })
-
-        self.fields['username'].widget.attrs.update({
-          'class': 'form-control',
-        })
-
-        self.fields['email'].widget.attrs.update({
-          'class': 'form-control',
-        })
+        self.add_form_control(self.fields)
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -62,7 +45,7 @@ class RegisterUserForm(UserCreationForm):
            'username',
         ]
 
-class LoginForm(AuthenticationForm):
+class LoginForm(AuthenticationForm, BootstrapForm):
     """
     Login form inherits from `django.contrib.auth.forms.AuthenticationForm`.
     
@@ -81,15 +64,9 @@ class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['keep_loged'].widget = forms.HiddenInput()
-        self.fields['username'].widget.attrs.update({
-          'class': 'form-control',
-        })
-        
-        self.fields['password'].widget.attrs.update({
-          'class': 'form-control',
-        })
+        self.add_form_control(self.fields)
 
-class PasswordResetForm(PasswordResetForm):
+class PasswordResetForm(PasswordResetForm, BootstrapForm):
     """
     Password reset form inherits from `django.contrib.auth.forms.PasswordResetForm`.
     
@@ -99,11 +76,9 @@ class PasswordResetForm(PasswordResetForm):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs.update({
-          'class': 'form-control',
-        })
+        self.add_form_control(self.fields)
 
-class PasswordChangeForm(PasswordChangeForm):
+class PasswordChangeForm(PasswordChangeForm, BootstrapForm):
     """
     Password change form inherits from `django.contrib.auth.forms.PasswordChangeForm`.
     
@@ -115,14 +90,4 @@ class PasswordChangeForm(PasswordChangeForm):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['old_password'].widget.attrs.update({
-          'class': 'form-control',
-        })
-        
-        self.fields['new_password1'].widget.attrs.update({
-          'class': 'form-control',
-        })
-        
-        self.fields['new_password2'].widget.attrs.update({
-          'class': 'form-control',
-        })
+        self.add_form_control(self.fields)

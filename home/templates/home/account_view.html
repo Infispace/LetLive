@@ -13,6 +13,7 @@ context:
 {% has_perm user 'home.delete_author' as delete_author %}
 
 {% if delete_publisher and delete_author %}
+  {% if view_user.author and view_user.publisher %}
   <a
     class="btn btn-danger btn-sm"
     role="button"
@@ -27,4 +28,5 @@ context:
   >
     Back To Users
   </a>
+  {% endif %}
 {% endif %}

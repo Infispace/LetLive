@@ -1,11 +1,15 @@
+"""
+:synopsis: Forms for editing the `User` and `AppUser` details
+"""
 from django import forms
 from django.contrib.auth.models import User
 from home.models import Author
 from home.models import Publisher
 from home.models import Subscriber
 from home.models import Admin
+from .bootstrapForm import BootstrapForm
 
-class UserForm(forms.ModelForm):
+class UserForm(forms.ModelForm, BootstrapForm):
     """
     Form to edit `django.contrib.auth.models.User` model.
     
@@ -17,23 +21,13 @@ class UserForm(forms.ModelForm):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs.update({
-          'class': 'form-control',
-        })
-        
-        self.fields['last_name'].widget.attrs.update({
-          'class': 'form-control',
-        })
-        
-        self.fields['email'].widget.attrs.update({
-          'class': 'form-control',
-        })
+        self.add_form_control(self.fields)
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-class AppUserForm(forms.ModelForm):
+class AppUserForm(forms.ModelForm, BootstrapForm):
     """
     Virtual form to edit virtual model `home.models.AppUser`.
     
@@ -49,22 +43,9 @@ class AppUserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['avatar'].widget = forms.HiddenInput()
-
-        self.fields['telephone'].widget.attrs.update({
-          'class': 'form-control',
-        })
-
-        self.fields['address'].widget.attrs.update({
-          'class': 'form-control',
-        })
-
         self.fields['dob'].label = 'Date of birth'
         self.fields['dob'].widget.input_type = 'date'
-        self.fields['dob'].widget.attrs.update({
-          'class': 'form-control',
-        })
-        
-        print(self.fields['dob'].widget.input_type)
+        self.add_form_control(self.fields)
 
     class Meta:
         exclude = ['user']
