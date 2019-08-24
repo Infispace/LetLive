@@ -52,19 +52,7 @@
         <!-- drop down user menu -->
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuOffset">
         {% if user.is_authenticated %}        
-          <p class="px-4 pt-4">
-            Some example text that's free-flowing within the dropdown menu.
-          </p>
-          <div class="dropdown-divider border-primary"></div>
-          <a class="dropdown-item" href="{% url 'home:user_profile' %}">
-            <i class="fas fa-user"></i>
-            Profile
-          </a>
-          <div class="dropdown-divider border-primary"></div>
-          <a class="dropdown-item" href="{% url 'home:user_logout' %}">
-            <i class="fas fa-sign-out-alt"></i>
-            Logout
-          </a>
+          {% include 'home/user_drop_nav.html' %}
         {% else %}
           {% load base_login_form %}
           {% base_login_form %}         

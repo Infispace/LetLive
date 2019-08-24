@@ -121,8 +121,7 @@ class AppUser(models.Model):
             'view_article',
         ],
         'Publishers': [
-            # all permissions for articles
-            'add_article',
+            # all permissions for articles except add
             'change_article',
             'delete_article',
             'publish_article',

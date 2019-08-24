@@ -8,7 +8,7 @@ context:
   'user': 'the authenticated user'
 }
 -->
-{% load has_perm view_blog_menu %}
+{% load has_perm %}
 
 <!-- index menu item -->
 <li class="nav-item {% if page == 'index' %} active border-bottom {% endif %}" >
@@ -41,9 +41,10 @@ context:
 </li>
 
 <!-- article menu item -->
-{% view_blog_menu user as view_blog_menu %}
+{% has_perm user 'home.add_article' as add_article %}
 {% has_perm user 'home.view_article' as view_article %}
-{% if view_article and view_blog_menu %}
+{% if view_article and add_article %}
+<!-- my blog menu -->
 <li class="nav-item {% if page == 'my_blog' %} active border-bottom {% endif %}">
   <a
     class="nav-link"
@@ -57,10 +58,8 @@ context:
     {% endif %}
   </a>
 </li>
-{% endif %}
 
-{% has_perm user 'home.add_article' as add_article %}
-{% if add_article %}
+<!-- new article menu -->
 <li class="nav-item {% if page == 'article_new' %} active border-bottom {% endif %}">
   <a
     class="nav-link"

@@ -1,0 +1,16 @@
+<!--
+User Menu on the drop down navigation user button
+-->
+<p class="px-4 pt-4">
+  Some example text that's free-flowing within the dropdown menu.
+</p>
+<div class="dropdown-divider border-primary"></div>
+<a class="dropdown-item" href="{% url 'home:user_profile' %}">
+  <i class="fas fa-user"></i>
+  Profile
+</a>
+<div class="dropdown-divider border-primary"></div>
+<a class="dropdown-item" href="{% url 'home:user_logout' %}">
+  <i class="fas fa-sign-out-alt"></i>
+  Logout
+</a>
