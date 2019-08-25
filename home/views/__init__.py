@@ -15,4 +15,4 @@ from .profileView import ProfileView
 from .topicView import TopicView
 from .userView import UsersView
 from .publishView import PublishView
-from .registrationView import UserRegistrationView
+from .registrationView import RegistrationView

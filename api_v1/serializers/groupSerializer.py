@@ -5,7 +5,7 @@ from rest_framework import serializers
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
-        fields = ('url', 'id', 'name')
+        exclude = ['permissions']
         
         extra_kwargs = {
             'url': {

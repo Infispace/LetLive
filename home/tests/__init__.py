@@ -17,4 +17,6 @@ Has tests for the modules below:
 from .tests import AppClientTestCase
 from .userTests import AppUsersTests
 from .authTests import AuthTests
-from .userPermission import UserPermissionTests
+from .userClientTests import UserClientTests
+
+#from .userPermission import UserPermissionTests

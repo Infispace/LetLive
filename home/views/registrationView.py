@@ -6,18 +6,17 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render
-from django.urls import reverse
 from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.urls import reverse
 from django.db import transaction
 from home.forms import LoginForm
 from home.forms import RegisterUserForm
-from home.models import AppUser
 from home.models import Author
 from home.models import Subscriber
 
-class UserRegistrationView(TemplateView):
+class RegistrationView(TemplateView):
     """
     Class for registering new users and authenticating them.
     """
@@ -27,6 +26,30 @@ class UserRegistrationView(TemplateView):
     form = None
     #: The error string if an error occurs
     error_string = ''
+    
+    @transaction.atomic
+    def signup(self, request):
+        """
+        Creates a new user.
+        The new user is either `SUBSCRIBER` or `AUTHOR`
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        :return: True or False
+        :rtype: bool
+        """
+        success = False
+        if self.form.is_valid():
+            # create new user
+            user = self.form.save()
+            
+            # set user level of the new user
+            if self.form.cleaned_data['is_author']:
+                success = Author.objects.create(user=user)
+            else:
+                success = Subscriber.objects.create(user=user)
+
+        return success
 
     def get(self, request, next='', page='login', *args, **kwargs):
         """
@@ -53,9 +76,9 @@ class UserRegistrationView(TemplateView):
 
         # set form to render
         self.form = RegisterUserForm()
-
+        
         # render the template
-        return render(request, self.template_name,{
+        return self.render_to_response({
             'next': next, 
             'form': self.form, 
             'page': page
@@ -84,8 +107,9 @@ class UserRegistrationView(TemplateView):
             success = self.signup(request)
         except Exception as e:
             success = False
-            self.error_string = 'There was an error. Please try again.' 
-            #self.error_string = e #for debug
+            self.error_string = 'There was an error. Please try again.'
+            if settings.DEBUG:
+                self.error_string = e #for debug
 
         # render template
         if success and next is not '':
@@ -93,35 +117,10 @@ class UserRegistrationView(TemplateView):
         elif success:
             return HttpResponseRedirect(reverse('home:user_login'))
         else:
-            return render(request, self.template_name,{
+            return self.render_to_response({
                 'next': next,
                 'form': self.form,
                 'page': page,
                 'error_string': self.error_string,
-            })
-
-    @transaction.atomic
-    def signup(self, request):
-        """
-        Creates a new user.
-        The new user is either `SUBSCRIBER` or `AUTHOR`
-        
-        :param request: the django HttpRequest object
-        :type request: django.http.request.HttpRequest
-        :return: True or False
-        :rtype: bool
-        """
-        success = False
-        if self.form.is_valid():
-            # create new user
-            user = self.form.save()
-            
-            # set user level of the new user
-            user_level = AppUser.SUBSCRIBER
-            if self.form.cleaned_data['is_author']:
-                success = Author.objects.create(user=user)
-            else:
-                success = Subscriber.objects.create(user=user)
-
-        return success
+            }, status=400)
 

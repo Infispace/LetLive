@@ -1,45 +1,77 @@
 """
 :synopsis: Used to test `home.models.userModel` models
 """
-from django.test import TestCase
-from django.db import transaction
-from django.db import Error
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from home.models import userModel
+from django.test import TestCase
+from django.db import Error
 from django_seed import Seed
+from home.models import userModel
+from .testUtils import TestUtils
 
 
-class AppUsersTests(TestCase):
+class AppUsersTests(TestCase, TestUtils):
     """
     Test the home.models.userModel.AppUser Model
     """
-    #: django-seed instance
-    seeder = None
     
     def setUp(self):
-        self.seeder = Seed.seeder()
+        # seed test user
+        username = self.seeder.faker.first_name()
+        self.user = User.objects.create(username = username)
 
-    def test_create_user(self):
+    def test_create_user_admin(self):
         """
-        Tests home.userModel.AppUser.objects.create_user
+        Tests home.userModel.Admin.objects.create
         """
         try:
-            # user attributes
-            username = self.seeder.faker.first_name()
-            email = self.seeder.faker.email()
-            
             # create AppUser of Admin model
-            admin = userModel.Admin.objects.create_user(
-                username=username,
-                email=email,
-                password=self.seeder.faker.word(),
-                user_level= userModel.AppUser.ADMIN,
-            )
+            admin = userModel.Admin.objects.create(user=self.user)
             
             # assert user attribute
-            self.assertEqual(admin.user.username, username)
-            self.assertEqual(admin.user.email, email)
+            self.assertEqual(admin.user_level, userModel.AppUser.ADMIN)
+
+        except Error as e:
+            print('>Test Error: ', e)
+
+    def test_create_user_author(self):
+        """
+        Tests home.userModel.Author.objects.create
+        """
+        try:
+            # create AppUser of Author model
+            author = userModel.Author.objects.create(user=self.user)
+            
+            # assert user attribute
+            self.assertEqual(author.user_level, userModel.AppUser.AUTHOR)
+
+        except Error as e:
+            print('>Test Error: ', e)
+
+    def test_create_user_publisher(self):
+        """
+        Tests home.userModel.Publisher.objects.create
+        """
+        try:
+            # create AppUser of Author model
+            publisher = userModel.Publisher.objects.create(user=self.user)
+            
+            # assert user attribute
+            self.assertEqual(publisher.user_level, userModel.AppUser.PUBLISHER)
+
+        except Error as e:
+            print('>Test Error: ', e)
+
+    def test_create_user_subscriber(self):
+        """
+        Tests home.userModel.AppUser.objects.create
+        """
+        try:
+            # create AppUser of Subscriber model
+            subscriber = userModel.Subscriber.objects.create(user=self.user)
+            
+            # assert user attribute
+            self.assertEqual(subscriber.user_level, userModel.AppUser.SUBSCRIBER)
 
         except Error as e:
             print('>Test Error: ', e)
@@ -48,19 +80,10 @@ class AppUsersTests(TestCase):
         """
         Delete home.userModel.AppUser objects 
         """
-        # seed user
-        self.seeder.add_entity(User, 1)
-        inserted_pks = self.seeder.execute()
-        
-        # seed AppUser of Author model
-        user = User.objects.get(pk=inserted_pks[User][0])
-        self.seeder.add_entity(userModel.Author, 1, {
-          'user': user
-        })
-        inserted_pks = self.seeder.execute()
+        # create AppUser of Author model
+        author = userModel.Author.objects.create(user=self.user)
         
         # delete AppUser
-        author = userModel.Author.objects.get(user=user)
         author.delete()
         
         # predict ObjectDoesNotExist thrown

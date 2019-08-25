@@ -32,6 +32,10 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     #: The errors found
     error_string = None
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
     def set_form(self, user, request=None):
         """
         Initialize the form to use to edit user profile.
@@ -126,4 +130,4 @@ class ProfileView(LoginRequiredMixin, TemplateView):
               'form_profile': self.form,
               'error_string': self.error_string,
               'page': page,
-          })
+          }, status=400)

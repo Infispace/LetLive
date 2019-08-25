@@ -4,14 +4,14 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
+from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.conf import settings
 from home.forms import RegisterUserForm
 from home.forms import DeleteUserForm
 from home.models import Publisher
@@ -41,6 +41,23 @@ class UsersView(PermissionRequiredMixin, TemplateView):
     #: The user to view or edit
     view_user = None
 
+    @transaction.atomic
+    def add_publisher(self):
+        """
+        Adds a new user of publisher user_level
+        
+        Edit a specific users filtered with `/pk/`
+        
+        :return: returns true if a new user is created
+        :rtype: True or False
+        """
+        success = False
+        # create new user
+        user = self.user_form.save()
+        success = Publisher.objects.create(user=user)
+        
+        return success
+
     def get(self, request, page, user_id=0, *args, **kwargs):
         """
         Display users list with filters `/authors/` and `/publishers/`.
@@ -68,8 +85,8 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         # render template
         if page == 'user_view':
             self.template_name = 'home/account.html'
-        
-        return render(request, self.template_name, {
+            
+        return self.render_to_response({
             'page': page,
             'authors_list': self.authors_list,
             'publishers_list': self.publisers_list,
@@ -120,33 +137,17 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         except Exception as e:
             success = False
             self.error_string = 'There was an error. Please try again.' 
-            self.error_string = e #for debug
+            if settings.DEBUG:
+                self.error_string = e
         
         # render template
         if success:
             return HttpResponseRedirect(reverse('home:user_default'))
         else:
-            return render(request, self.template_name, {
+            return self.render_to_response({
                 'page': page,
                 'view_user': self.view_user,
                 'user_form': self.user_form,
                 'error_string': self.error_string,
-            })
-
-    @transaction.atomic
-    def add_publisher(self):
-        """
-        Adds a new user of publisher user_level
-        
-        Edit a specific users filtered with `/pk/`
-        
-        :return: returns true if a new user is created
-        :rtype: True or False
-        """
-        success = False
-        # create new user
-        user = self.user_form.save()
-        success = Publisher.objects.create(user=user)
-        
-        return success
+            }, status=400)
 

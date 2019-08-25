@@ -14,7 +14,7 @@ from home.views import TopicView
 from home.views import ProfileView
 from home.views import UsersView
 from home.views import PublishView
-from home.views import UserRegistrationView
+from home.views import RegistrationView
 from home.forms import LoginForm
 from home.forms import PasswordResetForm
 from home.forms import PasswordChangeForm
@@ -42,12 +42,13 @@ urlpatterns = [
             path('edit/', ProfileView.as_view(), {'page': 'user_profile_edit'}, name='user_profile_edit'),
         ])),
         # user register, login and logout
-        path('register/', UserRegistrationView.as_view(), {'page': 'signup'}, name='user_register'),        
+        path('register/', RegistrationView.as_view(), {'page': 'signup'}, name='user_register'),        
         path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
         path('login/', auth_views.LoginView.as_view(
             template_name='home/login.html',
             authentication_form=LoginForm,
-            extra_context={'page': 'login'}
+            extra_context={'page': 'login'},
+            redirect_authenticated_user=True,
         ), name='user_login'),
         # user change password
         path('password_change/', include([

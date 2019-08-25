@@ -100,6 +100,7 @@ class DeleteUserForm(forms.ModelForm):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.add_form_control(self.fields)
         self.fields['username'].widget.attrs.update({'readonly': True})
 
     class Meta:

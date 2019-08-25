@@ -1,84 +1,85 @@
 """
 :synopsis: Used to test authentication views.
 """
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.db import transaction
 from django.db import Error
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import Client
 from django_seed import Seed
 from home.models import userModel
+from .testUtils import TestUtils
 
 
-class AuthTests(TestCase):
+class AuthTests(TestCase, TestUtils):
     """
-    Test the home.views.authView.*
+    Test the authentication views for 
+    registering users ,login and logout.
     """
-    seeder = None       #: django-seed instance
-    client = None       #: django test clinet
+    client = None       #: django test client
     username = None     #: username of test user
     password = None     #: password of test user
 
     def setUp(self):
-        self.seeder = Seed.seeder()
         self.client = Client()
         
         # test user attributes
         self.username = self.seeder.faker.first_name()
         self.password = self.seeder.faker.word()
-        
-        # create AppUser of Subscriber model
-        userModel.Subscriber.objects.create_user(
-            username=self.username,
-            email=self.seeder.faker.email(),
-            password=self.password,
-            user_level= userModel.AppUser.SUBSCRIBER,
-        )
+        user = User.objects.create(username=self.username)
+        user.set_password(self.password)
+
+        # create AppUser of Admin model
+        admin = userModel.Admin.objects.create(user=user)
         
     def test_sign_up_get(self):
         """
-        user_register url GET.
+        `home:user_register` url GET.
+        Should return status code 200.
         """    
         response = self.client.get(reverse('home:user_register'))
-        response.content
         
         # assert response
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['page'], 'signup')
         
     def test_login_get(self):
         """
-        user_login url GET.
+        `home:user_login` url GET.
+        Should return status code 200.
         """    
         response = self.client.get(reverse('home:user_login'))
-        response.content
         
         # assert response
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['page'], 'login')
         
     def test_sign_up_post(self):
         """
-        user_register url POST.
-        Creates new users.
+        `home:user_register` url POST. Creates new users if successful.
+        Should return status code 302 and redirect to `home:user_login` url.
         """
-        # test user password
-        password = ''
-        while (len(password) < 8):
-            password += self.seeder.faker.word()
+        # user details
+        username = self.create_username()
+        password = self.create_password()
 
         # request
         response = self.client.post(reverse('home:user_register'), {
             'email': self.seeder.faker.safe_email(),
-            'username': self.seeder.faker.first_name(),
-            'password': password,
+            'username': username,
+            'password1': password,
             'password2': password,
             'is_author': False,
         })
         
+        if(response.status_code != 302):
+            print(response.context['error_string'])
+        
         # assert response
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('home:index'))
+        self.assertEqual(response.url, reverse('home:user_login'))
         
         # get created user
         user = User.objects.get(username=self.username)
@@ -89,8 +90,9 @@ class AuthTests(TestCase):
         
     def test_login_post(self):
         """
-        user_login url POST.
-        Authenticates an existing user.
+        `home:user_login` url POST.
+        Authenticates an existing user if successful.
+        Should return status code 302 and redirect to `home:index` url.
         """
         # request
         response = self.client.post(reverse('home:user_login'), {
@@ -107,14 +109,12 @@ class AuthTests(TestCase):
         
     def test_logout(self):
         """
-        user_login url POST.
-        Authenticates an existing user.
+        `home:user_logout` url POST.
+        Logs out an authenticates an existing user if successful.
+        Should return status code 302 and redirect to `home:index` url.
         """
         # client login
-        self.client.login(
-            username=self.username, 
-            password=self.password
-        )
+        self.client.login(username=self.username, password=self.password)
         
         # request
         response = self.client.get(reverse('home:user_logout'))

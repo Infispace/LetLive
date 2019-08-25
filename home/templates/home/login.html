@@ -56,6 +56,13 @@ context:
       </div>
     {% endif %}
   {% endif %}
+  
+  {% if next %}
+    <!-- error if next url set -->
+    <div class="alert alert-danger role="alert" >
+      Please login to see this page.
+    </div>
+  {% endif %}
 
   <!-- Authentication Form -->
   <form 
@@ -139,14 +146,14 @@ context:
       </a>
     </p>
     <p>
-      <a href="#{% comment %} {% url 'home:password_reset' %}{% endcomment %}">
-        Lost password?
+      <a href="{% url 'home:password_reset' %}">
+        Forgot password?
       </a>
     </p>
     {% else %}
     <p>
       <a href="{% url 'home:user_login' %}{% if next %}?next={{ next }}{% endif %}">
-        Sign in
+        Have an account? Sign in
       </a>
     </p>
     {% endif %}

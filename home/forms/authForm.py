@@ -1,5 +1,5 @@
 """
-:synopsis: Forms for authentication; login and register
+:synopsis: Forms Efiting Articles and topics
 """
 from django import forms
 from django.contrib.auth.models import User
@@ -63,8 +63,8 @@ class LoginForm(AuthenticationForm, BootstrapForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['keep_loged'].widget = forms.HiddenInput()
         self.add_form_control(self.fields)
+        self.fields['keep_loged'].widget = forms.HiddenInput()
 
 class PasswordResetForm(PasswordResetForm, BootstrapForm):
     """

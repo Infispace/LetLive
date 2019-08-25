@@ -33,7 +33,7 @@ def set_user_groups(user, user_level):
         user.is_staff = True
         user_group = Group.objects.get(name='Administrators')
 
-    user.groups.set([user_group])
+    user.groups.add(user_group)
     user.save()
 
 class AppUserManager(models.Manager):

@@ -31,12 +31,10 @@ context:
 
 <form action="{% url 'home:user_delete' view_user.id %}" method="post">
   {% csrf_token %}
-  <label for="user_form">
+  <p>
     Are you sure want to delete user "{{ view_user.username }}"?
-  </label>
-  <table class="d-none">
-    {{user_form.as_table}}
-  </table>
+  </p>
+  {{ user_form }}
   <button type="submit" class="btn btn-danger">
     Delete
   </button>
