@@ -22,23 +22,23 @@ class UsersView(PermissionRequiredMixin, TemplateView):
     Class to manage users. Add and delete users. 
     Admins only can access this view.
     """
-    #: The permissions required to access the view
+    #: The permissions required to access the view.
     permission_required = (
         'home.add_publisher',
         'home.delete_publisher',
         'home.delete_author'
     )
-    #: The html template to render
+    #: The html template to render.
     template_name = 'home/users.html'
-    #: The list of users with author user level
+    #: The list of users with author user level.
     authors_list = None
-    #: The list of users with publisher user level
+    #: The list of users with publisher user level.
     publisers_list = None
-    #: The form to render
+    #: The form to render.
     user_form = None
-    #: The error to be displayed
+    #: The error to be displayed.
     error_string = ''
-    #: The user to view or edit
+    #: The user to view or edit.
     view_user = None
 
     @transaction.atomic
@@ -66,7 +66,6 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         
         :param request: the django HttpRequest object
         :type request: django.http.request.HttpRequest
-        :param str page: the page to render, default is 'login'
         :param int user_id: the user id to filter
         """
         # get page context
@@ -106,7 +105,6 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         
         :param request: the django HttpRequest object
         :type request: django.http.request.HttpRequest
-        :param str page: the page to render, default is 'login'
         :param int user_id: the user id to filter
         """
         # get page context

@@ -80,6 +80,9 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         """
         Called when HTTP GET method is used.
         Displays the edit user profile form.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
         """
         # get page context
         context = self.get_context_data()
@@ -103,6 +106,9 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         """
         Called when HTTP POST method is used.
         Edits the user profile from the form data.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
         """
         # get page context
         context = self.get_context_data()
@@ -130,6 +136,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
                     self.form.save()
                     saved = True
         except Exception as e:
+            saved = False
             self.error_string = 'There was an error. Please try again.' 
             if settings.DEBUG:
                 self.error_string = e
