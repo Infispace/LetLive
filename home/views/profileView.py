@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.conf import settings
 from django.views.generic import TemplateView
 from home.forms import UserForm
 from home.forms import AuthorForm
@@ -25,62 +26,69 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'home/account.html'
     #: The authenticated user.
     view_user = None
-    #: The html form to render
+    #: The html form for AppUser Profile to render
     form = None
     #: form for the user model
     user_form = None
     #: The errors found
     error_string = None
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def set_form(self, user, request=None):
+    def set_form(self):
         """
         Initialize the form to use to edit user profile.
         """
+        user_instance = None
+        user_form_class = None
         try:
-            if request is not None:
-                self.form = AuthorForm(request.POST, instance=user.author)
-            else:
-                self.form = AuthorForm(instance=user.author)
+            user_instance = self.request.user.author
+            user_form_class = AuthorForm
         except ObjectDoesNotExist:
             pass
 
         try:
-            if request is not None:
-                self.form = PublisherForm(request.POST, instance=user.publisher)
-            else:
-                self.form = PublisherForm(instance=user.publisher)
+            user_instance = self.request.user.publisher
+            user_form_class = PublisherForm
         except ObjectDoesNotExist:
             pass
 
         try:
-            if request is not None:
-                self.form = SubscriberForm(request.POST, instance=user.subscriber)
-            else:
-                self.form = SubscriberForm(instance=user.subscriber)
+            user_instance = self.request.user.subscriber
+            user_form_class = SubscriberForm
         except ObjectDoesNotExist:
             pass
 
         try:
-            if request is not None:
-                self.form = AdminForm(request.POST, instance=user.admin)
-            else:
-                self.form = AdminForm(instance=user.admin)
+            user_instance = self.request.user.admin
+            user_form_class = AdminForm
         except ObjectDoesNotExist:
             pass
 
-    def get(self, request, page=None, *args, **kwargs):
+        # return if no profile is found
+        if not user_instance:
+            return
+
+        # set profile form
+        if self.request.method == 'POST':
+            self.form = user_form_class(
+                self.request.POST,
+                instance=user_instance
+            )
+        else:
+            self.form = user_form_class(instance=user_instance)
+
+    def get(self, request, *args, **kwargs):
         """
         Called when HTTP GET method is used.
         Displays the edit user profile form.
         """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
         # set forms and user to display
         self.view_user = request.user        
         if(page == 'user_profile_edit'):
-          self.set_form(self.view_user)
+          self.set_form()
           self.user_form = UserForm(instance=self.view_user)
         
         # render template
@@ -91,18 +99,22 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             'page': page,
         })
 
-    def post(self, request, page=None, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
         Called when HTTP POST method is used.
         Edits the user profile from the form data.
         """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
         # only allow for user_profile_edit url
         if(page != 'user_profile_edit'):
             raise PermissionDenied
         
         # get form data    
         self.user_form = UserForm(request.POST, instance=request.user)
-        self.set_form(request.user, request)
+        self.set_form()
         saved = False
 
         try:
@@ -119,7 +131,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
                     saved = True
         except Exception as e:
             self.error_string = 'There was an error. Please try again.' 
-            self.error_string = e #for debug
+            if settings.DEBUG:
+                self.error_string = e
 
         # render template
         if saved:

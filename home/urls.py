@@ -27,22 +27,40 @@ urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     # `/users/` for managing users
     path('users/', include([
-        path('', UsersView.as_view(), {'page': 'user_default'}, name='user_default'),
-        path('new/', UsersView.as_view(), {'page': 'user_new'}, name='user_new'),
-        path('authors/', UsersView.as_view(), {'page': 'user_author'}, name='user_author'),
-        path('publishers/', UsersView.as_view(), {'page': 'user_publisher'}, name='user_publisher'),
-        path('<int:user_id>/', UsersView.as_view(), {'page': 'user_view'}, name='user_view'),
-        path('<int:user_id>/delete/', UsersView.as_view(), {'page': 'user_delete'}, name='user_delete'),
+        path('', UsersView.as_view(
+             extra_context={'page': 'user_default'}
+        ), name='user_default'),
+        path('new/', UsersView.as_view(
+            extra_context={'page': 'user_new'}
+        ), name='user_new'),
+        path('authors/', UsersView.as_view(
+            extra_context={'page': 'user_author'}
+        ), name='user_author'),
+        path('publishers/', UsersView.as_view(
+            extra_context={'page': 'user_publisher'}
+        ), name='user_publisher'),
+        path('<int:user_id>/', UsersView.as_view(
+            extra_context={'page': 'user_view'}
+        ), name='user_view'),
+        path('<int:user_id>/delete/', UsersView.as_view(
+            extra_context={'page': 'user_delete'}
+        ), name='user_delete'),
     ])),
     # `/account/` for managing user accounts
     path('accounts/', include([
         # user profile view and edit
         path('profile/', include([
-            path('', ProfileView.as_view(), {'page': 'user_profile'}, name='user_profile'),
-            path('edit/', ProfileView.as_view(), {'page': 'user_profile_edit'}, name='user_profile_edit'),
+            path('', ProfileView.as_view(
+                extra_context={'page': 'user_profile'}
+            ), name='user_profile'),
+            path('edit/', ProfileView.as_view(
+                extra_context={'page': 'user_profile_edit'}
+            ), name='user_profile_edit'),
         ])),
         # user register, login and logout
-        path('register/', RegistrationView.as_view(), {'page': 'signup'}, name='user_register'),        
+        path('register/', RegistrationView.as_view(
+            extra_context={'page': 'signup'}
+        ), name='user_register'),        
         path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
         path('login/', auth_views.LoginView.as_view(
             template_name='home/login.html',
@@ -89,11 +107,21 @@ urlpatterns = [
         path('new/', ArticleView.as_view(), {'page': 'article_new'}, name='article_new'),
     ])),
     path('topics/', include([
-        path('', TopicView.as_view(), {'page': 'topic_default'}, name='topic_default'),
-        path('new/', TopicView.as_view(), {'page': 'topic_new'}, name='topic_new'),
-        path('<int:topic_id>/', TopicView.as_view(), name='topic'),
-        path('<int:topic_id>/edit/', TopicView.as_view(), {'page': 'topic_edit'}, name='topic_edit'),
-        path('<int:topic_id>/delete/', TopicView.as_view(), {'page': 'topic_delete'}, name='topic_delete'),
+        path('', TopicView.as_view(
+            extra_context={'page': 'topic_default'}
+        ), name='topic_default'),
+        path('new/', TopicView.as_view(
+            extra_context={'page': 'topic_new'}
+        ), name='topic_new'),
+        path('<int:topic_id>/', TopicView.as_view(
+            extra_context={'page': 'topic_view'}
+        ), name='topic_view'),
+        path('<int:topic_id>/edit/', TopicView.as_view(
+            extra_context={'page': 'topic_edit'}
+        ), name='topic_edit'),
+        path('<int:topic_id>/delete/', TopicView.as_view(
+            extra_context={'page': 'topic_delete'}
+        ), name='topic_delete'),
     ])),
     path('publishers/', include([
         path('', PublishView.as_view(), {'page': 'publish_article'}, name='publish_article'),

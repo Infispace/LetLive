@@ -90,7 +90,7 @@ class AdminForm(AppUserForm):
         model = Admin
         fields = '__all__'
 
-class DeleteUserForm(forms.ModelForm):
+class DeleteUserForm(forms.ModelForm, BootstrapForm):
     """
     Form to delete `django.contrib.auth.models.User` model.
     

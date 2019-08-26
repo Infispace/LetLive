@@ -2,13 +2,13 @@
 :synopsis: Used to define the views to manage users
 """
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.db import transaction
 from django.urls import reverse
 from django.conf import settings
@@ -58,7 +58,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         
         return success
 
-    def get(self, request, page, user_id=0, *args, **kwargs):
+    def get(self, request, user_id=0, *args, **kwargs):
         """
         Display users list with filters `/authors/` and `/publishers/`.
         
@@ -69,6 +69,10 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         :param str page: the page to render, default is 'login'
         :param int user_id: the user id to filter
         """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
         # get user list or user with pk
         if user_id == 0:
             self.authors_list = Author.objects.all()
@@ -94,7 +98,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
             'view_user': self.view_user,
         })
 
-    def post(self, request, page, user_id=0, *args, **kwargs):
+    def post(self, request, user_id=0, *args, **kwargs):
         """
         Creates a new user `/new/`.
         
@@ -105,6 +109,10 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         :param str page: the page to render, default is 'login'
         :param int user_id: the user id to filter
         """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
         # restrict to new and delete
         permited = False;
         if page == 'user_new' or page == 'user_delete':

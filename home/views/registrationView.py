@@ -28,7 +28,7 @@ class RegistrationView(TemplateView):
     error_string = ''
     
     @transaction.atomic
-    def signup(self, request):
+    def signup(self):
         """
         Creates a new user.
         The new user is either `SUBSCRIBER` or `AUTHOR`
@@ -51,7 +51,7 @@ class RegistrationView(TemplateView):
 
         return success
 
-    def get(self, request, next='', page='login', *args, **kwargs):
+    def get(self, request, next='', *args, **kwargs):
         """
         Called if HTTP GET is requested.
         Renders the registration form.
@@ -63,6 +63,10 @@ class RegistrationView(TemplateView):
         :return: renders the html template
         :rtype: django.shortcuts.render
         """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
         # get next page url
         if 'next' in request.GET:
             next = request.GET['next']
@@ -84,7 +88,7 @@ class RegistrationView(TemplateView):
             'page': page
         })
 
-    def post(self, request, next='', page='login', *args, **kwargs):
+    def post(self, request, next='', *args, **kwargs):
         """
         Called if HTTP POST is requested.
         Creates a new user.
@@ -96,6 +100,10 @@ class RegistrationView(TemplateView):
         :return: renders the html template
         :rtype: django.shortcuts.render
         """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
         # get next page url
         if 'next' in request.POST:
             next = request.POST['next']
@@ -104,12 +112,12 @@ class RegistrationView(TemplateView):
         success = False
         try: 
             self.form = RegisterUserForm(request.POST)
-            success = self.signup(request)
+            success = self.signup()
         except Exception as e:
             success = False
             self.error_string = 'There was an error. Please try again.'
             if settings.DEBUG:
-                self.error_string = e #for debug
+                self.error_string = e
 
         # render template
         if success and next is not '':
