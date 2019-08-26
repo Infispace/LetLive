@@ -1,0 +1,20 @@
+<div class="card shadow">
+  <div class="card-header bg-primary text-light">
+    Side Menu
+  </div>
+
+  <ul class="list-group list-group-flush">
+    {% for link in menu_links %}
+    <a 
+      href="{{ link.url }}" 
+      class="list-group-item 
+      {% if page != link.active_page %}
+      bg-light text-primary
+      {% endif %}"
+    >
+      {{ link.text }}
+    </a>
+    {% endfor %}
+  </ul>
+</div>
+

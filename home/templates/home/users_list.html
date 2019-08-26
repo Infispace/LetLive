@@ -1,5 +1,5 @@
 <!--
-Html Template for Users Page Master
+Html Template for Users list. Displays a list of users
 
 context:
 {
@@ -8,51 +8,6 @@ context:
   'page': 'page passed from urls.py',
 }
 -->
-
-<!-- Top Buttons -->
-<div class="d-flex bd-highlight mb-3 p-3 border-bottom border-primary">
-  <a
-    class=" mr-2 btn {% if page == 'user_default' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:user_default' %}"
-  >
-    All
-  </a>
-  <a
-    class="mr-2 btn {% if page == 'user_author' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:user_author' %}"
-  >
-    Authors
-  </a>
-  <a
-    class="btn {% if page == 'user_publisher' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:user_publisher' %}"
-  >
-    Publishers
-  </a>
-  <a
-    class="btn btn-primary ml-auto"
-    role="button"
-    href="{% url 'home:user_new' %}"
-  >
-    Add Publisher
-  </a>
-</div>
-<!-- End Of Top Buttons -->
 
 <!-- Display 'Author' users list  -->
 {% if page == 'user_author' or page == 'user_default' %}

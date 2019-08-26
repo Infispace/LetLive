@@ -34,7 +34,11 @@ context:
   <p>
     Are you sure want to delete user "{{ view_user.username }}"?
   </p>
-  {{ user_form }}
+  
+  <div class="d-none">
+    {{ user_form }}
+  </div>
+  
   <button type="submit" class="btn btn-danger">
     Delete
   </button>

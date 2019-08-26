@@ -1,20 +1,33 @@
+<!--
+Html Template for deleting user
+
+context:
+{
+  'page': 'page passed from urls.py',
+  'form': 'the topic form for errors'
+  'topic': 'topic to delete',
+  'error_string': 'Error to be displayed',
+}
+-->
+
 <h2>DELETE TOPIC</h2>
 <hr>
 
-{% if form.errors or error_string %}
-  <div
-    class="alert {% if form.errors %} alert-warning
-      {% else %} alert-danger
-    {% endif %}"
-    role="alert"
-  >
-    {% if form.errors %}
-      There were errors found:
-      {{ form.non_field_errors }}
-    {% else %}
+{% if topic_form.errors or error_string %}
+  {% if error_string %}
+    <!-- display error string -->
+    <div class="alert alert-danger role="alert" >
       {{ error_string }}
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
+  
+  {% if topic_form.errors %}
+    <!-- Form Alerts -->
+    <div class="alert alert-warning role="alert" >
+      There were errors found:
+      {{ topic_form.non_field_errors }}
+    </div>
+  {% endif %}
 {% endif %}
 
 <form action="{% url 'home:topic_delete' topic.id %}" method="post">
@@ -22,16 +35,18 @@
   <label for="user_delete_form">
     Are you sure want to delete topic "{{ topic.topic_name }}" ?
   </label>
-  <table class="d-none">
-    {{ topic_form.as_table }}
-  </table>
+
+  <div class="d-none">
+    {{ topic_form }}
+  </div>
+
   <button type="submit" class="btn btn-danger">
     Delete
   </button>
   <a
     class="btn btn-secondary"
     role="button"
-    href="{% url 'home:topic' topic.id %}"
+    href="{% url 'home:topic_view' topic.id %}"
   >
     Cancel
   </a>
