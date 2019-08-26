@@ -41,10 +41,10 @@ home.templatetags.nav\_branding module
    :undoc-members:
    :show-inheritance:
 
-home.templatetags.view\_blog\_menu module
------------------------------------------
+home.templatetags.side\_menu module
+-----------------------------------
 
-.. automodule:: home.templatetags.view_blog_menu
+.. automodule:: home.templatetags.side_menu
    :members:
    :undoc-members:
    :show-inheritance:

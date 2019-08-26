@@ -57,3 +57,11 @@ home.migrations.0006\_auto\_20190823\_0103 module
    :undoc-members:
    :show-inheritance:
 
+home.migrations.0007\_auto\_20190824\_2335 module
+-------------------------------------------------
+
+.. automodule:: home.migrations.0007_auto_20190824_2335
+   :members:
+   :undoc-members:
+   :show-inheritance:
+

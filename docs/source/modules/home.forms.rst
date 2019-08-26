@@ -25,6 +25,14 @@ home.forms.authForm module
    :undoc-members:
    :show-inheritance:
 
+home.forms.bootstrapForm module
+-------------------------------
+
+.. automodule:: home.forms.bootstrapForm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 home.forms.userForm module
 --------------------------
 
