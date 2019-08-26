@@ -12,7 +12,7 @@ class Topic(models.Model):
 
     def save(self, *args, **kwargs):
         self.topic_name = self.topic_name.lower()
-        super().save(*args, **kwargs)  # Call the "real" save() method.
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.topic_name

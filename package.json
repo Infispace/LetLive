@@ -1,6 +1,6 @@
 {
-  "name": "letlive",
-  "description": "a digital lifestyle magazine",
+  "name": "LetLive",
+  "description": "A digital lifestyle magazine",
   "version": "1.0.0",
   "dependencies": {
     "bootstrap": "^4.3.1",

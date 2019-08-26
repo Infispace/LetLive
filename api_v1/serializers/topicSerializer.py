@@ -9,15 +9,11 @@ class TopicSerializer(serializers.HyperlinkedModelSerializer):
         view_name='api_v1:topic-detail',
     )
     
+    #sub_topics = self.__init__(many=True, read_only=True)
+    
     class Meta:
         model = Topic
-        fields = (
-          'url',
-          'id',
-          'topic_name',
-          'intro',
-          'parent_topic'
-        )
+        fields = '__all__'
         
         extra_kwargs = {
             'url': {

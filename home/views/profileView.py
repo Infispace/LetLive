@@ -1,89 +1,153 @@
+"""
+:synopsis: View and edit authenticated user profile
+"""
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.conf import settings
 from django.views.generic import TemplateView
-
-from home.forms import UserForm, AuthorForm, PublisherForm, AdminForm
+from home.forms import UserForm
+from home.forms import AuthorForm
+from home.forms import PublisherForm
+from home.forms import SubscriberForm
+from home.forms import AdminForm
 
 class ProfileView(LoginRequiredMixin, TemplateView):
+    """
+    Class for user profile
+    """
+    #: The html template to render.
     template_name = 'home/account.html'
+    #: The authenticated user.
     view_user = None
+    #: The html form for AppUser Profile to render
     form = None
+    #: form for the user model
+    user_form = None
+    #: The errors found
+    error_string = None
 
-    def set_form(self, user, request=None):
+    def set_form(self):
+        """
+        Initialize the form to use to edit user profile.
+        """
+        user_instance = None
+        user_form_class = None
         try:
-            user.author
-            if request is not None:
-                self.form = AuthorForm(request.POST, instance=user.author)
-            else:
-                self.form = AuthorForm(instance=user.author)
+            user_instance = self.request.user.author
+            user_form_class = AuthorForm
         except ObjectDoesNotExist:
             pass
 
         try:
-            user.publisher
-            if request is not None:
-                self.form = PublisherForm(request.POST, instance=user.publisher)
-            else:
-                self.form = PublisherForm(instance=user.publisher)
+            user_instance = self.request.user.publisher
+            user_form_class = PublisherForm
         except ObjectDoesNotExist:
             pass
 
         try:
-            user.admin
-            if request is not None:
-                self.form = AdminForm(request.POST, instance=user.admin)
-            else:
-                self.form = AdminForm(instance=user.admin)
+            user_instance = self.request.user.subscriber
+            user_form_class = SubscriberForm
         except ObjectDoesNotExist:
             pass
 
-    def get(self, request, page, user_id=0):
-        editable = False
-        if user_id != 0:
-            self.view_user = get_object_or_404(User, pk=user_id)
+        try:
+            user_instance = self.request.user.admin
+            user_form_class = AdminForm
+        except ObjectDoesNotExist:
+            pass
+
+        # return if no profile is found
+        if not user_instance:
+            return
+
+        # set profile form
+        if self.request.method == 'POST':
+            self.form = user_form_class(
+                self.request.POST,
+                instance=user_instance
+            )
         else:
-            editable = True
-            self.view_user = request.user
+            self.form = user_form_class(instance=user_instance)
 
-        self.set_form(self.view_user)
-        user_form = UserForm(instance=self.view_user)
+    def get(self, request, *args, **kwargs):
+        """
+        Called when HTTP GET method is used.
+        Displays the edit user profile form.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
+        # set forms and user to display
+        self.view_user = request.user        
+        if(page == 'user_profile_edit'):
+          self.set_form()
+          self.user_form = UserForm(instance=self.view_user)
+        
+        # render template
         return render(request, self.template_name, {
             'view_user': self.view_user,
-            'form_user': user_form,
+            'form_user': self.user_form,
             'form_profile': self.form,
-            'editable': editable,
-            'page': page
+            'page': page,
         })
 
-    def post(self, request, page):
-        user_form = UserForm(request.POST, instance=request.user)
-        self.set_form(request.user, request)
+    def post(self, request, *args, **kwargs):
+        """
+        Called when HTTP POST method is used.
+        Edits the user profile from the form data.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
+        # only allow for user_profile_edit url
+        if(page != 'user_profile_edit'):
+            raise PermissionDenied
+        
+        # get form data    
+        self.user_form = UserForm(request.POST, instance=request.user)
+        self.set_form()
         saved = False
 
-        if user_form.has_changed():
-            if user_form.is_valid():
-                user_form.save()
-                saved = True
+        try:
+            # save User model attributes
+            if self.user_form.has_changed():
+                if self.user_form.is_valid():
+                    self.user_form.save()
+                    saved = True
 
-        if self.form.has_changed():
-            if self.form.is_valid():
-                self.form.save()
-                saved = True
+            #: save AppUser model attributes
+            if self.form.has_changed():
+                if self.form.is_valid():
+                    self.form.save()
+                    saved = True
+        except Exception as e:
+            saved = False
+            self.error_string = 'There was an error. Please try again.' 
+            if settings.DEBUG:
+                self.error_string = e
 
-        error_string = None
+        # render template
         if saved:
-            return HttpResponseRedirect(reverse('home:user_default'))
+            return HttpResponseRedirect(reverse('home:user_profile'))
         else:
-            error_string = 'Check the following form errors!'
-
-        return render(request, self.template_name, {
-            'form_user': user_form,
-            'form_profile': self.form,
-            'editable': True,
-            'error_string': error_string,
-            'page': page
-        })
+          return render(request, self.template_name, {
+              'form_user': self.user_form,
+              'form_profile': self.form,
+              'error_string': self.error_string,
+              'page': page,
+          }, status=400)

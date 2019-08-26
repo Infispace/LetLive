@@ -10,10 +10,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         many=True,
         view_name='api_v1:group-detail',
     )
+    
+    read_only_fields = ['username']
 
     class Meta:
         model = User
-        fields = ('url', 'id', 'username', 'email', 'groups')
+        exclude = ['password','user_permissions']
         extra_kwargs = {
             'url': {
                 'view_name': 'api_v1:user-detail',

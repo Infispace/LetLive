@@ -1,51 +1,98 @@
-from django.test import TestCase
-from django.db import transaction
-from django.db import Error
+"""
+:synopsis: Used to test `home.models.userModel` models
+"""
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth.models import Group
-from django.contrib.auth.models import Permission
+from django.test import TestCase
+from django.db import Error
+from django_seed import Seed
 from home.models import userModel
+from .testUtils import TestUtils
 
 
-class AppUsersTests(TestCase):
+class AppUsersTests(TestCase, TestUtils):
+    """
+    Test the home.models.userModel.AppUser Model
+    """
+    
     def setUp(self):
-        g_admin = Group.objects.create(name="Administrators")
-        g_publ = Group.objects.create(name="Publishers")
-        g_auth = Group.objects.create(name="Authors")
+        # seed test user
+        username = self.seeder.faker.first_name()
+        self.user = User.objects.create(username = username)
 
-    def test_users(self):
+    def test_create_user_admin(self):
         """
-        Create app user in Administrator group
+        Tests home.userModel.Admin.objects.create
         """
         try:
-            admin = userModel.Admin.objects.create_user(
-                username='admin',
-                email='admin@email.com',
-                password='adminpass',
-                user_level= userModel.AppUser.ADMIN,
-            )
+            # create AppUser of Admin model
+            admin = userModel.Admin.objects.create(user=self.user)
+            
+            # assert user attribute
+            self.assertEqual(admin.user_level, userModel.AppUser.ADMIN)
+
         except Error as e:
             print('>Test Error: ', e)
 
-    #def test_delete_app_user(self):
-    #    """Delete AppUser objects """
-    #    Author.objects.get(username='publisher').delete()
-    #    Author.objects.get(username='publisher').delete()
-    #    Author.objects.get(username='admin').delete()
+    def test_create_user_author(self):
+        """
+        Tests home.userModel.Author.objects.create
+        """
+        try:
+            # create AppUser of Author model
+            author = userModel.Author.objects.create(user=self.user)
+            
+            # assert user attribute
+            self.assertEqual(author.user_level, userModel.AppUser.AUTHOR)
 
-    #def test_created_user_authors_permissions(self):
-        # The signed up users are in the authors goup
+        except Error as e:
+            print('>Test Error: ', e)
 
-    #def test_users_can_create_articles(self):
-        # All users can create articles
+    def test_create_user_publisher(self):
+        """
+        Tests home.userModel.Publisher.objects.create
+        """
+        try:
+            # create AppUser of Author model
+            publisher = userModel.Publisher.objects.create(user=self.user)
+            
+            # assert user attribute
+            self.assertEqual(publisher.user_level, userModel.AppUser.PUBLISHER)
 
-    #def test_editors_and_admin_can_publish(self):
-        # Users with editors and admin group can publish articles
+        except Error as e:
+            print('>Test Error: ', e)
 
-    #def test_editors_cannot_publish_own_articles(self):
-        # Editors cannot publish their own articles
+    def test_create_user_subscriber(self):
+        """
+        Tests home.userModel.AppUser.objects.create
+        """
+        try:
+            # create AppUser of Subscriber model
+            subscriber = userModel.Subscriber.objects.create(user=self.user)
+            
+            # assert user attribute
+            self.assertEqual(subscriber.user_level, userModel.AppUser.SUBSCRIBER)
 
-    #def test_anon_users_can_only_view(self):
-        # Anonymous users can only view articles using GET
+        except Error as e:
+            print('>Test Error: ', e)
+
+    def test_delete_app_user(self):
+        """
+        Delete home.userModel.AppUser objects 
+        """
+        # create AppUser of Author model
+        author = userModel.Author.objects.create(user=self.user)
+        
+        # delete AppUser
+        author.delete()
+        
+        # predict ObjectDoesNotExist thrown
+        exception = None
+        try:
+            userModel.Admin.objects.get(user=author.user)
+        except ObjectDoesNotExist as e:
+            exception = e
+        
+        # assert ObjectDoesNotExist
+        self.assertIsInstance(exception, ObjectDoesNotExist)
 

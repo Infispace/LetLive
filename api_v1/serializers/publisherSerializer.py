@@ -1,27 +1,20 @@
+from .dynamicFieldsHModelSerializer import DynamicFieldsHModelSerializer
+from rest_framework.serializers import HyperlinkedRelatedField
 from django.contrib.auth.models import User
-from rest_framework import serializers
 from home.models import Publisher
 from home.models import AppUser
 
 
-class PublisherSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.HyperlinkedRelatedField(
+class PublisherSerializer(DynamicFieldsHModelSerializer):
+    user = HyperlinkedRelatedField(
         many=False,
-        #read_only=True,
         view_name='api_v1:user-detail',
-        queryset=User.objects.filter(is_active=True),
+        queryset=User.objects.all(),
     )
-
+    
     class Meta:
         model = Publisher
-        fields = (
-            'url', 
-            'id', 
-            'user', 
-            'telephone', 
-            'address', 
-            'user_level',
-        )
+        fields = '__all__'
         extra_kwargs = {
             'url': {
                 'view_name': 'api_v1:publisher-detail',

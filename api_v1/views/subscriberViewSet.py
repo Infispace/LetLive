@@ -1,11 +1,9 @@
-from django.contrib.auth.models import User
-from rest_framework import viewsets
-from rest_framework import generics
-from home.models import Subscriber
+from rest_framework.viewsets import ModelViewSet
 from api_v1.serializers import SubscriberSerializer
+from home.models import Subscriber
 
 
-class SubscriberViewSet(viewsets.ModelViewSet):
+class SubscriberViewSet(ModelViewSet):
     """
     API endpoint that allows subscriber users to be viewed or edited.
     """

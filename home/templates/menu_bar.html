@@ -1,7 +1,17 @@
-{% load has_perm view_blog_menu %}
+<!--
+Html template to render the top menu bar links.
+Gets context from 'menu_bar.py' templatetag
+
+context:
+{
+  'page': 'page passed from urls.py',
+  'user': 'the authenticated user'
+}
+-->
+{% load has_perm %}
 
 <!-- index menu item -->
-<li class="nav-item {% if page == 'index' %}active{% endif %}" >
+<li class="nav-item {% if page == 'index' %} active border-bottom {% endif %}" >
   <a
     class="nav-link"
     href="{% if page == 'index' %} # {% else %}
@@ -16,7 +26,7 @@
 </li>
 
 <!-- topic menu item -->
-<li class="nav-item {% if page == 'topic_default' %}active{% endif %}">
+<li class="nav-item {% if page == 'topic_default' %} active border-bottom {% endif %}">
   <a
     class="nav-link"
     href="{% if page == 'topic_default' %} # {% else %}
@@ -31,27 +41,26 @@
 </li>
 
 <!-- article menu item -->
-{% view_blog_menu user as view_blog_menu %}
+{% has_perm user 'home.add_article' as add_article %}
 {% has_perm user 'home.view_article' as view_article %}
-{% if view_article and view_blog_menu %}
-<li class="nav-item {% if page == 'my_blog' or page == 'article_filter' %}active{% endif %}">
+{% if view_article and add_article %}
+<!-- my blog menu -->
+<li class="nav-item {% if page == 'my_blog' %} active border-bottom {% endif %}">
   <a
     class="nav-link"
-    href="{% if page == 'my_blog' or page == 'article_filter' %} # {% else %}
+    href="{% if page == 'my_blog' %} # {% else %}
       {% url 'home:article_default' %}
     {% endif %}"
   />
     My Blog
-    {% if page == 'my_blog' or page == 'article_filter' %}
+    {% if page == 'my_blog' %}
       <span class="sr-only">(current)</span>
     {% endif %}
   </a>
 </li>
-{% endif %}
 
-{% has_perm user 'home.add_article' as add_article %}
-{% if add_article %}
-<li class="nav-item {% if page == 'article_new' %}active{% endif %}">
+<!-- new article menu -->
+<li class="nav-item {% if page == 'article_new' %} active border-bottom {% endif %}">
   <a
     class="nav-link"
     href="{% if page == 'article_new' %} # {% else %}
@@ -69,7 +78,7 @@
 <!-- publish article menu item -->
 {% has_perm user 'home.publish_article' as publish_article %}
 {% if publish_article %}
-  <li class="nav-item {% if page == 'publish_article' %}active{% endif %}">
+  <li class="nav-item {% if page == 'publish_article' %} active border-bottom {% endif %}">
     <a
       class="nav-link"
       href="{% if page == 'publish_article' %} # {% else %}
@@ -87,11 +96,11 @@
 <!-- users menu item -->
 {% has_perm user 'home.add_publisher' as add_publisher %}
 {% if add_publisher %}
-  <li class="nav-item {% if page == 'users' %}active{% endif %}">
+  <li class="nav-item {% if page == 'users' %} active border-bottom {% endif %}">
     <a
       class="nav-link"
       href="{% if page == 'users' %} # {% else %}
-        {% url 'home:users_default' %}
+        {% url 'home:user_default' %}
       {% endif %}"
     />
       Users

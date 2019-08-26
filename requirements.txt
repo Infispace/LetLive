@@ -1,9 +1,32 @@
+#############################
+# LetLive Pipy Requirements #
+#############################
+### Django framework
 django
-djecrety
+#
+### Django extensions
+django-extensions
+#
+### Django REST framework
 djangorestframework
-django-rest-auth
-django-filter
-django-faker
+#
+### Django REST authentication framework
+django-rest-auth[with_social]>=0.3.3
+django-allauth
+#
+### Django model and db seeder with faker
 django-seed
-Pillow
+#
+### Django filter queryset
+django-filter
+#
+### Django generating secret key
+djecrety
+#
+### Sphinx documentation
 sphinx
+sphinx-rtd-theme
+recommonmark
+#
+### Required for Django managing files
+Pillow

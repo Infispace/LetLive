@@ -110,9 +110,6 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-# sqlite database
-*.sqlite3
-
 #migrations
 home/migrations/0*.py
 api_v1/migrations/0*.py
@@ -122,7 +119,6 @@ api_v1/migrations/0*.py
 
 #node modules
 node_modules/
-package-lock\.json
 
 #django settings file
 letlive/settings\.py

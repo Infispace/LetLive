@@ -1,10 +1,9 @@
-from rest_framework import viewsets
-from rest_framework import generics
-from django.contrib.auth.models import User
+from rest_framework.viewsets import ModelViewSet
 from api_v1.serializers import UserSerializer
+from django.contrib.auth.models import User
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """

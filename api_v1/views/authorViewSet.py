@@ -1,11 +1,9 @@
-from django.contrib.auth.models import User
-from rest_framework import viewsets
-from rest_framework import generics
-from home.models import Author
+from rest_framework.viewsets import ModelViewSet
 from api_v1.serializers import AuthorSerializer
+from home.models import Author
 
 
-class AuthorViewSet(viewsets.ModelViewSet):
+class AuthorViewSet(ModelViewSet):
     """
     API endpoint that allows author users to be viewed or edited.
     """

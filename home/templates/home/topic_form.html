@@ -1,13 +1,30 @@
+<!--
+Html Template for displaying form for topics
+
+context:
+{
+  'topic_form': 'the topics form',
+  'page': 'page passed from urls.py',
+}
+-->
+
 {% if page == 'topic_new' %}
   <form action="{% url 'home:topic_new' %}" method="post">
-{% else %}
+{% elif page == 'topic_edit' %}
   <form action="{% url 'home:topic_edit' topic.id %}" method="post">
 {% endif %}
 
   {% csrf_token %}
-  <table>
-  {{ topic_form.as_table }}
-  </table>
+
+  {% for field in topic_form.visible_fields %}
+      <div class="form-group">
+        {{ field.label_tag }}
+        {{ field }}
+        <small class="form-text text-danger">
+          {{ field.errors }}
+        </small>
+      </div>
+    {% endfor %}
 
   <button type="submit" class="btn btn-primary">
     Save

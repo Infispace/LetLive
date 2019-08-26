@@ -1,20 +1,32 @@
-<table>
-  {{ form_user.as_table }}
-  {{ form_profile.as_table }}
-</table>
+<!--
+Html template to view user profile
+
+context:
+{
+  'view_user': 'User model instance to display',
+}
+-->
+{{ view_user }}
 
 {% load has_perm %}
 {% has_perm user 'home.delete_publisher' as delete_publisher %}
 {% has_perm user 'home.delete_author' as delete_author %}
 
 {% if delete_publisher and delete_author %}
-  {% if view_user.publisher or view_user.author %}
-    <a
-      class="btn btn-danger btn-sm"
-      role="button"
-      href="{% url 'home:user_delete' view_user.id %}"
-    >
-      Delete {{view_user.username.capitalize}}
-    </a>
+  {% if view_user != user %}
+  <a
+    class="btn btn-danger btn-sm"
+    role="button"
+    href="{% url 'home:user_delete' view_user.id %}"
+  >
+    Delete {{ view_user.username.capitalize }}
+  </a>
+  <a
+    class="btn btn-secondary btn-sm"
+    role="button"
+    href="{% url 'home:user_default' %}"
+  >
+    Back To Users
+  </a>
   {% endif %}
 {% endif %}

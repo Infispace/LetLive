@@ -1,69 +1,40 @@
-<div class="d-flex bd-highlight mb-3">
-  <a
-    class=" mr-2 btn {% if user_level == 'all' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:users_default' %}"
-  >
-    All
-  </a>
-  <a
-    class="mr-2 btn {% if user_level == 'AUT' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:users_filter_level' 'author' %}"
-  >
-    Authors
-  </a>
-  <a
-    class="btn {% if user_level == 'PUB' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:users_filter_level' 'publisher' %}"
-  >
-    Publishers
-  </a>
-  <a
-    class="btn btn-primary ml-auto"
-    role="button"
-    href="{% url 'home:users_new' 'publisher' %}"
-  >
-    Add Publisher
-  </a>
-</div>
-<!--{% if user_level == 'all' or user_level == 'AUT' %}-->
-  {% for user_detail in authors_list %}
-      <h4>{{ user_detail.username }}</h4>
-      <a
-        class="btn btn-secondary btn-sm"
-        role="button"
-        href="{% url 'home:user_view' user_detail.id %}"
-      >
-        View Author
-      </a>
-      <hr>
-  {% endfor %}
-<!--{% endif %}-->
+<!--
+Html Template for Users list. Displays a list of users
 
-<!--{% if user_level == 'all' or user_level == 'PUB' %}-->
-  {% for user_detail in publishers_list %}
-      <h4>{{ user_detail.username }}</h4>
-      <a
-        class="btn btn-secondary btn-sm"
-        role="button"
-        href="{% url 'home:user_view' user_detail.id %}"
-      >
-        View Publisher
-      </a>
-      <hr>
-  {% endfor %}
-<!--{% endif %}-->
+context:
+{
+  'publishers_list': 'Publishers users list',
+  'authors_list': 'Authors users list'
+  'page': 'page passed from urls.py',
+}
+-->
+
+<!-- Display 'Author' users list  -->
+{% if page == 'user_author' or page == 'user_default' %}
+{% for user_detail in authors_list %}
+    <h4>{{ user_detail }}</h4>
+    <a
+      class="btn btn-secondary btn-sm"
+      role="button"
+      href="{% url 'home:user_view' user_detail.user.id %}"
+    >
+      View Author
+    </a>
+    <hr>
+{% endfor %}
+{% endif %}
+
+<!-- Display 'Publisher' users list -->
+{% if page == 'user_publisher' or page == 'user_default' %}
+{% for user_detail in publishers_list %}
+    <h4>{{ user_detail }}</h4>
+    <a
+      class="btn btn-secondary btn-sm"
+      role="button"
+      href="{% url 'home:user_view' user_detail.user.id %}"
+    >
+      View Publisher
+    </a>
+    <hr>
+{% endfor %}
+{% endif %}

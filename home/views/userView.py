@@ -1,127 +1,159 @@
+"""
+:synopsis: Used to define the views to manage users
+"""
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
+from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.db import transaction
 from django.urls import reverse
-from django.views.generic import TemplateView
-
+from django.conf import settings
 from home.forms import RegisterUserForm
 from home.forms import DeleteUserForm
 from home.models import Publisher
 from home.models import Author
 
 class UsersView(PermissionRequiredMixin, TemplateView):
+    """
+    Class to manage users. Add and delete users. 
+    Admins only can access this view.
+    """
+    #: The permissions required to access the view.
     permission_required = (
         'home.add_publisher',
         'home.delete_publisher',
         'home.delete_author'
     )
+    #: The html template to render.
     template_name = 'home/users.html'
+    #: The list of users with author user level.
     authors_list = None
+    #: The list of users with publisher user level.
     publisers_list = None
+    #: The form to render.
     user_form = None
-    user_level = None
+    #: The error to be displayed.
     error_string = ''
+    #: The user to view or edit.
+    view_user = None
 
-    def set_user_level(self, user_level):
-        if user_level == 'publisher':
-            self.user_level = Publisher.PUBLISHER
-        elif user_level == 'author':
-            self.user_level = Author.AUTHOR
-        else:
-            self.user_level = user_level
+    @transaction.atomic
+    def add_publisher(self):
+        """
+        Adds a new user of publisher user_level
+        
+        Edit a specific users filtered with `/pk/`
+        
+        :return: returns true if a new user is created
+        :rtype: True or False
+        """
+        success = False
+        # create new user
+        user = self.user_form.save()
+        success = Publisher.objects.create(user=user)
+        
+        return success
 
-    def get(self, request, page, users='list', user_level='all', user_id=0):
-        self.set_user_level(user_level)
-
-        if page == 'user_delete'and user_id != 0:
-            user_delete = get_object_or_404(User, pk=user_id)
-            user_delete_form = DeleteUserForm(instance=user_delete)
-            return render(request, self.template_name, {
-                'page': page,
-                'user_delete': user_delete,
-                'form': user_delete_form,
-            })
-        elif users == 'new':
+    def get(self, request, user_id=0, *args, **kwargs):
+        """
+        Display users list with filters `/authors/` and `/publishers/`.
+        
+        Shows A specific users filtered with `/pk/`.
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        :param int user_id: the user id to filter
+        """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
+        # get user list or user with pk
+        if user_id == 0:
+            self.authors_list = Author.objects.all()
+            self.publisers_list = Publisher.objects.all()
+        else :
+            self.view_user = get_object_or_404(User, pk=user_id)
+            
+        # set form to render
+        if page == 'user_delete':
+            self.user_form = DeleteUserForm(instance=self.view_user)
+        elif page == 'user_new':
             self.user_form = RegisterUserForm()
-        else:
-            self.authors_list = User.objects.filter(
-                groups=Group.objects.get(name='Authors')
-            )
-            self.publisers_list = User.objects.filter(
-                groups=Group.objects.get(name='Publishers')
-            )
 
-        return render(request, self.template_name, {
+        # render template
+        if page == 'user_view':
+            self.template_name = 'home/account.html'
+            
+        return self.render_to_response({
             'page': page,
-            'users': users,
-            'user_level': self.user_level,
             'authors_list': self.authors_list,
             'publishers_list': self.publisers_list,
-            'user_form': self.user_form
+            'user_form': self.user_form,
+            'view_user': self.view_user,
         })
 
-    def add_publisher(self):
-        saved = False
-        if self.user_form.is_valid():
-            password = self.user_form.cleaned_data['password']
-            password2 = self.user_form.cleaned_data['password2']
+    def post(self, request, user_id=0, *args, **kwargs):
+        """
+        Creates a new user `/new/`.
+        
+        Edit a specific users filtered with `/pk/`
+        
+        :param request: the django HttpRequest object
+        :type request: django.http.request.HttpRequest
+        :param int user_id: the user id to filter
+        """
+        # get page context
+        context = self.get_context_data()
+        page = context['page']
+        
+        # restrict to new and delete
+        permited = False;
+        if page == 'user_new' or page == 'user_delete':
+            permited = True;
 
-            password_match = False
-            if password != '' and password2 != '' and password == password2:
-                password_match = True
+        if not permited:
+            raise PermissionDenied
 
-            if password_match:
-                try:
-                    publisher = Publisher.objects.create_user(
-                        username=self.user_form.cleaned_data['username'],
-                        email=self.user_form.cleaned_data['email'],
-                        password=password,
-                        user_level= Publisher.PUBLISHER
-                    )
-                    saved = True
-                except:
-                    self.error_string = 'Username already exist. Please try again.'
-            else:
-                self.error_string = "Passwords do not match."
-
-        return saved
-
-    def post(self, request, page, users='list', user_level='all', user_id=0):
-        self.set_user_level(user_level)
-
-        success = False
-        if page == 'user_delete' and user_id != 0:
-            error_string = ''
-            user = get_object_or_404(User, pk=user_id)
-            user_delete_form = DeleteUserForm(request.POST, instance=user)
-            if user_delete_form.is_valid():
-                user_delete = get_object_or_404(
-                    User,
-                    username=user_delete_form.cleaned_data['username']
-                )
-                user_delete.delete()
-                return HttpResponseRedirect(reverse('home:users_default'))
-            else:
-                return render(request, self.template_name, {
-                    'page': page,
-                    'user_delete': user_delete,
-                    'form': user_delete_form,
-                    'error_string': error_string,
-                })
-        elif users == 'new':
+        # get user from user_id
+        if user_id != 0:
+            self.view_user = get_object_or_404(User, pk=user_id)
+        
+        # get form to validate
+        if page == 'user_new':
             self.user_form = RegisterUserForm(request.POST)
-            success = self.add_publisher()
-
+        elif page == 'user_delete':
+            self.user_form = DeleteUserForm(
+                request.POST, 
+                instance=self.view_user
+            )
+        
+        # make db edits
+        try:
+            success = self.user_form.is_valid()
+            if success and page == 'user_delete':
+                self.view_user.delete()
+                success = True
+            elif success and page == 'user_new':
+                success = self.add_publisher()
+        except Exception as e:
+            success = False
+            self.error_string = 'There was an error. Please try again.' 
+            if settings.DEBUG:
+                self.error_string = e
+        
+        # render template
         if success:
-            return HttpResponseRedirect(reverse('home:users_default'))
+            return HttpResponseRedirect(reverse('home:user_default'))
         else:
-            return render(request, self.template_name, {
+            return self.render_to_response({
                 'page': page,
-                'users': users,
+                'view_user': self.view_user,
                 'user_form': self.user_form,
                 'error_string': self.error_string,
-            })
+            }, status=400)
+

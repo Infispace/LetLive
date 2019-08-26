@@ -1,3 +1,11 @@
+<!--
+Html Template for Users Page Master
+
+context:
+{
+  'page': 'page passed from urls.py',
+}
+-->
 {% extends "home/base.html" %}
 
 {% block title %}User{% endblock %}
@@ -10,49 +18,31 @@
 {% block content %}
   <div class="container p-3">
 
-    {% if page == 'user_delete' %}
-      {% include 'home/user_delete.html' %}
-    {% elif users == 'list' or users == 'filter' %}
-      {% include 'home/users_list.html' %}
-    {% else %}
-
-      {% if form.errors or error_string %}
-        <div
-          class="alert {% if form.errors %} alert-warning
-            {% else %} alert-danger
-          {% endif %}"
-          role="alert"
-        >
-          {% if form.errors %}
-            There were errors found:
-            {{ form.non_field_errors }}
-          {% else %}
-            {{ error_string }}
-          {% endif %}
-        </div>
+    <div class="row mt-5">
+      {% load side_menu %}
+      {% render_side_menu page as render_side_menu %}
+      
+      {% if render_side_menu %}
+      <!-- side menu -->
+      <div class="col-3">
+        {% side_menu %}
+      </div>
       {% endif %}
-
-      <form action="{% url 'home:users_new' 'publisher' %}" method="post">
-        {% csrf_token %}
-        <table>
-          {{ user_form.as_table }}
-        </table>
-        <button
-          class="btn btn-primary"
-          type="submit"
-          name="button"
-        >
-          Create Publisher
-        </button>
-        <a
-          class="btn btn-secondary"
-          role="button"
-          href="{% url 'home:users_default' %}"
-        >
-          Cancel
-        </a>
-      </form>
-    {% endif %}
+      
+      <!-- main body -->
+      <div class="col">
+        {% if page == 'user_default' or page == 'user_author' or page == 'user_publisher' %}
+          <!-- show users list -->
+          {% include 'home/users_list.html' %}
+        {% elif page == 'user_delete' %}
+          <!-- show delete user page -->
+          {% include 'home/user_delete.html' %}
+        {% elif page == 'user_new' %}
+          <!-- show new user form -->
+          {% include 'home/user_new.html' %}
+        {% endif %}
+      </div>
+    </div>
 
   </div>
 {% endblock %}

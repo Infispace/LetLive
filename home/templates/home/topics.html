@@ -1,0 +1,49 @@
+<!--
+Html Template for Topics Page Master
+
+context:
+{
+  'page': 'page passed from urls.py',
+}
+-->
+
+{% extends "home/base.html" %}
+
+{% block title %}Topic{% endblock %}
+
+{% block menubar_links %}
+  {% load menu_bar %}
+  {% menu_bar %}
+{% endblock %}
+
+{% block content %}
+  <div class="container p-3">
+
+    <div class="row mt-5">
+      {% load has_perm %}
+      {% has_perm user 'home.add_topic' as add_topic %}
+      
+      {% if add_topic %}
+      <!-- side menu -->
+      <div class="col-3">
+        {% load side_menu %}
+        {% side_menu %}
+      </div>
+      {% endif %}
+      
+      <!-- main body -->
+      <div class="col">
+        {% if page == 'topic_edit' or page == 'topic_new' %}
+          {% include 'home/topic_form.html' %}
+        {% elif page == 'topic_view' %}
+          {% include 'home/topic_view.html' %}
+        {% elif page == 'topic_delete' %}
+          {% include 'home/topic_delete.html' %}
+        {% elif page == 'topic_default' %}
+          {% include 'home/topic_list.html' %}
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

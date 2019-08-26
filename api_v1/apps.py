@@ -1,3 +1,7 @@
+"""
+Configure Api_V1 with Django settings
+`letlive.settings`.
+"""
 from django.apps import AppConfig
 
 

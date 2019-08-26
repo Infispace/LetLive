@@ -2,9 +2,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
-
-from .topicModel import Topic
-from .userModel import Publisher
+from home.models import Topic
+from home.models import Publisher
 
 class ArticleManager(models.Manager):
     def published_articles_list(self, *args, **kwargs):
