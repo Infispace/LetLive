@@ -1,0 +1,12 @@
+<!-- 
+user avatar displayed on the nav bar
+-->
+<button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,50">
+  {% if user.is_authenticated %}
+    <!--img src="icons/close.png" -->
+    <i class="fas fa-user mr-2"></i>
+    {{ user.username }}
+  {% else %}
+    <i class="fas fa-user mr-2"></i>
+  {% endif %}
+</button>

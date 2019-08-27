@@ -7,15 +7,17 @@
   
   {% block theme %}
   <!-- Bootstrap CSS -->
-  <!--
-  <link rel="stylesheet" href="{% static 'home/bootstrap/dist/css/bootstrap.min.css' %}">
-  -->
   <link rel="stylesheet" href="{% static 'home/themes/purple.min.css' %}">
   <!-- style css -->
   {% endblock %} 
       
   <!-- font awsome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link 
+    rel="stylesheet" 
+    href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" 
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" 
+    crossorigin="anonymous"
+  >
   
   {% block css %}
   <!-- Page specific css --> 
@@ -29,38 +31,19 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
     {% load nav_branding %}
     {% nav_branding %} 
+    
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         {% block menubar_links %}{% endblock %}
       </ul>
+      
       <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
       </form>
-      <div class="dropdown ml-md-4 nav-item">
-       <!-- user avatar -->
-       <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,50">
-          {% if user.is_authenticated %}
-            <!--img src="icons/close.png" -->
-            <i class="fas fa-user mr-2"></i>
-            {{ user.username }}
-          {% else %}
-            <i class="fas fa-user mr-2"></i>
-          {% endif %}
-        </button>
-        
-        <!-- drop down user menu -->
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuOffset">
-        {% if user.is_authenticated %}        
-          {% include 'home/user_drop_nav.html' %}
-        {% else %}
-          {% load base_login_form %}
-          {% base_login_form %}         
-        {% endif %}
-        </div>
-        <!-- end of drop down user menu -->
-        
-      </div>
+    
+    {% load nav_user_links %}
+    {% nav_login_form %} 
     </div>
   </nav>
   {% endblock %}

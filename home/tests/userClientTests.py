@@ -15,11 +15,9 @@ class UserClientTests(TestCase, TestUtils):
     """
     Test the home.models.userModel.AppUser Model
     """
-    client = None     #: django test client
+    client = Client()     #: django test client
     
     def setUp(self):
-        self.client = Client()
-        
         # seed test user
         username = self.create_username()
         self.user = User.objects.create(username=username)
@@ -84,6 +82,9 @@ class UserClientTests(TestCase, TestUtils):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_profile'))
         
+        if(response.status_code != 302):
+            print(response.context['error_string'])
+        
         # client logout
         self.client.logout()
         
@@ -113,6 +114,9 @@ class UserClientTests(TestCase, TestUtils):
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:password_change_done'))
+        
+        if(response.status_code != 302):
+            print(response.context['error_string'])
 
         # client logout
         self.client.logout()
@@ -141,6 +145,9 @@ class UserClientTests(TestCase, TestUtils):
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_default'))
+        
+        if(response.status_code != 302):
+            print(response.context['error_string'])
         
         # client logout
         self.client.logout()

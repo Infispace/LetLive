@@ -1,0 +1,100 @@
+<!--
+Template for the browsable api
+-->
+{% extends "rest_framework/base.html" %}
+
+{% load static %}
+
+{% block bootstrap_theme %}
+  <link rel="stylesheet" href="{% static 'home/themes/purple.min.css' %}">
+{% endblock %}
+
+{% block style %}
+  {{ block.super }}
+  
+  <link 
+    rel="stylesheet" 
+    href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" 
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" 
+    crossorigin="anonymous"
+  >
+  
+  <style type="text/css" media="screen">
+    .form-switcher a {
+      padding: 1em;
+    }
+    
+    .form-switcher {
+      padding: 1em;
+    }
+  </style>
+{% endblock %}
+
+{% block bootstrap_navbar_variant %}
+    navbar navbar-expand-lg navbar-dark bg-primary shadow
+{% endblock %}
+
+{% block bodyclass %}
+    mb-5
+{% endblock %}
+
+{% block branding %}
+  {% load nav_branding %}
+  {% nav_branding 'http://127.0.0.1:8000/api_v1' %}
+{% endblock %}
+
+{% block userlinks %}
+    {% include 'rest_framework/user_links.html' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+  <ul class="breadcrumb">
+    {% for breadcrumb_name, breadcrumb_url in breadcrumblist %}
+      {% if forloop.last %}
+        <li class="active"><a href="{{ breadcrumb_url }}">{{ breadcrumb_name }}</a></li>
+      {% else %}
+        <li><a href="{{ breadcrumb_url }}">{{ breadcrumb_name }}</a></li>
+      {% endif %}
+      <span class="mx-1"> / </span>
+    {% empty %}
+      {% block breadcrumbs_empty %}&nbsp;{% endblock breadcrumbs_empty %}
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+{% block script %}
+  <script 
+    src="{% static 'home/jquery/dist/jquery.slim.min.js' %}">
+  </script>
+  <script 
+    src="{% static 'home/popper.js/dist/umd/popper-utils.min.js' %}">
+  </script>
+  <script 
+    src="{% static 'home/bootstrap/dist/js/bootstrap.min.js' %}">
+  </script>
+  
+  <script type="text/javascript">
+    $('.form-switcher').addClass('border-bottom border-primary')
+    $('.form-switcher a').addClass('border bg-primary text-light')
+
+    $('.form-switcher a').click( function () {
+      selected = this
+      
+      $(this).addClass(
+        'bg-primary text-light'
+      ).removeClass(
+        'bg-light text-primary'
+      )
+      
+      $.each( $('.form-switcher a'), function () {
+        if (this != selected){
+          $(this).addClass(
+            'bg-light text-primary'
+          ).removeClass(
+            'bg-primary text-light'
+          )
+        }
+      });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,65 @@
+<!--
+Html template for login form. used in the menu bar
+
+context:
+{
+  'login_form': 'the login form',
+}
+-->
+<div class="dropdown ml-md-4 nav-item">
+  {% load nav_user_links %}
+  {% nav_user_btn %}
+  
+  <!-- drop down user menu -->
+  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuOffset">
+  {% if user.is_authenticated %}        
+    <a 
+      class="dropdown-item" 
+      href="{% url 'api_v1:profile_detail' %}"
+    >
+      <i class="fas fa-user mr-2"></i>
+      Profile
+    </a>
+
+    <div class="dropdown-divider border-primary"></div>
+    
+    <form 
+      action="{% url 'api_v1:rest_logout' %}" 
+      method="post" 
+      class="d-none"
+      id="logout-form"
+    >
+      {% csrf_token %}
+    </form>
+    <button 
+      type="submit"
+      class="dropdown-item"
+      form="logout-form"
+    >
+      <i class="fas fa-sign-out-alt"></i>
+      Logout
+    </button>
+  {% else %}
+    <a 
+      class="dropdown-item" 
+      href="{% url 'api_v1:rest_login' %}"
+    >
+      <i class="fas fa-sign-in-alt mr-2"></i>
+      Login
+    </a>
+    
+    <div class="dropdown-divider border-primary"></div>
+    
+    <a 
+      class="dropdown-item" 
+      href="{% url 'api_v1:rest_register' %}"
+    >
+      <i class="fas fa-sign-in-alt mr-2"></i>
+      Register
+    </a>        
+  {% endif %}
+  </div>
+  <!-- end of drop down user menu -->
+  
+</div>
+
