@@ -6,13 +6,19 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from django.conf import settings
 from django.db import Error
 from django.db import models
 from django.db import transaction
 
+
 def upload_location(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/avatar/user_<id>/<filename>
-    return '/avatar/user_{0}/{1}'.format(instance.user.id, filename)
+    # file will be uploaded to MEDIA_ROOT/user_avatars/user_<id>/<filename>
+    return '{0}/user_avatars/user_{1}/{2}'.format(
+        settings.MEDIA_ROOT,
+        instance.user.id,
+        filename
+    )
 
 def set_user_groups(user, user_level):
     """

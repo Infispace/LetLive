@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from api_v1.serializers import AdminSerializer
@@ -43,9 +44,9 @@ class ProfileViewSet(RetrieveUpdateDestroyAPIView):
         except ObjectDoesNotExist:
             pass
 
-        # throw ObjectDoesNotExist if no obj
-        if obj == None:
-            raise ObjectDoesNotExist('Profile data does not exist')
+        # throw NotFound if obj is None
+        if obj is None:
+            raise NotFound('Profile data does not exist')
 
         return obj
         
@@ -78,6 +79,10 @@ class ProfileViewSet(RetrieveUpdateDestroyAPIView):
         except ObjectDoesNotExist:
             pass
 
+        # throw NotFound if serializer_class is None
+        if serializer_class is None:
+            raise NotFound('Profile data does not exist')
+
         return serializer_class
     
     def perform_update(self, serializer):
@@ -100,10 +105,10 @@ class ProfileViewSet(RetrieveUpdateDestroyAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         """
-        Retrieve a the user profile, An instance of AppUser model.
+        Retrieve the user profile, An instance of AppUser model.
         """
         obj = self.get_object()
-        serializer_class = self.get_serializer_class()
+        serializer_class = self.get_serializer_class()        
         
         # get the AppUser instance from serializer
         instance = serializer_class(

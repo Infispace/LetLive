@@ -2,7 +2,7 @@
 # LetLive Pipy Requirements #
 #############################
 ### Django framework
-django
+django>=2.1.2
 #
 ### Django extensions
 django-extensions

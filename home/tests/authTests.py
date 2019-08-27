@@ -71,13 +71,10 @@ class AuthTests(TestCase, TestUtils):
             'password2': password,
             'is_author': False,
         })
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_login'))
-        
-        if(response.status_code != 302):
-            print(response.context['error_string'])
         
         # get created user
         user = User.objects.get(username=self.username)
@@ -97,14 +94,11 @@ class AuthTests(TestCase, TestUtils):
             'username': self.username,
             'password': self.password,
         })
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:index'))
-        
-        if(response.status_code != 302):
-            print(response.context['error_string'])
-        
+
         # client logout
         self.client.logout();
         
@@ -119,7 +113,7 @@ class AuthTests(TestCase, TestUtils):
         
         # request
         response = self.client.get(reverse('home:user_logout'))
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:index'))

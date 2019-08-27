@@ -76,15 +76,12 @@ class UserClientTests(TestCase, TestUtils):
 
         # get changed user
         self.user = User.objects.get(username=self.user.username)
-        
+
         # assert response
         self.assertEqual(email, self.user.email)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_profile'))
-        
-        if(response.status_code != 302):
-            print(response.context['error_string'])
-        
+     
         # client logout
         self.client.logout()
         
@@ -114,9 +111,6 @@ class UserClientTests(TestCase, TestUtils):
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:password_change_done'))
-        
-        if(response.status_code != 302):
-            print(response.context['error_string'])
 
         # client logout
         self.client.logout()
@@ -141,14 +135,11 @@ class UserClientTests(TestCase, TestUtils):
             'password2': password,
             'is_author': False,
         })
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_default'))
-        
-        if(response.status_code != 302):
-            print(response.context['error_string'])
-        
+
         # client logout
         self.client.logout()
 
