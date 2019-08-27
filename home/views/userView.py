@@ -58,6 +58,21 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         
         return success
 
+    def get_permission_required(self):
+        permission_required = super().get_permission_required()
+        page = self.get_context_data()['page']
+        
+        # permission against http method post
+        # restrict to new and delete
+        permited = False;
+        if page == 'user_new' or page == 'user_delete':
+            permited = True;
+
+        if self.request.method == 'POST' and not permited:
+            raise PermissionDenied
+
+        return permission_required
+
     def get(self, request, user_id=0, *args, **kwargs):
         """
         Display users list with filters `/authors/` and `/publishers/`.
@@ -110,14 +125,6 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         # get page context
         context = self.get_context_data()
         page = context['page']
-        
-        # restrict to new and delete
-        permited = False;
-        if page == 'user_new' or page == 'user_delete':
-            permited = True;
-
-        if not permited:
-            raise PermissionDenied
 
         # get user from user_id
         if user_id != 0:

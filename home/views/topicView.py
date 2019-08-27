@@ -25,15 +25,25 @@ class TopicView(PermissionRequiredMixin, TemplateView):
     error_string = ''
 
     def get_permission_required(self):
-        permission_required = ''
-        context = self.get_context_data()
+        permission_required = []
+        page = self.get_context_data()['page']
         
-        if context['page'] == 'topic_new':
+        # permission against page
+        if page == 'topic_new':
             permission_required = ['home.add_topic']
-        elif context['page'] == 'topic_edit':
+        elif page == 'topic_edit':
             permission_required = ['home.change_topic']
-        elif context['page'] == 'topic_delete':
+        elif page == 'topic_delete':
             permission_required = ['home.delete_topic']
+            
+        # permission against http method post
+        # restrict to new, edit and delete
+        permited = False;
+        if page == 'topic_new' or page == 'topic_edit' or page == 'topic_delete':
+            permited = True;
+
+        if self.request.method == 'POST' and not permited:
+            raise PermissionDenied
         
         return permission_required
     
@@ -88,14 +98,6 @@ class TopicView(PermissionRequiredMixin, TemplateView):
         context = self.get_context_data()
         page = context['page']
         
-        # restrict to new, edit and delete
-        permited = False;
-        if page == 'topic_new' or page == 'topic_edit' or page == 'topic_delete':
-            permited = True;
-
-        if not permited:
-            raise PermissionDenied
-
         # get topic by id
         if topic_id != 0:
             self.topic = get_object_or_404(Topic, pk=topic_id)

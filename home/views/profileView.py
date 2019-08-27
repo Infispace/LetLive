@@ -131,7 +131,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
                     saved = True
 
             #: save AppUser model attributes
-            if self.form.has_changed():
+            if self.form is not None and self.form.has_changed():
                 if self.form.is_valid():
                     self.form.save()
                     saved = True

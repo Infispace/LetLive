@@ -8,15 +8,15 @@ Has tests for the modules below:
 
 * Models:
 
-  * home.models.userModel.AppUsers
+  * home.models.userModel
 
 * Views:
 
-  * home.views.authView
+  * home.views.registrationView
+  * home.views.profileView
+  * home.views.userView
 """
-from .tests import AppClientTestCase
-from .userTests import AppUsersTests
 from .authTests import AuthTests
+from .userTests import AppUsersTests
 from .userClientTests import UserClientTests
 
-#from .userPermission import UserPermissionTests

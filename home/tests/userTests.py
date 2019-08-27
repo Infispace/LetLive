@@ -17,7 +17,7 @@ class AppUsersTests(TestCase, TestUtils):
     
     def setUp(self):
         # seed test user
-        username = self.seeder.faker.first_name()
+        username = self.create_username()
         self.user = User.objects.create(username = username)
 
     def test_create_user_admin(self):

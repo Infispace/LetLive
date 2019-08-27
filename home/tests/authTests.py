@@ -26,8 +26,8 @@ class AuthTests(TestCase, TestUtils):
         self.client = Client()
         
         # test user attributes
-        self.username = self.seeder.faker.first_name()
-        self.password = self.seeder.faker.word()
+        self.username = self.create_username()
+        self.password = self.create_password()
         user = User.objects.create(username=self.username)
         user.set_password(self.password)
 

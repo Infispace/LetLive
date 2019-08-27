@@ -25,26 +25,10 @@ home.tests.testUtils module
    :undoc-members:
    :show-inheritance:
 
-home.tests.tests module
------------------------
-
-.. automodule:: home.tests.tests
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 home.tests.userClientTests module
 ---------------------------------
 
 .. automodule:: home.tests.userClientTests
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-home.tests.userPermission module
---------------------------------
-
-.. automodule:: home.tests.userPermission
    :members:
    :undoc-members:
    :show-inheritance:

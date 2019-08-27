@@ -21,7 +21,7 @@ class UserClientTests(TestCase, TestUtils):
         self.client = Client()
         
         # seed test user
-        username = self.seeder.faker.first_name()
+        username = self.create_username()
         self.user = User.objects.create(username=username)
 
     def test_redirect_login(self):

@@ -16,6 +16,7 @@ Subpackages
    home.models
    home.templatetags
    home.tests
+   home.urls
    home.views
 
 Submodules
@@ -33,14 +34,6 @@ home.apps module
 ----------------
 
 .. automodule:: home.apps
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-home.urls module
-----------------
-
-.. automodule:: home.urls
    :members:
    :undoc-members:
    :show-inheritance:
