@@ -1,13 +1,17 @@
 from django.db import models
 
 class Topic(models.Model):
+    #: The topic name. It is unique.
     topic_name = models.CharField(max_length=250, unique=True)
+    #: Brief intro about the topic
     intro = models.TextField()
+    #: the parent topic. Relationship with `sub_topics`.
     parent_topic = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
         null=True,
-        blank=True
+        blank=True,
+        related_name='sub_topics'
     )
 
     def save(self, *args, **kwargs):

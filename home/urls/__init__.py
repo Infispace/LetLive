@@ -18,5 +18,5 @@ urlpatterns = [
     path(r'accounts/', include('home.urls.accountsUrls')),
     path(r'topics/', include('home.urls.topicsUrls')),
     path(r'users/', include('home.urls.usersUrls')),
-    path(r'', include('home.urls.urls')),
+    path(r'', include('home.urls.otherUrls')),
 ]

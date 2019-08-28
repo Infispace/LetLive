@@ -15,6 +15,10 @@ context:
     <h2>{{ topic.topic_name }}</h2>
     <p>{{ topic.intro }}</p>
 
+    <p>{% for sub_topic in topic.sub_topics.all %}
+      {{ sub_topic }},
+    {% endfor %}</p>
+
     <a
       class="btn btn-primary btn-sm"
       href="{% url 'home:topic_view' topic.id %}"

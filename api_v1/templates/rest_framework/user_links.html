@@ -15,6 +15,14 @@ context:
   {% if user.is_authenticated %}        
     <a 
       class="dropdown-item" 
+      href="{% url 'home:index' %}"
+    >
+      <i class="fas fa-home mr-2"></i>
+      Site
+    </a>
+    
+    <a 
+      class="dropdown-item" 
       href="{% url 'api_v1:profile_detail' %}"
     >
       <i class="fas fa-user mr-2"></i>
