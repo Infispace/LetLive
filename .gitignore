@@ -110,10 +110,6 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-#migrations
-home/migrations/0*.py
-api_v1/migrations/0*.py
-
 # backup files
 *~
 
