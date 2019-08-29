@@ -1,67 +1,33 @@
-<div class="d-flex bd-highlight mb-3  p-3 border-bottom border-primary">
-  <a
-    class=" mr-2 btn {% if page == 'my_blog' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:article_default' %}"
-  >
-    My Blog
-  </a>
-  <a
-    class="mr-2 btn {% if blog_filter == 'published' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:article_filter' 'published' %}"
-  >
-    Published
-  </a>
-  <a
-    class="btn {% if blog_filter == 'pending' %}
-      btn-primary
-    {% else %}
-      btn-secondary
-    {% endif %}"
-    role="button"
-    href="{% url 'home:article_filter' 'pending' %}"
-  >
-    Pending
-  </a>
-  <a
-    class="btn btn-primary ml-auto"
-    role="button"
-    href="{% url 'home:article_new' %}"
-  >
-    Write Article
-  </a>
-</div>
+<!--
+Html Template for Article list. Displays a list of Articles
 
-{% if blog_published is not None%}
+context:
+{
+  'article_list': 'the list of articles',
+}
+-->
+
+{% if page == 'blog_published' %}
   <h1>Published Articles</h1>
   <hr>
 {% endif %}
-{% for article in blog_published %}
+{% for article in article_list %}
     <h2>{{ article.title }}</h2>
     <p>{{ article.publish_date }}</p>
     <a
       class="btn btn-primary btn-sm ml-auto"
       role="button"
-      href="{% url 'home:article' article.id %}"
+      href="{% url 'home:article_view' article.id %}"
     >
       View Article
     </a>
 {% endfor %}
 
-{% if blog_pending is not None%}
+{% if page == 'blog_pending' %}
   <h1>Pending Articles</h1>
   <hr>
 {% endif %}
-{% for article in blog_pending %}
+{% for article in article_list %}
     <h2>{{ article.title }}</h2>
     <p>{{ article.created_date_time }}</p>
 
@@ -71,7 +37,7 @@
     <a
       class="btn btn-primary btn-sm ml-auto"
       role="button"
-      href="{% url 'home:article' article.id %}"
+      href="{% url 'home:article_view' article.id %}"
     >
       View Article
     </a>

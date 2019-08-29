@@ -49,7 +49,7 @@ context:
   <a
     class="nav-link"
     href="{% if page == 'my_blog' %} # {% else %}
-      {% url 'home:article_default' %}
+      {% url 'home:blog_default' %}
     {% endif %}"
   />
     My Blog
@@ -75,7 +75,8 @@ context:
 </li>
 {% endif %}
 
-<!-- publish article menu item -->
+{% comment %}
+<!-- publish article menu item --
 {% has_perm user 'home.publish_article' as publish_article %}
 {% if publish_article %}
   <li class="nav-item {% if page == 'publish_article' %} active border-bottom {% endif %}">
@@ -92,6 +93,8 @@ context:
     </a>
   </li>
 {% endif %}
+-->
+{% endcomment %}
 
 <!-- users menu item -->
 {% has_perm user 'home.add_publisher' as add_publisher %}

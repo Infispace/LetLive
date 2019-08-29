@@ -1,15 +1,7 @@
-{% if page == 'article_delete'%}
-  <form action="{% url 'home:article_delete' article.id %}" method="post">
-{% elif page == 'article_publish' %}
-  <form action="{% url 'home:article_publish' article.id %}" method="post">
-{% else %}
-  <form action="{% url 'home:publish_article_id' article.id %}" method="post">
-{% endif %}
+<form method="post">
   {% csrf_token %}
 
-  <table>
-    {{form.as_table}}
-  </table>
+  {{ article_form }}
 
   {% if page == 'article_delete'%}
     <button type="submit" name="button">Delete</button>

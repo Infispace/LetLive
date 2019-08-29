@@ -1,45 +1,64 @@
+<!--
+Html template for displaying the article form for new and edit
+
+context:
+{
+  'article_form': 'the article form',
+}
+-->
 <div class="container my-5 border border-dark rounded shadow p-2 bg-white">
-  <form action="{% if page == 'article_new' %} {% url 'home:article_new' %}
-    {% elif page == 'article_edit' %} {% url 'home:article_edit' article.id %}
-    {% endif %}" method="post" id="new-article-form" autocomplete="off"
-  />
+  {% if article_form.errors or error_string %}
+    {% if error_string %}
+      <!-- display error string -->
+      <div class="alert alert-danger role="alert" >
+        {{ error_string }}
+      </div>
+    {% endif %}
+    
+    {% if article_form.errors %}
+      <!-- Form Alerts -->
+      <div class="alert alert-warning role="alert" >
+        There were errors found:
+        {{ article_form.non_field_errors }}
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <form method="post" id="new-article-form" autocomplete="off">
     {% csrf_token %}
 
     <div class="form-group">
-      <label for="{{ form.topic.id_for_label }}">{{ form.topic.label }}</label>
-      {{ form.topic }}
+      {{ article_form.topic.label_tag }}
+      {{ article_form.topic }}
       <small class="form-text text-danger">
-        {{ form.topic.errors }}
+        {{ article_form.topic.errors }}
       </small>
     </div>
     <div class="form-group">
-      <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
-      {{ form.title }}
+      {{ article_form.title.label_tag }}
+      {{ article_form.title }}
       <small class="form-text text-danger">
-        {{ form.title.errors }}
+        {{ article_form.title.errors }}
       </small>
     </div>
     <div id="content-div">
-      <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
-      {{ form.content }}
+      {{ article_form.content.label_tag }}
+      {{ article_form.content }}
     </div>  
 
     <div class="d-flex bd-highlight p-3">
-      <button type="submit" class="btn btn-success" id="save-btn">
+      <button type="submit" class="btn btn-primary" id="save-btn">
         Save
       </button>
       <a
         id="new-cancel-btn"
         class="btn btn-secondary ml-1"
         role="button"
-        href="{% url 'home:article_default' %}"
+        href=""
       />
         Cancel
       </a>
-      
-      <button type="submit" class="btn btn-primary ml-auto" id="preview-btn"> 
-        Preview
-      </button>
     </div>
   </form>
 </div>
+

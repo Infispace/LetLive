@@ -24,7 +24,7 @@ context:
   {% endif %}
 {% endif %}
 
-<form action="{% url 'home:user_new' %}" method="post">
+<form method="post">
   {% csrf_token %}
 
   {% for field in user_form.visible_fields %}

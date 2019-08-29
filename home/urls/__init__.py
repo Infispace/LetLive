@@ -16,7 +16,8 @@ app_name = 'home'
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path(r'accounts/', include('home.urls.accountsUrls')),
+    path(r'articles/', include('home.urls.articlesUrls')),
     path(r'topics/', include('home.urls.topicsUrls')),
     path(r'users/', include('home.urls.usersUrls')),
-    path(r'', include('home.urls.otherUrls')),
+    path(r'blog/', include('home.urls.blogsUrls')),
 ]

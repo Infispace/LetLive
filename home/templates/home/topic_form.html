@@ -4,16 +4,10 @@ Html Template for displaying form for topics
 context:
 {
   'topic_form': 'the topics form',
-  'page': 'page passed from urls.py',
 }
 -->
 
-{% if page == 'topic_new' %}
-  <form action="{% url 'home:topic_new' %}" method="post">
-{% elif page == 'topic_edit' %}
-  <form action="{% url 'home:topic_edit' topic.id %}" method="post">
-{% endif %}
-
+<form method="post">
   {% csrf_token %}
 
   {% for field in topic_form.visible_fields %}

@@ -1,0 +1,57 @@
+<!--
+Html Template for Blog Page Master
+
+context:
+{
+  'page': 'page passed from urls.py',
+}
+-->
+{% extends "home/base.html" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block menubar_links %}
+  {% load menu_bar %}
+  {% menu_bar %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="container p-3">
+    <div class="d-flex bd-highlight mb-3  p-3 border-bottom border-primary">
+      <a
+        class="mr-2 btn {% if page == 'blog_published' %}
+          btn-primary
+        {% else %}
+          btn-secondary
+        {% endif %}"
+        role="button"
+        href="{% url 'home:blog_published' %}"
+      >
+        Published
+      </a>
+      <a
+        class="btn {% if page == 'blog_pending' %}
+          btn-primary
+        {% else %}
+          btn-secondary
+        {% endif %}"
+        role="button"
+        href="{% url 'home:blog_pending' %}"
+      >
+        Pending
+      </a>
+      <a
+        class="btn btn-primary ml-auto"
+        role="button"
+        href="{% url 'home:article_new' %}"
+      >
+        Write Article
+      </a>
+    </div>
+
+    {% include 'home/article_list.html' %}
+  </div>
+
+{% endblock %}
+

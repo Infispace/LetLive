@@ -5,6 +5,9 @@ class Topic(models.Model):
     topic_name = models.CharField(max_length=250, unique=True)
     #: Brief intro about the topic
     intro = models.TextField()
+    #: Timestamps
+    created_date_time = models.DateTimeField(auto_now_add=True)
+    updated_date_time = models.DateTimeField(auto_now=True)
     #: the parent topic. Relationship with `sub_topics`.
     parent_topic = models.ForeignKey(
         'self',

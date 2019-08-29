@@ -13,7 +13,10 @@ from django.db import transaction
 
 
 def upload_location(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_avatars/user_<id>/<filename>
+    """
+    Upload location for user avators.
+    File will be uploaded to MEDIA_ROOT/user_avatars/user_<id>/<filename>
+    """
     return '{0}/user_avatars/user_{1}/{2}'.format(
         settings.MEDIA_ROOT,
         instance.user.id,

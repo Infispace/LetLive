@@ -6,7 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
+from django.conf import settings
 from django.urls import reverse
 from home.models import Topic
 from home.forms import TopicForm

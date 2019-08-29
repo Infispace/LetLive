@@ -9,6 +9,7 @@ LetLive Web Application Views:
 * home.views.userView.UsersView
 * home.views.publishView.PublishView
 """
+from .blogView import BlogView
 from .articleView import ArticleView
 from .indexView import IndexView
 from .profileView import ProfileView

@@ -7,6 +7,9 @@ from home.models import Topic
 from .bootstrapForm import BootstrapForm
 
 class ArticleForm(ModelForm, BootstrapForm):
+    """
+    Form 
+    """
     def __init__(self, *args, **kwargs):
           super().__init__(*args, **kwargs)
           self.add_form_control(self.fields)
