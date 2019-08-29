@@ -14,7 +14,6 @@ from django.conf import settings
 from django.views.generic import TemplateView
 from home.forms import UserForm
 from home.forms import AuthorForm
-from home.forms import PublisherForm
 from home.forms import SubscriberForm
 from home.forms import AdminForm
 
@@ -42,12 +41,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         try:
             user_instance = self.request.user.author
             user_form_class = AuthorForm
-        except ObjectDoesNotExist:
-            pass
-
-        try:
-            user_instance = self.request.user.publisher
-            user_form_class = PublisherForm
         except ObjectDoesNotExist:
             pass
 

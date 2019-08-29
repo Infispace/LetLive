@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from api_v1.serializers import AdminSerializer
 from api_v1.serializers import AuthorSerializer
-from api_v1.serializers import PublisherSerializer
 from api_v1.serializers import SubscriberSerializer
 
 
@@ -31,11 +30,6 @@ class ProfileViewSet(RetrieveUpdateDestroyAPIView):
 
         try:
             obj = self.request.user.admin
-        except ObjectDoesNotExist:
-            pass
-
-        try:
-            obj = self.request.user.publisher
         except ObjectDoesNotExist:
             pass
 
@@ -70,12 +64,6 @@ class ProfileViewSet(RetrieveUpdateDestroyAPIView):
         try:
             self.request.user.subscriber
             serializer_class = SubscriberSerializer
-        except ObjectDoesNotExist:
-            pass
-
-        try:
-            self.request.user.publisher
-            serializer_class = PublisherSerializer
         except ObjectDoesNotExist:
             pass
 

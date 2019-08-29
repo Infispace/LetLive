@@ -18,7 +18,6 @@ router.register(r'topics', views.TopicViewSet)
 router.register(r'admins', views.AdminViewSet)
 router.register(r'authors', views.AuthorViewSet)
 router.register(r'subscribers', views.SubscriberViewSet)
-router.register(r'publishers', views.PublisherViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 

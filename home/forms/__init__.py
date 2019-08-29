@@ -9,7 +9,6 @@ from .articleForm import TopicForm
 from .articleForm import TopicDeleteForm
 from .userForm import UserForm
 from .userForm import AuthorForm
-from .userForm import PublisherForm 
 from .userForm import SubscriberForm
 from .userForm import AdminForm
 from .userForm import DeleteUserForm

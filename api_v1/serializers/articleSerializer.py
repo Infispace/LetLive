@@ -10,12 +10,6 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
         #queryset=User.objects.filter(is_active=True),
     )
     
-    publisher = serializers.HyperlinkedRelatedField(
-        many=False,
-        read_only=True,
-        view_name='api_v1:publisher-detail',
-    )
-    
     topic = serializers.HyperlinkedRelatedField(
         many=False,
         read_only=True,
@@ -24,19 +18,7 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = Article
-        fields = (
-          'url',
-          'id',
-          'author',
-          'title',
-          'publisher',
-          'content',
-          'publish_date_time',
-          'draft',
-          'updated_date_time',
-          'created_date_time',
-          'topic'
-        )
+        fields = '__all__'
         
         extra_kwargs = {
             'url': {

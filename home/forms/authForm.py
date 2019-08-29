@@ -20,22 +20,12 @@ class RegisterUserForm(UserCreationForm, BootstrapForm):
     * username
     * password1
     * password2
-    * is_author
     """
     #: Email field for new user email
     email = forms.EmailField()
-    
-    #: is_author field to choose between 
-    #: `home.models.UserModel.Author` or
-    #: `home.models.UserModel.Subcriber`
-    is_author = forms.BooleanField(
-      label = 'Register as an author', 
-      required=False,
-    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['is_author'].widget = forms.HiddenInput()
         self.add_form_control(self.fields)
 
     class Meta(UserCreationForm.Meta):

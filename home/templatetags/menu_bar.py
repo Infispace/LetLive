@@ -21,7 +21,6 @@ def menu_bar(context):
     if (page == 'user_default' 
         or page == 'user_new'
         or page == 'user_author'
-        or page == 'user_publisher'
         or page == 'user_view'
         or page == 'user_delete'
     ):

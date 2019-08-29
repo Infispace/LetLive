@@ -48,20 +48,6 @@ class AppUsersTests(TestCase, TestUtils):
         except Error as e:
             print('>Test Error: ', e)
 
-    def test_create_user_publisher(self):
-        """
-        Tests home.userModel.Publisher.objects.create
-        """
-        try:
-            # create AppUser of Author model
-            publisher = userModel.Publisher.objects.create(user=self.user)
-            
-            # assert user attribute
-            self.assertEqual(publisher.user_level, userModel.AppUser.PUBLISHER)
-
-        except Error as e:
-            print('>Test Error: ', e)
-
     def test_create_user_subscriber(self):
         """
         Tests home.userModel.AppUser.objects.create

@@ -4,7 +4,6 @@
 from django import forms
 from django.contrib.auth.models import User
 from home.models import Author
-from home.models import Publisher
 from home.models import Subscriber
 from home.models import Admin
 from .bootstrapForm import BootstrapForm
@@ -59,16 +58,6 @@ class AuthorForm(AppUserForm):
     class Meta(AppUserForm.Meta):
         model = Author
         exclude = ['user', 'author_type']
-
-class PublisherForm(AppUserForm):
-    """
-    Form to edit `home.models.Publisher` model.
-    
-    Inherits `home.forms.AppUserForm` form.
-    """
-    class Meta(AppUserForm.Meta):
-        model = Author
-        fields = '__all__'
 
 class SubscriberForm(AppUserForm):
     """

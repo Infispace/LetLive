@@ -133,7 +133,6 @@ class UserClientTests(TestCase, TestUtils):
             'username': username,
             'password1': password,
             'password2': password,
-            'is_author': False,
         })
 
         # assert response
@@ -155,7 +154,6 @@ class UserClientTests(TestCase, TestUtils):
         
         # assert response
         self.assertIsInstance(response.context['authors_list'], QuerySet)
-        self.assertIsInstance(response.context['publishers_list'], QuerySet)
 
         # client logout
         self.client.logout()

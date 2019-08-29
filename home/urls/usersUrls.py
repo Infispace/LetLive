@@ -17,13 +17,17 @@ urlpatterns = [
         extra_context={'page': 'user_new'}
     ), name='user_new'),
     
+    path('admins/', UsersView.as_view(
+        extra_context={'page': 'user_admin'}
+    ), name='user_admin'),
+    
     path('authors/', UsersView.as_view(
         extra_context={'page': 'user_author'}
     ), name='user_author'),
     
-    path('publishers/', UsersView.as_view(
-        extra_context={'page': 'user_publisher'}
-    ), name='user_publisher'),
+    path('subscribers/', UsersView.as_view(
+        extra_context={'page': 'user_subscriber'}
+    ), name='user_subscriber'),
     
     path('<int:user_id>/', UsersView.as_view(
         extra_context={'page': 'user_view'}

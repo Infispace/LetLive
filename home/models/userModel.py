@@ -36,8 +36,6 @@ def set_user_groups(user, user_level):
         user_group = Group.objects.get(name='Subscribers')
     elif(user_level == AppUser.AUTHOR):
         user_group = Group.objects.get(name='Authors')
-    elif(user_level == AppUser.PUBLISHER):
-        user_group = Group.objects.get(name='Publishers')
     elif(user_level == AppUser.ADMIN):
         user.is_staff = True
         user_group = Group.objects.get(name='Administrators')
@@ -73,8 +71,9 @@ class AppUser(models.Model):
     * home.models.userModel.Admin
     * home.models.userModel.Author
     * home.models.userModel.Subscriber
-    * home.models.userModel.Publisher
     """
+    #: The user model OneToOne relationship with the AppUser.
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     #: The user's telephone number.
     telephone = models.CharField(max_length=100, null=True, blank=True)
     #: The user's physical address.
@@ -84,32 +83,22 @@ class AppUser(models.Model):
     #: Timestamps
     created_date_time = models.DateTimeField(auto_now_add=True)
     updated_date_time = models.DateTimeField(auto_now=True)
-    #: The user model OneToOne relationship with the AppUser.
-    user = models.OneToOneField(
-        User, 
-        on_delete=models.CASCADE, 
-        unique=True, 
-        blank=False, 
-        editable=False
-    )
     #: The user's profile picture.
     avatar = models.ImageField(
-        upload_to=upload_location, 
-        #height_field=250, 
-        #width_field=250, 
+        upload_to=upload_location,
+        height_field=300, 
+        width_field=300, 
         null=True, 
         blank=True
     )
 
     ADMIN = 'ADM'       #: Admin user level. Manages users.
     AUTHOR = 'AUT'      #: Author user level. Creates articles.
-    PUBLISHER = 'PUB'   #: publisher user level. Publishes articles.
     SUBSCRIBER = 'SUB'  #: subscriber user level. Views articles.
     
     #: AppUser user level choices.
     USER_LEVEL = (
         (AUTHOR, 'Author'),
-        (PUBLISHER, 'Publisher'),
         (ADMIN, 'Administrator'),
         (SUBSCRIBER, 'Subscriber'),
     )
@@ -123,38 +112,31 @@ class AppUser(models.Model):
             'view_article',
         ],
         'Authors': [
-            # all permissions for articles except publish
+            # all permissions for articles
             'add_article',
             'change_article',
             'delete_article',
             'view_article',
-        ],
-        'Publishers': [
-            # all permissions for articles except add
-            'change_article',
-            'delete_article',
             'publish_article',
-            'view_article',
-            # all permissions for topics
-            'add_topic',
-            'change_topic',
-            'delete_topic',
-            'view_topic',
         ],
         'Administrators': [
             # all permissions for users except edit
             'add_user',
             'view_user',
             'delete_user',
-            # all permissions for publishers except edit
-            'add_publisher',
-            'delete_publisher',
-            'view_publisher',
             #can view and delete author
             'view_author',
             'delete_author',
+            #can view and delete subscriber
+            'view_subscriber',
+            'delete_subscriber',
             # can view admin
             'view_admin',
+            # all permissions for topics
+            'add_topic',
+            'change_topic',
+            'delete_topic',
+            'view_topic',
         ],
     }
 
@@ -167,7 +149,7 @@ class AppUser(models.Model):
         """
         try:
             user.subscriber
-            user.groups.set([Group.objects.get(name='Subscribers')])
+            user.groups.add([Group.objects.get(name='Subscribers')])
             user.save()
             return
         except ObjectDoesNotExist:
@@ -175,15 +157,7 @@ class AppUser(models.Model):
             
         try:
             user.author
-            user.groups.set([Group.objects.get(name='Authors')])
-            user.save()
-            return
-        except ObjectDoesNotExist:
-            pass
-
-        try:
-            user.publisher
-            user.groups.set([Group.objects.get(name='Publishers')])
+            user.groups.add([Group.objects.get(name='Authors')])
             user.save()
             return
         except ObjectDoesNotExist:
@@ -191,7 +165,7 @@ class AppUser(models.Model):
 
         try:
             user.admin
-            user.groups.set([Group.objects.get(name='Administrators')])
+            user.groups.add([Group.objects.get(name='Administrators')])
             user.save()
             return
         except ObjectDoesNotExist:
@@ -234,8 +208,9 @@ class AppUser(models.Model):
         super().__init__(*args, **kwargs)
         
         # initial user and user_level
-        self.__user = self.user
-        self.__user_level = self.user_level
+        if self.id != None:
+            self.__user = self.user
+            self.__user_level = self.user_level
         
         # test user groups saved in db
         try:
@@ -261,22 +236,19 @@ class AppUser(models.Model):
         """
         Prevents changing the user relationship and user levels.
         Also sets new user group.
-        
+
         calls ``super().save(*args, **kwargs)``
         """
-        # reset user to original
-        if self.id and self.user != self.__user:
-            self.user = self.__user
-        
-        # reset user_level to original
-        if self.id and self.user_level != self.__user_level:
-            self.user_level = self.__user_level
-        
         # set user group for new AppUser
         if self.id == None:
             set_user_groups(self.user, self.user_level)
             self.__user_level = self.user_level
             self.__user = self.user
+
+        # reset user and user_level to original
+        else:
+            self.user = self.__user
+            self.user_level = self.__user_level
 
         # save and return
         return super().save(*args, **kwargs)
@@ -326,19 +298,6 @@ class Author(AppUser):
     user_level = models.CharField(
         max_length=3,
         default=AppUser.AUTHOR, 
-        editable=False
-    )
-    
-    
-class Publisher(AppUser):
-    """
-    Inherits the app user.
-    Should have a user level 'PUB'
-    """
-    #: The user's user level, read only.
-    user_level = models.CharField(
-        max_length=3,
-        default=AppUser.PUBLISHER, 
         editable=False
     )
 

@@ -32,7 +32,7 @@
     {{ article.created_date_time }} <br>
     Draft? {{ article.draft }} <br>
     <div class="d-flex">
-    {% if article.publisher is None %}  
+    {% if article.published is False %}  
       <a
         class="btn btn-secondary btn-sm"
         role="button"

@@ -69,7 +69,6 @@ class AuthTests(TestCase, TestUtils):
             'username': username,
             'password1': password,
             'password2': password,
-            'is_author': False,
         })
 
         # assert response

@@ -25,8 +25,9 @@ def render_side_menu(page):
     # set users page side menu
     if (page == 'user_default' 
         or page == 'user_new'
+        or page == 'user_admin'
         or page == 'user_author'
-        or page == 'user_publisher'
+        or page == 'user_subscriber'
         or page == 'user_view'
         or page == 'user_delete'
     ):
@@ -94,8 +95,9 @@ def side_menu(context):
     # set users page side menu
     if (page == 'user_default' 
         or page == 'user_new'
+        or page == 'user_admin'
         or page == 'user_author'
-        or page == 'user_publisher'
+        or page == 'user_subscriber'
         or page == 'user_view'
         or page == 'user_delete'
     ):
@@ -105,29 +107,36 @@ def side_menu(context):
             'active_page' : 'user_default',
         }
         
+        admins = {
+            'url' : reverse('home:user_admin'),
+            'text' : 'Administrators',
+            'active_page' : 'user_admin',
+        }
+        
         authors = {
             'url' : reverse('home:user_author'),
             'text' : 'Authors',
             'active_page' : 'user_author',
         }
         
-        publishers = {
-            'url' : reverse('home:user_publisher'),
-            'text' : 'Publishers',
-            'active_page' : 'user_publisher',
+        subscribers = {
+            'url' : reverse('home:user_subscriber'),
+            'text' : 'Subscribers',
+            'active_page' : 'user_subscriber',
         }
         
-        add_publisher = {
+        add_new = {
             'url' : reverse('home:user_new'),
-            'text' : 'Add Publisher',
+            'text' : 'Add New User',
             'active_page' : 'user_new',
         }
         
         menu_links = [
             all_users,
             authors,
-            publishers,
-            add_publisher,
+            subscribers,
+            admins,
+            add_new,
         ]
         
     # set topics page side menu

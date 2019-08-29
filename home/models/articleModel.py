@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db import models
 from home.models import Topic
 from home.models import Author
-from home.models import Publisher
 
 
 def upload_location(instance, filename):
@@ -32,11 +31,11 @@ class ArticleManager(models.Manager):
         """
         if status:
             return self.filter(
-                draft=False
+                published=True
             ).filter(publish_date_time__lte=timezone.now())
 
         # return non published articles
-        return self.filter(publish_date_time=None)
+        return self.filter(published=False)
 
 class Article(models.Model):
     #: The author of the article.
@@ -47,15 +46,8 @@ class Article(models.Model):
     title = models.CharField(max_length=120)
     #: The article's content. It is a html content.
     content = models.TextField()
-    #: Determines is the article is a draft or ready to be published.
-    draft = models.BooleanField(default=True)
-    #: The publisher who published the article.
-    publisher = models.ForeignKey(
-        Publisher, 
-        null=True, 
-        blank=True, 
-        on_delete=models.SET_NULL
-    )
+    #: Determines is the article is published or not.
+    published = models.BooleanField(default=False)
     #: The published date.
     publish_date_time= models.DateTimeField(null=True)
     #: Timestamps.

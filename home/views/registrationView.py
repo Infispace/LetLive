@@ -27,30 +27,6 @@ class RegistrationView(TemplateView):
     #: The error string if an error occurs
     error_string = ''
     
-    @transaction.atomic
-    def signup(self):
-        """
-        Creates a new user.
-        The new user is either `SUBSCRIBER` or `AUTHOR`
-        
-        :param request: the django HttpRequest object
-        :type request: django.http.request.HttpRequest
-        :return: True or False
-        :rtype: bool
-        """
-        success = False
-        if self.form.is_valid():
-            # create new user
-            user = self.form.save()
-            
-            # set user level of the new user
-            if self.form.cleaned_data['is_author']:
-                success = Author.objects.create(user=user)
-            else:
-                success = Subscriber.objects.create(user=user)
-
-        return success
-
     def get(self, request, next='', *args, **kwargs):
         """
         Called if HTTP GET is requested.
@@ -112,7 +88,11 @@ class RegistrationView(TemplateView):
         success = False
         try: 
             self.form = RegisterUserForm(request.POST)
-            success = self.signup()
+            if self.form.is_valid():
+                # create new user
+                user = self.form.save()
+                success = True
+
         except Exception as e:
             success = False
             self.error_string = 'There was an error. Please try again.'

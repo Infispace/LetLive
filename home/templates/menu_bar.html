@@ -75,30 +75,9 @@ context:
 </li>
 {% endif %}
 
-{% comment %}
-<!-- publish article menu item --
-{% has_perm user 'home.publish_article' as publish_article %}
-{% if publish_article %}
-  <li class="nav-item {% if page == 'publish_article' %} active border-bottom {% endif %}">
-    <a
-      class="nav-link"
-      href="{% if page == 'publish_article' %} # {% else %}
-        {% url 'home:publish_article' %}
-      {% endif %}"
-    />
-      Publish Articles
-      {% if page == 'publish_article' %}
-        <span class="sr-only">(current)</span>
-      {% endif %}
-    </a>
-  </li>
-{% endif %}
--->
-{% endcomment %}
-
 <!-- users menu item -->
-{% has_perm user 'home.add_publisher' as add_publisher %}
-{% if add_publisher %}
+{% has_perm user 'auth.add_user' as add_user %}
+{% if add_user %}
   <li class="nav-item {% if page == 'users' %} active border-bottom {% endif %}">
     <a
       class="nav-link"
