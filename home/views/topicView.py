@@ -14,7 +14,7 @@ from home.forms import TopicDeleteForm
 
 class TopicView(PermissionRequiredMixin, TemplateView):
     #: The html template to render.
-    template_name = 'home/topics.html'
+    template_name = 'home/topic_templates/topics_base.html'
     #: The topic to view, edit or delete.
     topic = None
     #: The Topic list.

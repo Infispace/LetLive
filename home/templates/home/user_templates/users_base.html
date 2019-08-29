@@ -33,13 +33,13 @@ context:
       <div class="col">
         {% if page == 'user_default' or page == 'user_author' or page == 'user_publisher' %}
           <!-- show users list -->
-          {% include 'home/users_list.html' %}
+          {% include 'home/user_templates/users_list.html' %}
         {% elif page == 'user_delete' %}
           <!-- show delete user page -->
-          {% include 'home/user_delete.html' %}
+          {% include 'home/user_templates/user_delete.html' %}
         {% elif page == 'user_new' %}
           <!-- show new user form -->
-          {% include 'home/user_form.html' %}
+          {% include 'home/user_templates/user_form.html' %}
         {% endif %}
       </div>
     </div>

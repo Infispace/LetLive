@@ -21,7 +21,7 @@ class RegistrationView(TemplateView):
     Class for registering new users and authenticating them.
     """
     #: The html template to render.
-    template_name = 'home/login.html'
+    template_name = 'home/account_templates/login.html'
     #: The html form to render
     form = None
     #: The error string if an error occurs

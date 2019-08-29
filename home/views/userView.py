@@ -29,7 +29,7 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         'home.delete_author'
     )
     #: The html template to render.
-    template_name = 'home/users.html'
+    template_name = 'home/user_templates/users_base.html'
     #: The list of users with author user level.
     authors_list = None
     #: The list of users with publisher user level.

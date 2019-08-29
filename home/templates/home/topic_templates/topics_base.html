@@ -34,13 +34,13 @@ context:
       <!-- main body -->
       <div class="col">
         {% if page == 'topic_edit' or page == 'topic_new' %}
-          {% include 'home/topic_form.html' %}
+          {% include 'home/topic_templates/topic_form.html' %}
         {% elif page == 'topic_view' %}
-          {% include 'home/topic_view.html' %}
+          {% include 'home/topic_templates/topic_view.html' %}
         {% elif page == 'topic_delete' %}
-          {% include 'home/topic_delete.html' %}
+          {% include 'home/topic_templates/topic_delete.html' %}
         {% elif page == 'topic_default' %}
-          {% include 'home/topic_list.html' %}
+          {% include 'home/topic_templates/topic_list.html' %}
         {% endif %}
       </div>
     </div>

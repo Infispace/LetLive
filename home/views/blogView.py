@@ -14,7 +14,7 @@ from home.forms import ArticleConfirmForm
 
 class BlogView(PermissionRequiredMixin, TemplateView):
     #: The template to use for the view.
-    template_name = 'home/blog.html'
+    template_name = 'home/article_templates/blog_base.html'
     #: The list of articles to display
     article_list = None
     

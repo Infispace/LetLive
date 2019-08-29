@@ -13,7 +13,7 @@ context:
   <!-- drop down user menu -->
   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuOffset">
   {% if user.is_authenticated %}        
-    {% include 'home/user_drop_nav.html' %}
+    {% include 'user_drop_nav.html' %}
   {% else %}
 
     <form class="px-4 py-3" method="post" action="{% url 'home:user_login' %}">

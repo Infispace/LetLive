@@ -15,7 +15,7 @@ from home.forms import ArticleConfirmForm
 
 class ArticleView(PermissionRequiredMixin, TemplateView):
     #: The template to use for the view.
-    template_name = 'home/articles.html'
+    template_name = 'home/article_templates/articles_base.html'
     #: The article to view
     article = None
     #: The article form to render

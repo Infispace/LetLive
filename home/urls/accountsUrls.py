@@ -29,7 +29,7 @@ urlpatterns = [
     ), name='user_register'),        
     path('logout/', auth_views.LogoutView.as_view(), name='user_logout'),
     path('login/', auth_views.LoginView.as_view(
-        template_name='home/login.html',
+        template_name='home/account_templates/login.html',
         authentication_form=LoginForm,
         extra_context={'page': 'login'},
         redirect_authenticated_user=True,
@@ -37,22 +37,22 @@ urlpatterns = [
     # user change password
     path('password_change/', include([
         path('', auth_views.PasswordChangeView.as_view(
-            template_name='home/account.html',
+            template_name='home/account_templates/account_base.html',
             form_class=PasswordChangeForm,
             success_url='/accounts/password_change/done/',
             extra_context={'page': 'password_change'}
         ), name='password_change'),
         path('done/', auth_views.PasswordChangeDoneView.as_view(
-            template_name='home/account.html',
+            template_name='home/account_templates/account_base.html',
             extra_context={'page': 'password_change_done'}
         ), name='password_change_done'),
     ])),
     # user reset password
     path('password_reset/', include([
         path('', auth_views.PasswordResetView.as_view(
-            template_name='home/password_reset.html',
+            template_name='home/account_templates/password_reset.html',
             form_class=PasswordResetForm,
-            email_template_name='home/password_reset_email.html'
+            email_template_name='home/account_templates/password_reset_email.html'
         ), name='password_reset'),
         path('done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     ])),

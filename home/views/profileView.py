@@ -23,7 +23,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     Class for user profile
     """
     #: The html template to render.
-    template_name = 'home/account.html'
+    template_name = 'home/account_templates/account_base.html'
     #: The authenticated user.
     view_user = None
     #: The html form for AppUser Profile to render
