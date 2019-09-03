@@ -3,8 +3,10 @@ Html template to edit user. Displays user forms
 
 context:
 {
-  'form_user': 'User model form',
-  'form_profile': 'AppUser form',
+  'user_form': 'User model form',
+  'admin_form': 'admin form',
+  'author_form': 'author form',
+  'subscriber_form': 'subscriber form',
   'error_string': 'Error to be displayed',
 }
 -->
@@ -15,14 +17,16 @@ context:
   </div>
 {% endif %}
 
-{% if form_profile.errors or form_user.errors %}
+{% if form_profile.errors or user_form.errors %}
   <!-- Form Alerts -->
   <div class="alert alert-warning role="alert" >
     There were errors found:
     {% if form_profile.errors %}
       {{ form_profile.non_field_errors }}
-    {% elif form_user.errors %}
-      {{ form_user.non_field_errors }}
+    {% endif %}
+    
+    {% if user_form.errors %}
+      {{ user_form.non_field_errors }}
     {% endif %}
   </div>
 {% endif %}
@@ -35,7 +39,7 @@ context:
   {% csrf_token %}
 
   <!-- User Model Attributes -->
-  {% for field in form_user.visible_fields %}
+  {% for field in user_form.visible_fields %}
     <div class="form-group">
       {{ field.label_tag }}
       {{ field }}
@@ -45,8 +49,24 @@ context:
     </div>
   {% endfor %}
 
-  <!-- AppUser Model Attributes -->
-  {% for field in form_profile.visible_fields %}
+  <!-- User Avator -->
+  <div class="custom-file mt-2 mb-3">
+    <input
+      type="file"
+      class="custom-file-input"
+      id="{{ form_profile.avatar.id_for_label }}"
+      name="{{ form_profile.avatar.html_name }}"
+    >
+    <label 
+      class="custom-file-label" 
+      for="{{ form_profile.avatar.id_for_label }}"
+    >
+      Choose {{ form_profile.avatar.name.capitalize }}
+    </label>
+  </div>
+  
+  <!-- admin form -->
+  {% for field in admin_form.visible_fields %}
     <div class="form-group">
       {{ field.label_tag }}
       {{ field }}
@@ -55,22 +75,28 @@ context:
       </small>
     </div>
   {% endfor %}
-    
-  <!-- User Avator -->
-  <div class="custom-file mt-2 mb-3">
-    <input
-      type="file"
-      class="custom-file-input"
-      id="{{form_profile.avatar.id_for_label}}"
-      name="{{form_profile.avatar.html_name}}"
-    >
-    <label 
-      class="custom-file-label" 
-      for="{{form_profile.avatar.id_for_label}}"
-    >
-      Choose {{form_profile.avatar.name.capitalize}}
-    </label>
-  </div>
+  
+  <!-- author form -->
+  {% for field in author_form.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
+  
+  <!-- subscriber form -->
+  {% for field in subscriber_form.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
 
   <!-- Buttons -->
   <div class="p-3 border-top border-primary">
