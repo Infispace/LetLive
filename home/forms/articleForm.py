@@ -12,7 +12,7 @@ class ArticleForm(ModelForm, BootstrapForm):
     """
     def __init__(self, *args, **kwargs):
           super().__init__(*args, **kwargs)
-          self.add_form_control(self.fields)
+          self.add_form_control()
           self.fields['content'].label = "Article's Body"
           self.fields['title'].label = "Article's Title"
           self.fields['title'].required = True
@@ -26,7 +26,7 @@ class ArticleForm(ModelForm, BootstrapForm):
 class ArticleConfirmForm(ModelForm, BootstrapForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_form_control(self.fields)
+        self.add_form_control()
         self.fields['title'].widget.attrs.update({'readonly': True})
 
     class Meta:
@@ -36,7 +36,7 @@ class ArticleConfirmForm(ModelForm, BootstrapForm):
 class TopicForm(ModelForm, BootstrapForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_form_control(self.fields)
+        self.add_form_control()
         
     class Meta:
         model = Topic
@@ -45,9 +45,10 @@ class TopicForm(ModelForm, BootstrapForm):
 class TopicDeleteForm(ModelForm, BootstrapForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_form_control(self.fields)
+        self.add_form_control()
         self.fields['topic_name'].widget.attrs.update({'readonly': True})
 
     class Meta:
         model = Topic
         fields = ['topic_name']
+

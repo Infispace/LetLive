@@ -16,8 +16,9 @@ def render_side_menu(page):
     render_menu = False
     # set profile page side menu
     if (page == 'user_profile' 
-        or page == 'user_profile_edit' 
-        or page == 'password_change' 
+        or page == 'user_profile_edit'
+        or page == 'user_subscription'
+        or page == 'password_change'
         or page == 'password_change_done'
     ):
         render_menu = True
@@ -56,9 +57,10 @@ def side_menu(context):
     menu_links = []
 
     # set profile page side menu
-    if (page == 'user_profile' 
-        or page == 'user_profile_edit' 
-        or page == 'password_change' 
+    if (page == 'user_profile'
+        or page == 'user_profile_edit'
+        or page == 'user_subscription'
+        or page == 'password_change'
         or page == 'password_change_done'
     ):
         view_profile = {
@@ -74,9 +76,9 @@ def side_menu(context):
         }
         
         subscription = {
-            'url' : '#',
+            'url' : reverse('home:user_subscription'),
             'text' : 'My Subscription',
-            'active_page' : 'page_unknown',
+            'active_page' : 'user_subscription',
         }
         
         change_password = {

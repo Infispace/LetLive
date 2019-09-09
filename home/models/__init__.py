@@ -8,6 +8,7 @@ LetLive Web Application Models:
 * home.models.topicModel.Topic
 * home.models.articleModel.Article
 """
+from .userModel import change_user_groups
 from .userModel import AppUser
 from .userModel import Author
 from .userModel import Admin

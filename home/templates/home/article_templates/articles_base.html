@@ -31,6 +31,8 @@ context:
 
 {% if page == 'article_new' or page == 'article_edit' %}
 {% block js %}
+  {{ block.super }}
+  
   <!-- TinyMCE js -->
   {% load static %}
   <!-- using local -->  

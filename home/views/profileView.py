@@ -1,5 +1,5 @@
 """
-:synopsis: View and edit authenticated user profile
+:synopsis: View and edit authenticated user profile.
 """
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -16,6 +16,7 @@ from home.forms import UserForm
 from home.forms import AuthorForm
 from home.forms import SubscriberForm
 from home.forms import AdminForm
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     """
@@ -43,7 +44,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         author_instance = None
         subscriber_instance = None
         admin_instance = None
-        user_form_class = None
         
         try:
             author_instance = self.request.user.author
@@ -65,21 +65,23 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
         # set the profile forms for editing
         if self.request.method == 'POST':
-            self.author_form = user_form_class(
-                self.request.POST,
-                instance=author_instance
-            )
+            if author_instance != None:
+                self.author_form = AuthorForm(
+                    self.request.POST,
+                    instance=author_instance
+                )
 
-            self.subscriber_form = user_form_class(
-                self.request.POST,
-                instance=subscriber_instance
-            )
+            if subscriber_instance != None:
+                self.subscriber_form = SubscriberForm(
+                    self.request.POST,
+                    instance=subscriber_instance
+                )
 
-            self.admin_form = user_form_class(
-                self.request.POST,
-                instance=admin_instance
-            )
-
+            if admin_instance != None:
+                self.admin_form = AdminForm(
+                    self.request.POST,
+                    instance=admin_instance
+                )
 
     def save_profile_forms(self):
         # save User model attributes
@@ -152,7 +154,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         # save form data
         saved = False
         try:
-            save_profile_forms()
+            self.save_profile_forms()
             saved = True
         except Exception as e:
             saved = False
@@ -163,10 +165,12 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         # render template
         if saved:
             return HttpResponseRedirect(reverse('home:user_profile'))
-        else:
-          return render(request, self.template_name, {
-              'user_form': self.user_form,
-              'form_profile': self.form,
-              'error_string': self.error_string,
-              'page': page,
-          }, status=400)
+
+        return render(request, self.template_name, {
+            'user_form': self.user_form,
+            'admin_form': self.admin_form,
+            'author_form': self.author_form,
+            'subscriber_form': self.subscriber_form,
+            'error_string': self.error_string,
+            'page': page,
+        }, status=400)

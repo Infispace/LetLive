@@ -4,16 +4,18 @@ from rest_framework import viewsets
 from rest_framework import generics
 from home.models import Article
 from api_v1.serializers import ArticleSerializer
+from api_v1.permissions import IsOwnerOrReadOnly
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows articles to be viewed or edited.
     """
-    queryset = Article.objects.all().order_by('id')
+    queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     permission_classes = [
         IsAuthenticatedOrReadOnly,
-        DjangoModelPermissionsOrAnonReadOnly
+        DjangoModelPermissionsOrAnonReadOnly,
+        IsOwnerOrReadOnly,
     ]
 

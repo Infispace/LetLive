@@ -10,29 +10,19 @@ context:
 {% if page == 'blog_published' %}
   <h1>Published Articles</h1>
   <hr>
-{% endif %}
-{% for article in article_list %}
-    <h2>{{ article.title }}</h2>
-    <p>{{ article.publish_date }}</p>
-    <a
-      class="btn btn-primary btn-sm ml-auto"
-      role="button"
-      href="{% url 'home:article_view' article.id %}"
-    >
-      View Article
-    </a>
-{% endfor %}
-
-{% if page == 'blog_pending' %}
+{% elif page == 'blog_pending' %}
   <h1>Pending Articles</h1>
   <hr>
 {% endif %}
+
 {% for article in article_list %}
     <h2>{{ article.title }}</h2>
-    <p>{{ article.created_date_time }}</p>
 
-    {% if not article.draft %}
+    {% if not article.published %}
+      <p>Date Created: {{ article.created_date_time }}</p>
       <small>Pending to publish</small><br>
+    {% else %}
+      <p>Date Published: {{ article.publish_date_time }}</p>
     {% endif %}
     <a
       class="btn btn-primary btn-sm ml-auto"
@@ -56,13 +46,13 @@ context:
       Delete Article
     </a>
 
-    {% if article.draft %}
+    {% if not article.published %}
       <a
         class="btn btn-success btn-sm ml-auto"
         role="button"
         href="{% url 'home:article_publish' article.id %}"
       >
-        Request Publish
+        Publish Article
       </a>
     {% endif %}
 

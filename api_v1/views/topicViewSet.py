@@ -8,6 +8,6 @@ class TopicViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows topics to be viewed or edited.
     """
-    queryset = Topic.objects.all().order_by('id')
+    queryset = Topic.objects.all()
     serializer_class = TopicSerializer
 

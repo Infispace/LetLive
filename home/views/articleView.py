@@ -103,7 +103,7 @@ class ArticleView(PermissionRequiredMixin, TemplateView):
             elif valid and page == 'article_delete':
                 self.article.delete()
             elif valid and page == 'article_publish':
-                self.article.draft = False
+                self.article.published = True
                 self.article.save()
 
             success = True

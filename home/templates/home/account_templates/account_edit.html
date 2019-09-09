@@ -17,55 +17,100 @@ context:
   </div>
 {% endif %}
 
-{% if form_profile.errors or user_form.errors %}
-  <!-- Form Alerts -->
+{% if admin_form.errors or author_form.errors or subscriber_form.errors or user_form.errors %}
+  <!-- display form errors -->
   <div class="alert alert-warning role="alert" >
     There were errors found:
-    {% if form_profile.errors %}
-      {{ form_profile.non_field_errors }}
-    {% endif %}
-    
     {% if user_form.errors %}
       {{ user_form.non_field_errors }}
+    {% endif %}
+    
+    {% if admin_form.errors %}
+      {{ admin_form.non_field_errors }}
+    {% endif %}
+    
+    {% if author_form.errors %}
+      {{ author_form.non_field_errors }}
+    {% endif %}
+    
+    {% if subscriber_form.errors %}
+      {{ subscriber_form.non_field_errors }}
     {% endif %}
   </div>
 {% endif %}
   
-<form 
-  action="{% url 'home:user_profile_edit' %}" 
-  method="post"
-  enctype=multipart/form-data
->
+<form method="post" enctype=multipart/form-data>
   {% csrf_token %}
 
-  <!-- User Model Attributes -->
-  {% for field in user_form.visible_fields %}
-    <div class="form-group">
-      {{ field.label_tag }}
-      {{ field }}
-      <small class="form-text text-danger">
-        {{ field.errors }}
-      </small>
+  <div class="row">
+    <div class="col-6">
+      <!-- User Model Attributes -->
+      {% for field in user_form.visible_fields %}
+        <div class="form-group">
+          {{ field.label_tag }}
+          {{ field }}
+          <small class="form-text text-danger">
+            {{ field.errors }}
+          </small>
+        </div>
+      {% endfor %}
+      
+      <!-- User Avator  -->
+      <label>Choose Avatar: </label>
+      <div class="custom-file mt-2 mb-3">
+        <input type="file" name="avatar" accept="image/*" class="custom-file-input" id="id_avatar"> 
+        <label class="custom-file-label" for="id_avatar">Avatar:</label>
+      </div>
     </div>
-  {% endfor %}
 
-  <!-- User Avator -->
-  <div class="custom-file mt-2 mb-3">
-    <input
-      type="file"
-      class="custom-file-input"
-      id="{{ form_profile.avatar.id_for_label }}"
-      name="{{ form_profile.avatar.html_name }}"
-    >
-    <label 
-      class="custom-file-label" 
-      for="{{ form_profile.avatar.id_for_label }}"
-    >
-      Choose {{ form_profile.avatar.name.capitalize }}
-    </label>
+    <div class="col-6 d-flex">
+      <!-- User Avator Display -->
+      <i class="fas fa-user fa-10x m-auto rounded-circle border p-5"></i>
+    </div>
   </div>
   
+  
+  <!-- profile forms tab navigation -->
+  <ul class="nav nav-tabs" id="profile-switcher">
+    {% if user.admin %}
+      <li class="nav-item">
+        <a 
+          class="nav-link active" 
+          href="#show-admin-form"
+          onclick="display_admin_form()"
+        >
+          Admin
+        </a>
+      </li>
+    {% endif %}
+    
+    {% if user.author %}
+      <li class="nav-item">
+        <a 
+          class="nav-link" 
+          href="#show-author-form"
+          onclick="display_author_form()"
+        >
+          Author
+        </a>
+      </li>
+    {% endif %}
+    
+    {% if user.subscriber %}
+      <li class="nav-item">
+        <a 
+          class="nav-link" 
+          href="#show-subscriber-form"
+          onclick="display_subscriber_form()"
+        >
+          Subscriber
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+  
   <!-- admin form -->
+  <div class="d-none" id="admin-form">
   {% for field in admin_form.visible_fields %}
     <div class="form-group">
       {{ field.label_tag }}
@@ -75,8 +120,10 @@ context:
       </small>
     </div>
   {% endfor %}
+  </div>
   
   <!-- author form -->
+  <div class="d-none" id="author-form">
   {% for field in author_form.visible_fields %}
     <div class="form-group">
       {{ field.label_tag }}
@@ -86,8 +133,10 @@ context:
       </small>
     </div>
   {% endfor %}
+  </div>
   
   <!-- subscriber form -->
+  <div class="d-none" id="subscriber-form">
   {% for field in subscriber_form.visible_fields %}
     <div class="form-group">
       {{ field.label_tag }}
@@ -97,6 +146,7 @@ context:
       </small>
     </div>
   {% endfor %}
+  </div>
 
   <!-- Buttons -->
   <div class="p-3 border-top border-primary">

@@ -1,32 +1,39 @@
 #############################
 # LetLive Pipy Requirements #
 #############################
-### Django framework
+### Django framework.
 django>=2.1.2
 #
-### Django extensions
+### Django extensions.
 django-extensions
 #
-### Django REST framework
+### Django REST framework.
 djangorestframework
 #
-### Django REST authentication framework
+### Django REST authentication framework.
 django-rest-auth[with_social]>=0.3.3
 django-allauth
 #
-### Django model and db seeder with faker
+### Django model and db seeder with faker.
 django-seed
 #
-### Django filter queryset
+### Django filter queryset.
 django-filter
 #
-### Django generating secret key
+### Django generating secret key.
 djecrety
 #
-### Sphinx documentation
+### Sphinx documentation.
 sphinx
 sphinx-rtd-theme
 recommonmark
 #
-### Required for Django managing files
+### Python Imaging Library.
 Pillow
+#
+### Markdown support for the browsable API.
+Markdown>=3.0.0
+#
+### Add syntax highlighting to Markdown processing. 
+Pygments>=2.4.0
+#

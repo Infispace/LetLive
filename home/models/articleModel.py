@@ -63,6 +63,15 @@ class Article(models.Model):
     #: The article's objects manager.
     objects = ArticleManager()
 
+    def save(self, *args, **kwargs):
+        """
+        Always set a publish date when publishing article.
+        """
+        if self.published == True and self.publish_date_time == None:
+            self.publish_date_time = timezone.now()
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title
 

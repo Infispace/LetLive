@@ -5,12 +5,35 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.conf import settings
 from django.db import Error
 from django.db import models
 from django.db import transaction
 
+
+def change_user_groups(user, selected_groups):
+    """
+    Edit the user groups for the user.
+    Does not edit admin user group though.
+    """
+    try:
+        if user.admin:
+            return
+    except ObjectDoesNotExist:
+        pass
+
+    for group in selected_groups:
+        try:
+            if group == AppUser.AUTHOR:
+                Author.objects.create(user=user)
+
+            if group == AppUser.SUBSCRIBER:
+                Subscriber.objects.create(user=user)
+
+        except IntegrityError:
+            pass
 
 def upload_location(instance, filename):
     """
@@ -306,7 +329,7 @@ class Admin(AppUser):
     Inherits the app user.
     Should have a user level 'ADM'
     """
-#: The user's user level, read only.
+    #: The user's user level, read only.
     user_level = models.CharField(
         max_length=3,
         default=AppUser.ADMIN, 

@@ -23,3 +23,6 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.topic_name
+
+    class Meta:
+        ordering = ['-created_date_time', 'updated_date_time']

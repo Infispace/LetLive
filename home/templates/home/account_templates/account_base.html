@@ -39,6 +39,8 @@ context:
       <div class="col">
         {% if page == 'user_profile_edit' %}
           {% include 'home/account_templates/account_edit.html' %}
+        {% elif page == 'user_subscription' %}
+          {% include 'home/account_templates/subscription.html' %}
         {% elif page == 'password_change' %}
           {% include 'home/account_templates/password_change.html' %}
         {% elif page == 'password_change_done' %}
@@ -51,3 +53,61 @@ context:
 
   </div>
 {% endblock %}
+
+{% if page == 'user_profile_edit' %}
+{% block js %}
+  {{ block.super }}
+  
+  <script type="text/javascript">
+  function hide_all_forms() {
+    $(`
+      #admin-form,
+      #author-form,
+      #subscriber-form
+    `).addClass('d-none')
+  }
+  
+  function display_admin_form() {
+    hide_all_forms()
+    $('#admin-form').removeClass('d-none')
+  }
+  
+  function display_author_form() {
+    hide_all_forms()
+    $('#author-form').removeClass('d-none')
+  }
+  
+  function display_subscriber_form() {
+    hide_all_forms()
+    $('#subscriber-form').removeClass('d-none')
+  }
+  </script>
+
+  <script type="text/javascript">
+  $(function(){
+    $('#profile-switcher').addClass('border-bottom border-primary')
+    $('#profile-switcher a').addClass('border bg-primary text-light')
+
+    $('#profile-switcher a').click( function () {
+      selected = this
+      
+      $(this).addClass(
+        'bg-primary text-light'
+      ).removeClass(
+        'bg-light text-primary'
+      )
+      
+      $.each( $('#profile-switcher a'), function () {
+        if (this != selected){
+          $(this).addClass(
+            'bg-light text-primary'
+          ).removeClass(
+            'bg-primary text-light'
+          )
+        }
+      });
+    });
+  });
+  </script>
+{% endblock %}
+{% endif %}

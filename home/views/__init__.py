@@ -16,3 +16,4 @@ from .profileView import ProfileView
 from .topicView import TopicView
 from .userView import UsersView
 from .registrationView import RegistrationView
+from .subscriptionView import SubscriptionView

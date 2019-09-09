@@ -37,9 +37,13 @@ class BlogView(PermissionRequiredMixin, TemplateView):
         
         # get articles list
         if page == 'blog_pending':
-            self.article_list = Article.objects.published(False)
+            self.article_list = Article.objects.published(False).filter(
+                author = request.user.author
+            )
         elif page == 'blog_published':
-            self.article_list = Article.objects.published()
+            self.article_list = Article.objects.published().filter(
+                author = request.user.author
+            )
         
         return self.render_to_response({
             'page': page,

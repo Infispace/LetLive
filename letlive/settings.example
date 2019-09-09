@@ -35,12 +35,13 @@ ALLOWED_HOSTS = [
 ]
 
 
-# for rest_auth.registration
+# The site information
 SITE_ID = 1
 
 
 # Always use IPython for shell_plus
 SHELL_PLUS = "plain"
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -160,13 +161,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = ''
 
 
-# Media files uploads
+# Media uploads
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'upload_media')
-# MEDIA_URL
+MEDIA_URL = '/media/'
 
 
 # login redirects
@@ -176,9 +176,14 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
-# LetLive default email
-#
-# DEFAULT_FROM_EMAIL = ''
+# LetLive smtp email configuration
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@letlive.com'
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = '2525'
 
 
 #Django Rest Framework

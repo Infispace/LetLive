@@ -11,7 +11,7 @@ from api_v1 import views
 
 app_name = 'api_v1'
 
-#routers
+# routers
 router = routers.DefaultRouter()
 router.register(r'articles', views.ArticleViewSet)
 router.register(r'topics', views.TopicViewSet)
@@ -21,14 +21,35 @@ router.register(r'subscribers', views.SubscriberViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 
+# Auth routes
+auth_urlpatterns = [
+    path(r'', include('rest_auth.urls')),
+    path(r'registration/', include('rest_auth.registration.urls')),
+    path(r'api-token/', authviews.obtain_auth_token, name='rest_api_token'),
+]
+
+# Auth routes
+profile_urlpatterns = [
+    path(r'', views.ProfileViewSet.as_view(), name='profile_detail'),
+    
+    path(r'admin/', views.ProfileViewSet.as_view(
+        extra_context={'page': 'profile_admin'},
+    ), name='profile_admin'),
+    
+    path(r'author/', views.ProfileViewSet.as_view(
+        extra_context={'page': 'profile_author'},
+    ), name='profile_author'),
+    
+    path(r'subscriber/', views.ProfileViewSet.as_view(
+        extra_context={'page': 'profile_subscriber'},
+    ), name='profile_subscriber'),
+]
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path(r'', include(router.urls)),
-    path(r'profile/', views.ProfileViewSet.as_view(), name='profile_detail'),
-    path(r'auth/', include([
-        path(r'', include('rest_auth.urls')),
-        path(r'registration/', include('rest_auth.registration.urls')),
-        path(r'api-token/', authviews.obtain_auth_token, name='rest_api_token'),
-    ])),  
+    path(r'auth/', include(auth_urlpatterns)),
+    path(r'profile/', include(profile_urlpatterns)),
 ]
+
