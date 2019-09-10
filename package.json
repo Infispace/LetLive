@@ -7,5 +7,8 @@
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
     "tinymce": "^5.0.5"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.10.2"
   }
 }

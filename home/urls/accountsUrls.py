@@ -3,6 +3,8 @@
 
 For managing authenticated user accounts.
 """
+from allauth.account.views import confirm_email
+from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.urls import include
 from django.urls import reverse
@@ -13,7 +15,6 @@ from home.forms import LoginForm
 from home.forms import PasswordResetForm
 from home.forms import PasswordChangeForm
 from home.forms import SetPasswordForm
-from django.contrib.auth import views as auth_views
 
 
 # user profile view and edit
@@ -48,8 +49,8 @@ password_reset_urlpatterns = [
         form_class=PasswordResetForm,
         success_url='/accounts/password_reset/done/',
         template_name='home/account_templates/password_reset.html',
-        email_template_name='home/account_templates/password_reset_email.txt',
-        html_email_template_name='home/account_templates/password_reset_email.html',
+        email_template_name='home/email/password_reset_email.txt',
+        html_email_template_name='home/email/password_reset_email.html',
     ), name='password_reset'),
     
     path('done/', auth_views.PasswordResetDoneView.as_view(
@@ -88,6 +89,9 @@ urlpatterns = [
     
     path('logout/', auth_views.LogoutView.as_view(
     ), name='user_logout'),
+    
+    path(r'account-confirm-email/<key>/',
+        confirm_email, name="account_confirm_email"),
     
     path('password_change/', include(password_change_urlpatterns)),
     path('password_reset/', include(password_reset_urlpatterns)),

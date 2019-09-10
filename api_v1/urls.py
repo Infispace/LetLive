@@ -3,9 +3,12 @@ Api Version 1 Urls.
 
 Extents the urls from ``http:://domain/api_v1/``.
 """
+from rest_auth.registration.views import RegisterView
+from rest_auth.registration.views import VerifyEmailView
 from rest_framework.authtoken import views as authviews
 from rest_framework import routers
-from django.urls import include 
+from django.urls import include
+from django.urls import re_path
 from django.urls import path
 from api_v1 import views
 
@@ -28,7 +31,7 @@ auth_urlpatterns = [
     path(r'api-token/', authviews.obtain_auth_token, name='rest_api_token'),
 ]
 
-# Auth routes
+# Profile routes
 profile_urlpatterns = [
     path(r'', views.ProfileViewSet.as_view(), name='profile_detail'),
     

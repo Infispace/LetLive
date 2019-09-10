@@ -52,6 +52,7 @@ class LoginForm(auth_forms.AuthenticationForm, BootstrapForm):
         super().__init__(*args, **kwargs)
         self.add_form_control()
         self.fields['keep_loged'].widget = forms.HiddenInput()
+        self.fields['username'].label = 'Username/ Email'
 
 class PasswordResetForm(auth_forms.PasswordResetForm, BootstrapForm):
     """

@@ -30,8 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'testserver',
-    '127.0.0.1',
     'localhost',
+    '127.0.0.1',
 ]
 
 
@@ -147,7 +147,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-#TIME_ZONE = 'UTC'
 TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
@@ -172,18 +171,48 @@ MEDIA_URL = '/media/'
 # login redirects
 
 LOGIN_URL = '/accounts/login/'
+
 LOGIN_REDIRECT_URL = '/'
+
 LOGOUT_REDIRECT_URL = '/'
 
 
 # LetLive smtp email configuration
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 DEFAULT_FROM_EMAIL = 'noreply@letlive.com'
+
 EMAIL_HOST = 'smtp.mailtrap.io'
+
 EMAIL_HOST_USER = ''
+
 EMAIL_HOST_PASSWORD = ''
+
 EMAIL_PORT = '2525'
+
+
+# Django Auth Configuration
+
+ACCOUNT_ADAPTER = 'api_v1.adapter.ApiAccountAdapter'
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+
+OLD_PASSWORD_FIELD_ENABLED = True
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 
+        'api_v1.serializers.PasswordResetSerializer',
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 
 #Django Rest Framework
