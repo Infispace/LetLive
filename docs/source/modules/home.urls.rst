@@ -17,18 +17,26 @@ home.urls.accountsUrls module
    :undoc-members:
    :show-inheritance:
 
-home.urls.topicsUrls module
----------------------------
+home.urls.articlesUrls module
+-----------------------------
 
-.. automodule:: home.urls.topicsUrls
+.. automodule:: home.urls.articlesUrls
    :members:
    :undoc-members:
    :show-inheritance:
 
-home.urls.urls module
----------------------
+home.urls.blogsUrls module
+--------------------------
 
-.. automodule:: home.urls.urls
+.. automodule:: home.urls.blogsUrls
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+home.urls.topicsUrls module
+---------------------------
+
+.. automodule:: home.urls.topicsUrls
    :members:
    :undoc-members:
    :show-inheritance:

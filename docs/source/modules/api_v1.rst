@@ -13,11 +13,21 @@ Subpackages
 
    api_v1.migrations
    api_v1.models
+   api_v1.permissions
    api_v1.serializers
+   api_v1.tests
    api_v1.views
 
 Submodules
 ----------
+
+api\_v1.adapter module
+----------------------
+
+.. automodule:: api_v1.adapter
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 api\_v1.admin module
 --------------------
@@ -31,14 +41,6 @@ api\_v1.apps module
 -------------------
 
 .. automodule:: api_v1.apps
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-api\_v1.tests module
---------------------
-
-.. automodule:: api_v1.tests
    :members:
    :undoc-members:
    :show-inheritance:

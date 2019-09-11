@@ -9,14 +9,6 @@ home.templatetags package
 Submodules
 ----------
 
-home.templatetags.base\_login\_form module
-------------------------------------------
-
-.. automodule:: home.templatetags.base_login_form
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 home.templatetags.has\_perm module
 ----------------------------------
 
@@ -37,6 +29,14 @@ home.templatetags.nav\_branding module
 --------------------------------------
 
 .. automodule:: home.templatetags.nav_branding
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+home.templatetags.nav\_user\_links module
+-----------------------------------------
+
+.. automodule:: home.templatetags.nav_user_links
    :members:
    :undoc-members:
    :show-inheritance:

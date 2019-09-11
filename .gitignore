@@ -119,6 +119,3 @@ node_modules/
 #django settings file
 letlive/settings\.py
 
-#pipenv files
-Pipfile\.lock
-Pipfile

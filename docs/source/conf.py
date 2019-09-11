@@ -70,3 +70,11 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+
+# -- Options for Markdown files (recommonmark) -------------------------------
+
+# This allows use of CommonMark inside of Sphinx
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}

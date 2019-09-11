@@ -17,6 +17,14 @@ home.views.articleView module
    :undoc-members:
    :show-inheritance:
 
+home.views.blogView module
+--------------------------
+
+.. automodule:: home.views.blogView
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 home.views.indexView module
 ---------------------------
 
@@ -33,18 +41,18 @@ home.views.profileView module
    :undoc-members:
    :show-inheritance:
 
-home.views.publishView module
------------------------------
-
-.. automodule:: home.views.publishView
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 home.views.registrationView module
 ----------------------------------
 
 .. automodule:: home.views.registrationView
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+home.views.subscriptionView module
+----------------------------------
+
+.. automodule:: home.views.subscriptionView
    :members:
    :undoc-members:
    :show-inheritance:

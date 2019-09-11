@@ -49,14 +49,6 @@ api\_v1.views.profileViewSet module
    :undoc-members:
    :show-inheritance:
 
-api\_v1.views.publisherViewSet module
--------------------------------------
-
-.. automodule:: api_v1.views.publisherViewSet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 api\_v1.views.subscriberViewSet module
 --------------------------------------
 

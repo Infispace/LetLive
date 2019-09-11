@@ -49,10 +49,10 @@ api\_v1.serializers.groupSerializer module
    :undoc-members:
    :show-inheritance:
 
-api\_v1.serializers.publisherSerializer module
-----------------------------------------------
+api\_v1.serializers.passwordResetSerializer module
+--------------------------------------------------
 
-.. automodule:: api_v1.serializers.publisherSerializer
+.. automodule:: api_v1.serializers.passwordResetSerializer
    :members:
    :undoc-members:
    :show-inheritance:
@@ -61,6 +61,14 @@ api\_v1.serializers.subscriberSerializer module
 -----------------------------------------------
 
 .. automodule:: api_v1.serializers.subscriberSerializer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+api\_v1.serializers.subscriptionSerializer module
+-------------------------------------------------
+
+.. automodule:: api_v1.serializers.subscriptionSerializer
    :members:
    :undoc-members:
    :show-inheritance:

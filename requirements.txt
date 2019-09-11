@@ -1,35 +1,39 @@
 #############################
 # LetLive Pipy Requirements #
 #############################
+### Python environment
+pipenv>=2018.11.26
+#
 ### Django framework.
-django>=2.1.2
+django>=2.2.4
 #
 ### Django extensions.
 django-extensions
 #
 ### Django REST framework.
-djangorestframework
+djangorestframework>=3.10.2
 #
 ### Django REST authentication framework.
 django-rest-auth[with_social]>=0.3.3
 django-allauth
 #
 ### Django model and db seeder with faker.
-django-seed
+django-seed>=0.1.9
+django-faker>=0.2
 #
 ### Django filter queryset.
-django-filter
+django-filter>=2.2.0
 #
 ### Django generating secret key.
-djecrety
+djecrety>=1.0.8
 #
 ### Sphinx documentation.
-sphinx
+sphinx>=2.1.2
 sphinx-rtd-theme
 recommonmark
 #
 ### Python Imaging Library.
-Pillow
+Pillow>=6.1.0
 #
 ### Markdown support for the browsable API.
 Markdown>=3.0.0
