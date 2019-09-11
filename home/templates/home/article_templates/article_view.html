@@ -1,0 +1,36 @@
+<div class="container my-5 border border-dark rounded shadow p-2 bg-white">
+     
+  Title: {{ article.title }}<br/>
+  Category: {{ article.topic }}<br/>
+  Content: {{ article.content|safe }}<br/>
+  Updated: {{ article.updated_date_time }}<br/>
+  Created: {{ article.created_date_time }}<br/>
+  <div class="d-flex">
+  {% if article.published is False and article.author.user == user %}  
+    <a
+      class="btn btn-secondary btn-sm"
+      role="button"
+      href="{% url 'home:article_edit' article.id %}"
+    />
+      Edit Article
+    </a>
+    <a
+      class="btn btn-danger btn-sm ml-1"
+      role="button"
+      href="{% url 'home:article_delete' article.id %}"
+    />
+      Delete Article
+    </a>
+  {% endif %}
+
+  {% if not article.published and article.author.user == user %}
+    <a
+      class="btn btn-success btn-sm ml-auto"
+      role="button"
+      href="{% url 'home:article_publish' article.id %}"
+    />
+      Publish Article
+    </a>
+  {% endif %}
+  </div>
+</div>

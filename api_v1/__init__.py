@@ -15,7 +15,6 @@ It has the following endpoints:
     "admins": "http://domain/api_v1/admins/",
     "authors": "http://domain/api_v1/authors/",
     "subscribers": "http://domain/api_v1/subscribers/",
-    "publishers": "http://domain/api_v1/publishers/",
     "users": "http:://domain/api_v1/users/",
     "groups": "http://domain/api_v1/groups/",
     "profile": "http://domain/api_v1/profile/",

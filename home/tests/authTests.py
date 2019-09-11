@@ -18,16 +18,14 @@ class AuthTests(TestCase, TestUtils):
     Test the authentication views for 
     registering users ,login and logout.
     """
-    client = None       #: django test client
+    client = Client()   #: django test client
     username = None     #: username of test user
     password = None     #: password of test user
 
     def setUp(self):
-        self.client = Client()
-        
         # test user attributes
-        self.username = self.seeder.faker.first_name()
-        self.password = self.seeder.faker.word()
+        self.username = self.create_username()
+        self.password = self.create_password()
         user = User.objects.create(username=self.username)
         user.set_password(self.password)
 
@@ -71,12 +69,8 @@ class AuthTests(TestCase, TestUtils):
             'username': username,
             'password1': password,
             'password2': password,
-            'is_author': False,
         })
-        
-        if(response.status_code != 302):
-            print(response.context['error_string'])
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_login'))
@@ -99,11 +93,11 @@ class AuthTests(TestCase, TestUtils):
             'username': self.username,
             'password': self.password,
         })
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:index'))
-        
+
         # client logout
         self.client.logout();
         
@@ -118,7 +112,7 @@ class AuthTests(TestCase, TestUtils):
         
         # request
         response = self.client.get(reverse('home:user_logout'))
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:index'))

@@ -14,8 +14,9 @@ from django.urls import reverse
 from django.conf import settings
 from home.forms import RegisterUserForm
 from home.forms import DeleteUserForm
-from home.models import Publisher
+from home.models import Admin
 from home.models import Author
+from home.models import Subscriber
 
 class UsersView(PermissionRequiredMixin, TemplateView):
     """
@@ -24,16 +25,17 @@ class UsersView(PermissionRequiredMixin, TemplateView):
     """
     #: The permissions required to access the view.
     permission_required = (
-        'home.add_publisher',
-        'home.delete_publisher',
-        'home.delete_author'
+        'auth.add_user',
+        'auth.delete_user',
     )
     #: The html template to render.
-    template_name = 'home/users.html'
+    template_name = 'home/user_templates/users_base.html'
+    #: The list of users with admin user level.
+    admins_list = None
     #: The list of users with author user level.
     authors_list = None
-    #: The list of users with publisher user level.
-    publisers_list = None
+    #: The list of users with subscribers user level.
+    subscribers_list = None
     #: The form to render.
     user_form = None
     #: The error to be displayed.
@@ -41,26 +43,24 @@ class UsersView(PermissionRequiredMixin, TemplateView):
     #: The user to view or edit.
     view_user = None
 
-    @transaction.atomic
-    def add_publisher(self):
-        """
-        Adds a new user of publisher user_level
+    def get_permission_required(self):
+        permission_required = super().get_permission_required()
+        page = self.get_context_data()['page']
         
-        Edit a specific users filtered with `/pk/`
-        
-        :return: returns true if a new user is created
-        :rtype: True or False
-        """
-        success = False
-        # create new user
-        user = self.user_form.save()
-        success = Publisher.objects.create(user=user)
-        
-        return success
+        # permission against http method post
+        # restrict to new and delete
+        permited = False;
+        if page == 'user_new' or page == 'user_delete':
+            permited = True;
+
+        if self.request.method == 'POST' and not permited:
+            raise PermissionDenied
+
+        return permission_required
 
     def get(self, request, user_id=0, *args, **kwargs):
         """
-        Display users list with filters `/authors/` and `/publishers/`.
+        Display users list with filters `/authors/` and `/subcribers/`.
         
         Shows A specific users filtered with `/pk/`.
         
@@ -72,11 +72,16 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         context = self.get_context_data()
         page = context['page']
         
-        # get user list or user with pk
-        if user_id == 0:
+        # get user list
+        if page == 'user_admin':
+            self.admins_list = Admin.objects.all()
+        elif page == 'user_author':
             self.authors_list = Author.objects.all()
-            self.publisers_list = Publisher.objects.all()
-        else :
+        elif page == 'user_subscriber':
+            self.subscribers_list = Subscriber.objects.all()
+        
+        # get  user with pk
+        if user_id != 0:
             self.view_user = get_object_or_404(User, pk=user_id)
             
         # set form to render
@@ -88,11 +93,12 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         # render template
         if page == 'user_view':
             self.template_name = 'home/account.html'
-            
+
         return self.render_to_response({
             'page': page,
+            'admins_list': self.admins_list,
             'authors_list': self.authors_list,
-            'publishers_list': self.publisers_list,
+            'subscribers_list': self.subscribers_list,
             'user_form': self.user_form,
             'view_user': self.view_user,
         })
@@ -110,14 +116,6 @@ class UsersView(PermissionRequiredMixin, TemplateView):
         # get page context
         context = self.get_context_data()
         page = context['page']
-        
-        # restrict to new and delete
-        permited = False;
-        if page == 'user_new' or page == 'user_delete':
-            permited = True;
-
-        if not permited:
-            raise PermissionDenied
 
         # get user from user_id
         if user_id != 0:
@@ -137,9 +135,10 @@ class UsersView(PermissionRequiredMixin, TemplateView):
             success = self.user_form.is_valid()
             if success and page == 'user_delete':
                 self.view_user.delete()
-                success = True
             elif success and page == 'user_new':
-                success = self.add_publisher()
+                user = self.user_form.save()
+
+            success = True
         except Exception as e:
             success = False
             self.error_string = 'There was an error. Please try again.' 

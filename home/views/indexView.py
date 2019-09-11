@@ -22,4 +22,4 @@ class IndexView(ListView):
         return context
 
     def get_queryset(self):
-        return Article.objects.published_articles_list(status=True)
+        return Article.objects.published()

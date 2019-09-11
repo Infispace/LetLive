@@ -1,0 +1,165 @@
+<!--
+Html template to edit user. Displays user forms
+
+context:
+{
+  'user_form': 'User model form',
+  'admin_form': 'admin form',
+  'author_form': 'author form',
+  'subscriber_form': 'subscriber form',
+  'error_string': 'Error to be displayed',
+}
+-->
+{% if error_string %}
+  <!-- display error string -->
+  <div class="alert alert-danger role="alert" >
+    {{ error_string }}
+  </div>
+{% endif %}
+
+{% if admin_form.errors or author_form.errors or subscriber_form.errors or user_form.errors %}
+  <!-- display form errors -->
+  <div class="alert alert-warning role="alert" >
+    There were errors found:
+    {% if user_form.errors %}
+      {{ user_form.non_field_errors }}
+    {% endif %}
+    
+    {% if admin_form.errors %}
+      {{ admin_form.non_field_errors }}
+    {% endif %}
+    
+    {% if author_form.errors %}
+      {{ author_form.non_field_errors }}
+    {% endif %}
+    
+    {% if subscriber_form.errors %}
+      {{ subscriber_form.non_field_errors }}
+    {% endif %}
+  </div>
+{% endif %}
+  
+<form method="post" enctype=multipart/form-data>
+  {% csrf_token %}
+
+  <div class="row">
+    <div class="col-6">
+      <!-- User Model Attributes -->
+      {% for field in user_form.visible_fields %}
+        <div class="form-group">
+          {{ field.label_tag }}
+          {{ field }}
+          <small class="form-text text-danger">
+            {{ field.errors }}
+          </small>
+        </div>
+      {% endfor %}
+      
+      <!-- User Avator  -->
+      <label>Choose Avatar: </label>
+      <div class="custom-file mt-2 mb-3">
+        <input type="file" name="avatar" accept="image/*" class="custom-file-input" id="id_avatar"> 
+        <label class="custom-file-label" for="id_avatar">Avatar:</label>
+      </div>
+    </div>
+
+    <div class="col-6 d-flex">
+      <!-- User Avator Display -->
+      <i class="fas fa-user fa-10x m-auto rounded-circle border p-5"></i>
+    </div>
+  </div>
+  
+  
+  <!-- profile forms tab navigation -->
+  <ul class="nav nav-tabs" id="profile-switcher">
+    {% if user.admin %}
+      <li class="nav-item">
+        <a 
+          class="nav-link active" 
+          href="#show-admin-form"
+          onclick="display_admin_form()"
+        >
+          Admin
+        </a>
+      </li>
+    {% endif %}
+    
+    {% if user.author %}
+      <li class="nav-item">
+        <a 
+          class="nav-link" 
+          href="#show-author-form"
+          onclick="display_author_form()"
+        >
+          Author
+        </a>
+      </li>
+    {% endif %}
+    
+    {% if user.subscriber %}
+      <li class="nav-item">
+        <a 
+          class="nav-link" 
+          href="#show-subscriber-form"
+          onclick="display_subscriber_form()"
+        >
+          Subscriber
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+  
+  <!-- admin form -->
+  <div class="d-none" id="admin-form">
+  {% for field in admin_form.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
+  </div>
+  
+  <!-- author form -->
+  <div class="d-none" id="author-form">
+  {% for field in author_form.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
+  </div>
+  
+  <!-- subscriber form -->
+  <div class="d-none" id="subscriber-form">
+  {% for field in subscriber_form.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
+  </div>
+
+  <!-- Buttons -->
+  <div class="p-3 border-top border-primary">
+    <button type="submit" class="btn btn-primary">
+      Save
+    </button>
+    <a
+      class="btn btn-secondary"
+      role="button"
+      href="{% url 'home:user_profile' %}"
+    >
+      Cancel
+    </a>
+  </div>
+
+</form>

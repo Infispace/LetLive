@@ -1,0 +1,62 @@
+<!--
+Html template for login form. used in the menu bar
+
+context:
+{
+  'login_form': 'the login form',
+}
+-->
+<div class="dropdown ml-md-4 nav-item">
+  {% load nav_user_links %}
+  {% nav_user_btn %}
+  
+  <!-- drop down user menu -->
+  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuOffset">
+  {% if user.is_authenticated %}        
+    {% include 'user_drop_nav.html' %}
+  {% else %}
+
+    <form class="px-4 py-3" method="post" action="{% url 'home:user_login' %}">
+      {% csrf_token %}
+
+      {% for field in login_form.visible_fields %}
+        <div class="form-group">
+          {{ field.label_tag }}
+          {{ field }}
+          <small class="form-text text-danger">
+            {{ field.errors }}
+          </small>
+        </div>
+      {% endfor %}
+      
+      <!-- remember me check box -->
+      <div class="form-check">
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          name="{{login_form.keep_loged.name}}" 
+          value="{{login_form.keep_loged.value}}" 
+          id="{{login_form.keep_loged.auto_id}}"
+        />
+        <label 
+          class="form-check-label" 
+          for="{{login_form.keep_loged.id_for_label}}"
+        >
+          {{login_form.keep_loged.label.capitalize}}:
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-2">Sign in</button>
+    </form>
+
+    <!-- register and password reset buttons -->
+    <div class="dropdown-divider border-primary"></div>
+    <a class="dropdown-item" href="{% url 'home:user_register' %}">New around here? Sign up</a>
+    <a class="dropdown-item" href="{% url 'home:password_reset' %}">Forgot password?</a>
+        
+  {% endif %}
+  </div>
+  <!-- end of drop down user menu -->
+  
+</div>
+

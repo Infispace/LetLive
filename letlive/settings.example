@@ -30,17 +30,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'testserver',
-    '127.0.0.1',
     'localhost',
+    '127.0.0.1',
 ]
 
 
-# for rest_auth.registration
+# The site information
 SITE_ID = 1
 
 
 # Always use IPython for shell_plus
 SHELL_PLUS = "plain"
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -93,7 +94,9 @@ ROOT_URLCONF = 'letlive.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'api_v1/templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,7 +147,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-#TIME_ZONE = 'UTC'
 TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
@@ -158,25 +160,59 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = ''
 
 
-# Media files uploads
-#
-# MEDIA_ROOT = ''
-# MEDIA_URL
+# Media uploads
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'upload_media')
+MEDIA_URL = '/media/'
 
 
 # login redirects
 
 LOGIN_URL = '/accounts/login/'
+
 LOGIN_REDIRECT_URL = '/'
+
 LOGOUT_REDIRECT_URL = '/'
 
 
-# LetLive default email
-#
-# DEFAULT_FROM_EMAIL = ''
+# LetLive smtp email configuration
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+DEFAULT_FROM_EMAIL = 'noreply@letlive.com'
+
+EMAIL_HOST = 'smtp.mailtrap.io'
+
+EMAIL_HOST_USER = ''
+
+EMAIL_HOST_PASSWORD = ''
+
+EMAIL_PORT = '2525'
+
+
+# Django Auth Configuration
+
+ACCOUNT_ADAPTER = 'api_v1.adapter.ApiAccountAdapter'
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+
+OLD_PASSWORD_FIELD_ENABLED = True
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 
+        'api_v1.serializers.PasswordResetSerializer',
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 
 #Django Rest Framework
@@ -197,6 +233,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-    ]
+    ],
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
 

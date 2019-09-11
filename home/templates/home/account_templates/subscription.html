@@ -1,0 +1,58 @@
+<!--
+Html template for user subcriptions.
+
+context:
+{
+  'group_form': 'The form to change user groups',
+}
+-->
+{% if error_string %}
+  <!-- display error string -->
+  <div class="alert alert-danger role="alert" >
+    {{ error_string }}
+  </div>
+{% endif %}
+
+<!-- Form Errors -->
+{% if group_form.errors or user_form.errors %}
+  <div class="alert alert-warning role="alert" >
+    There were errors found:
+    {% if group_form.errors %}
+      {{ group_form.non_field_errors }}
+    {% endif %}
+    
+    {% if user_form.errors %}
+      {{ user_form.non_field_errors }}
+    {% endif %}
+  </div>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  
+  {% for field in group_form.visible_fields %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      <small class="form-text text-muted">
+        {{ field.help_text }}
+      </small>
+      <small class="form-text text-danger">
+        {{ field.errors }}
+      </small>
+    </div>
+  {% endfor %}
+
+  <button type="submit" class="btn btn-primary">
+    Save
+  </button>
+  <a
+    class="btn btn-secondary"
+    role="button"
+    href="{% url 'home:user_profile' %}"
+  >
+    Cancel
+  </a>
+  
+</form>
+

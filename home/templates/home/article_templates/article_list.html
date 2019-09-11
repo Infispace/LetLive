@@ -1,0 +1,60 @@
+<!--
+Html Template for Article list. Displays a list of Articles
+
+context:
+{
+  'article_list': 'the list of articles',
+}
+-->
+
+{% if page == 'blog_published' %}
+  <h1>Published Articles</h1>
+  <hr>
+{% elif page == 'blog_pending' %}
+  <h1>Pending Articles</h1>
+  <hr>
+{% endif %}
+
+{% for article in article_list %}
+    <h2>{{ article.title }}</h2>
+
+    {% if not article.published %}
+      <p>Date Created: {{ article.created_date_time }}</p>
+      <small>Pending to publish</small><br>
+    {% else %}
+      <p>Date Published: {{ article.publish_date_time }}</p>
+    {% endif %}
+    <a
+      class="btn btn-primary btn-sm ml-auto"
+      role="button"
+      href="{% url 'home:article_view' article.id %}"
+    >
+      View Article
+    </a>
+    <a
+      class="btn btn-secondary btn-sm ml-auto"
+      role="button"
+      href="{% url 'home:article_edit' article.id %}"
+    >
+      Edit Article
+    </a>
+    <a
+      class="btn btn-danger btn-sm ml-auto"
+      role="button"
+      href="{% url 'home:article_delete' article.id %}"
+    >
+      Delete Article
+    </a>
+
+    {% if not article.published %}
+      <a
+        class="btn btn-success btn-sm ml-auto"
+        role="button"
+        href="{% url 'home:article_publish' article.id %}"
+      >
+        Publish Article
+      </a>
+    {% endif %}
+
+    <hr>
+{% endfor %}

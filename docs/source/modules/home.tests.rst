@@ -17,18 +17,18 @@ home.tests.authTests module
    :undoc-members:
    :show-inheritance:
 
-home.tests.tests module
------------------------
+home.tests.testUtils module
+---------------------------
 
-.. automodule:: home.tests.tests
+.. automodule:: home.tests.testUtils
    :members:
    :undoc-members:
    :show-inheritance:
 
-home.tests.userPermission module
---------------------------------
+home.tests.userClientTests module
+---------------------------------
 
-.. automodule:: home.tests.userPermission
+.. automodule:: home.tests.userClientTests
    :members:
    :undoc-members:
    :show-inheritance:

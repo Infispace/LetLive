@@ -1,0 +1,33 @@
+<!--
+Html Template for displaying form for topics
+
+context:
+{
+  'topic_form': 'the topics form',
+}
+-->
+
+<form method="post">
+  {% csrf_token %}
+
+  {% for field in topic_form.visible_fields %}
+      <div class="form-group">
+        {{ field.label_tag }}
+        {{ field }}
+        <small class="form-text text-danger">
+          {{ field.errors }}
+        </small>
+      </div>
+    {% endfor %}
+
+  <button type="submit" class="btn btn-primary">
+    Save
+  </button>
+  <a
+    class="btn btn-secondary"
+    role="button"
+    href="{% url 'home:topic_default' %}"
+  >
+    Cancel
+  </a>
+</form>

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from home.models import Article
+from home.models import Author
+from home.models import Topic
 
 
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
@@ -7,36 +9,25 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
         many=False,
         read_only=True,
         view_name='api_v1:author-detail',
-        #queryset=User.objects.filter(is_active=True),
-    )
-    
-    publisher = serializers.HyperlinkedRelatedField(
-        many=False,
-        read_only=True,
-        view_name='api_v1:publisher-detail',
     )
     
     topic = serializers.HyperlinkedRelatedField(
         many=False,
-        read_only=True,
+        queryset=Topic.objects.all(),
         view_name='api_v1:topic-detail',
     )
     
+    def create(self, validated_data, *args, **kwargs):
+        author = self.context['request'].user.author
+
+        return Article.objects.create(
+            author=author,
+            **validated_data
+        )
+
     class Meta:
         model = Article
-        fields = (
-          'url',
-          'id',
-          'author',
-          'title',
-          'publisher',
-          'content',
-          'publish_date_time',
-          'draft',
-          'updated_date_time',
-          'created_date_time',
-          'topic'
-        )
+        fields = '__all__'
         
         extra_kwargs = {
             'url': {

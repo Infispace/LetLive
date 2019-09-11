@@ -1,0 +1,27 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+pipenv = ">=2018.11.26"
+django-extensions = "*"
+djangorestframework = ">=3.10.2"
+django-rest-auth = {extras = ["with_social"],version = ">=0.3.3"}
+django-allauth = "*"
+django-seed = ">=0.1.9"
+django-faker = ">=0.2"
+django-filter = ">=2.2.0"
+djecrety = ">=1.0.8"
+sphinx-rtd-theme = "*"
+recommonmark = "*"
+Django = ">=2.2.4"
+Sphinx = ">=2.1.2"
+Pillow = ">=6.1.0"
+Markdown = ">=3.0.0"
+Pygments = ">=2.4.0"
+
+[requires]
+python_version = "3.7"

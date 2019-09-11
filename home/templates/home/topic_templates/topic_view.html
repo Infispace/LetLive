@@ -1,0 +1,31 @@
+<!--
+Html Template for displaying topics
+
+context:
+{
+  'topic': 'the topics to display',
+}
+-->
+
+<h2>{{ topic.topic_name }}</h2>
+<p>{{ topic.intro }}</p>
+
+{% load has_perm %}
+{% has_perm user 'home.change_topic' as change_topic %}
+{% has_perm user 'home.delete_topic' as delete_topic %}
+{% if delete_topic and change_topic %}
+  <a
+    class="btn btn-secondary btn-sm"
+    href="{% url 'home:topic_edit' topic.id %}"
+    role="button"
+  >
+    Edit Topic '{{ topic.topic_name }}'
+  </a>
+  <a
+    class="btn btn-danger btn-sm"
+    href="{% url 'home:topic_delete' topic.id %}"
+    role="button"
+  >
+    Delete Topic '{{ topic.topic_name }}'
+  </a>
+{% endif %}

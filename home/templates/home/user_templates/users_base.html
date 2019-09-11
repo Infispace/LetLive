@@ -1,0 +1,47 @@
+<!--
+Html Template for Users Page Master
+
+context:
+{
+  'page': 'page passed from urls.py',
+}
+-->
+{% extends "home/base.html" %}
+
+{% block title %}User{% endblock %}
+
+{% block menubar_links %}
+  {% load menu_bar %}
+  {% menu_bar %}
+{% endblock %}
+
+{% block content %}
+  <div class="container p-3">
+
+    <div class="row mt-5">
+      {% load side_menu %}
+      {% render_side_menu page as render_side_menu %}
+      
+      {% if render_side_menu %}
+      <!-- side menu -->
+      <div class="col-3">
+        {% side_menu %}
+      </div>
+      {% endif %}
+      
+      <!-- main body -->
+      <div class="col">
+        {% if page == 'user_delete' %}
+          <!-- show delete user page -->
+          {% include 'home/user_templates/user_delete.html' %}
+        {% elif page == 'user_new' %}
+          <!-- show new user form -->
+          {% include 'home/user_templates/user_form.html' %}
+        {% else %}
+          {% include 'home/user_templates/users_list.html' %}
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

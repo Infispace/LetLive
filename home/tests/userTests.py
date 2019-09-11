@@ -17,7 +17,7 @@ class AppUsersTests(TestCase, TestUtils):
     
     def setUp(self):
         # seed test user
-        username = self.seeder.faker.first_name()
+        username = self.create_username()
         self.user = User.objects.create(username = username)
 
     def test_create_user_admin(self):
@@ -44,20 +44,6 @@ class AppUsersTests(TestCase, TestUtils):
             
             # assert user attribute
             self.assertEqual(author.user_level, userModel.AppUser.AUTHOR)
-
-        except Error as e:
-            print('>Test Error: ', e)
-
-    def test_create_user_publisher(self):
-        """
-        Tests home.userModel.Publisher.objects.create
-        """
-        try:
-            # create AppUser of Author model
-            publisher = userModel.Publisher.objects.create(user=self.user)
-            
-            # assert user attribute
-            self.assertEqual(publisher.user_level, userModel.AppUser.PUBLISHER)
 
         except Error as e:
             print('>Test Error: ', e)

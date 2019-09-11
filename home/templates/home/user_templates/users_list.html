@@ -1,0 +1,57 @@
+<!--
+Html Template for Users list. Displays a list of users
+
+context:
+{
+  'admins_list': 'Admins users list',
+  'authors_list': 'Authors users list',
+  'subscribers_list': 'Subscribers users list',
+  'page': 'page passed from urls.py',
+}
+-->
+
+<!-- Display 'Admins' users list  -->
+{% if page == 'user_admin' or page == 'user_default' %}
+{% for user_detail in admins_list %}
+    <h4>{{ user_detail }}</h4>
+    <a
+      class="btn btn-secondary btn-sm"
+      role="button"
+      href="{% url 'home:user_view' user_detail.user.id %}"
+    >
+      View Author
+    </a>
+    <hr>
+{% endfor %}
+{% endif %}
+
+<!-- Display 'Author' users list  -->
+{% if page == 'user_author' or page == 'user_default' %}
+{% for user_detail in authors_list %}
+    <h4>{{ user_detail }}</h4>
+    <a
+      class="btn btn-secondary btn-sm"
+      role="button"
+      href="{% url 'home:user_view' user_detail.user.id %}"
+    >
+      View Author
+    </a>
+    <hr>
+{% endfor %}
+{% endif %}
+
+<!-- Display 'Author' users list  -->
+{% if page == 'user_subscriber' or page == 'user_default' %}
+{% for user_detail in subscribers_list %}
+    <h4>{{ user_detail }}</h4>
+    <a
+      class="btn btn-secondary btn-sm"
+      role="button"
+      href="{% url 'home:user_view' user_detail.user.id %}"
+    >
+      View Author
+    </a>
+    <hr>
+{% endfor %}
+{% endif %}
+

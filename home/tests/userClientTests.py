@@ -15,13 +15,11 @@ class UserClientTests(TestCase, TestUtils):
     """
     Test the home.models.userModel.AppUser Model
     """
-    client = None     #: django test client
+    client = Client()     #: django test client
     
     def setUp(self):
-        self.client = Client()
-        
         # seed test user
-        username = self.seeder.faker.first_name()
+        username = self.create_username()
         self.user = User.objects.create(username=username)
 
     def test_redirect_login(self):
@@ -78,12 +76,12 @@ class UserClientTests(TestCase, TestUtils):
 
         # get changed user
         self.user = User.objects.get(username=self.user.username)
-        
+
         # assert response
         self.assertEqual(email, self.user.email)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_profile'))
-        
+     
         # client logout
         self.client.logout()
         
@@ -135,13 +133,12 @@ class UserClientTests(TestCase, TestUtils):
             'username': username,
             'password1': password,
             'password2': password,
-            'is_author': False,
         })
-        
+
         # assert response
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home:user_default'))
-        
+
         # client logout
         self.client.logout()
 
@@ -157,7 +154,6 @@ class UserClientTests(TestCase, TestUtils):
         
         # assert response
         self.assertIsInstance(response.context['authors_list'], QuerySet)
-        self.assertIsInstance(response.context['publishers_list'], QuerySet)
 
         # client logout
         self.client.logout()

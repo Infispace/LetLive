@@ -1,5 +1,5 @@
 """
-:synopsis: View and edit authenticated user profile
+:synopsis: View and edit authenticated user profile.
 """
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -14,67 +14,94 @@ from django.conf import settings
 from django.views.generic import TemplateView
 from home.forms import UserForm
 from home.forms import AuthorForm
-from home.forms import PublisherForm
 from home.forms import SubscriberForm
 from home.forms import AdminForm
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     """
     Class for user profile
     """
     #: The html template to render.
-    template_name = 'home/account.html'
+    template_name = 'home/account_templates/account_base.html'
     #: The authenticated user.
     view_user = None
-    #: The html form for AppUser Profile to render
-    form = None
+    #: The html form to edit Admin Profile
+    admin_form = None
+    #: The html form for edit Author Profile
+    author_form = None
+    #: The html form for edit Subscriber Profile
+    subscriber_form = None
     #: form for the user model
     user_form = None
     #: The errors found
     error_string = None
 
-    def set_form(self):
+    def set_profile_forms(self):
         """
         Initialize the form to use to edit user profile.
         """
-        user_instance = None
-        user_form_class = None
+        author_instance = None
+        subscriber_instance = None
+        admin_instance = None
+        
         try:
-            user_instance = self.request.user.author
-            user_form_class = AuthorForm
+            author_instance = self.request.user.author
+            self.author_form = AuthorForm(instance=author_instance)
         except ObjectDoesNotExist:
             pass
 
         try:
-            user_instance = self.request.user.publisher
-            user_form_class = PublisherForm
+            subscriber_instance = self.request.user.subscriber
+            self.subscriber_form = SubscriberForm(instance=subscriber_instance)
         except ObjectDoesNotExist:
             pass
 
         try:
-            user_instance = self.request.user.subscriber
-            user_form_class = SubscriberForm
+            admin_instance = self.request.user.admin
+            self.admin_form = AdminForm(instance=admin_instance)
         except ObjectDoesNotExist:
             pass
 
-        try:
-            user_instance = self.request.user.admin
-            user_form_class = AdminForm
-        except ObjectDoesNotExist:
-            pass
-
-        # return if no profile is found
-        if not user_instance:
-            return
-
-        # set profile form
+        # set the profile forms for editing
         if self.request.method == 'POST':
-            self.form = user_form_class(
-                self.request.POST,
-                instance=user_instance
-            )
-        else:
-            self.form = user_form_class(instance=user_instance)
+            if author_instance != None:
+                self.author_form = AuthorForm(
+                    self.request.POST,
+                    instance=author_instance
+                )
+
+            if subscriber_instance != None:
+                self.subscriber_form = SubscriberForm(
+                    self.request.POST,
+                    instance=subscriber_instance
+                )
+
+            if admin_instance != None:
+                self.admin_form = AdminForm(
+                    self.request.POST,
+                    instance=admin_instance
+                )
+
+    def save_profile_forms(self):
+        # save User model attributes
+        if self.user_form.has_changed():
+            if self.user_form.is_valid():
+                self.user_form.save()
+
+        #: save the profile data
+        if self.admin_form != None:
+            if self.admin_form.has_changed() and self.admin_form.is_valid():
+                self.admin_form.save()
+            
+        if self.subscriber_form != None:
+            if self.subscriber_form.has_changed() and self.subscriber_form.is_valid():
+                self.subscriber_form.save()
+                
+        if self.author_form != None:
+            if self.author_form.has_changed() and self.author_form.is_valid():
+                self.author_form.save()
+
 
     def get(self, request, *args, **kwargs):
         """
@@ -90,15 +117,17 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         
         # set forms and user to display
         self.view_user = request.user        
-        if(page == 'user_profile_edit'):
-          self.set_form()
+        if page == 'user_profile_edit' or page == 'user_account_edit':
+          self.set_profile_forms()
           self.user_form = UserForm(instance=self.view_user)
         
         # render template
         return render(request, self.template_name, {
             'view_user': self.view_user,
-            'form_user': self.user_form,
-            'form_profile': self.form,
+            'user_form': self.user_form,
+            'admin_form': self.admin_form,
+            'author_form': self.author_form,
+            'subscriber_form': self.subscriber_form,
             'page': page,
         })
 
@@ -118,23 +147,15 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         if(page != 'user_profile_edit'):
             raise PermissionDenied
         
-        # get form data    
+        # form data    
         self.user_form = UserForm(request.POST, instance=request.user)
-        self.set_form()
+        self.set_profile_forms()
+        
+        # save form data
         saved = False
-
         try:
-            # save User model attributes
-            if self.user_form.has_changed():
-                if self.user_form.is_valid():
-                    self.user_form.save()
-                    saved = True
-
-            #: save AppUser model attributes
-            if self.form.has_changed():
-                if self.form.is_valid():
-                    self.form.save()
-                    saved = True
+            self.save_profile_forms()
+            saved = True
         except Exception as e:
             saved = False
             self.error_string = 'There was an error. Please try again.' 
@@ -144,10 +165,12 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         # render template
         if saved:
             return HttpResponseRedirect(reverse('home:user_profile'))
-        else:
-          return render(request, self.template_name, {
-              'form_user': self.user_form,
-              'form_profile': self.form,
-              'error_string': self.error_string,
-              'page': page,
-          }, status=400)
+
+        return render(request, self.template_name, {
+            'user_form': self.user_form,
+            'admin_form': self.admin_form,
+            'author_form': self.author_form,
+            'subscriber_form': self.subscriber_form,
+            'error_string': self.error_string,
+            'page': page,
+        }, status=400)

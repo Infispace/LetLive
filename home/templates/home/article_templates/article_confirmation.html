@@ -1,0 +1,20 @@
+<!--
+Html Template for confirming publishing or deleting user
+
+context:
+{
+  'article_form': 'form with article instance',
+}
+-->
+
+<form method="post">
+  {% csrf_token %}
+
+  {{ article_form }}
+
+  {% if page == 'article_delete'%}
+    <button type="submit" name="button">Delete</button>
+  {% else %}
+    <button type="submit" name="button">Publish</button>
+  {% endif %}
+</form>

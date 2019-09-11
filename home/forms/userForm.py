@@ -4,9 +4,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from home.models import Author
-from home.models import Publisher
 from home.models import Subscriber
 from home.models import Admin
+from home.models import AppUser
 from .bootstrapForm import BootstrapForm
 
 class UserForm(forms.ModelForm, BootstrapForm):
@@ -21,7 +21,7 @@ class UserForm(forms.ModelForm, BootstrapForm):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_form_control(self.fields)
+        self.add_form_control()
 
     class Meta:
         model = User
@@ -45,7 +45,7 @@ class AppUserForm(forms.ModelForm, BootstrapForm):
         self.fields['avatar'].widget = forms.HiddenInput()
         self.fields['dob'].label = 'Date of birth'
         self.fields['dob'].widget.input_type = 'date'
-        self.add_form_control(self.fields)
+        self.add_form_control()
 
     class Meta:
         exclude = ['user']
@@ -58,17 +58,6 @@ class AuthorForm(AppUserForm):
     """
     class Meta(AppUserForm.Meta):
         model = Author
-        exclude = ['user', 'author_type']
-
-class PublisherForm(AppUserForm):
-    """
-    Form to edit `home.models.Publisher` model.
-    
-    Inherits `home.forms.AppUserForm` form.
-    """
-    class Meta(AppUserForm.Meta):
-        model = Author
-        fields = '__all__'
 
 class SubscriberForm(AppUserForm):
     """
@@ -88,7 +77,6 @@ class AdminForm(AppUserForm):
     """
     class Meta(AppUserForm.Meta):
         model = Admin
-        fields = '__all__'
 
 class DeleteUserForm(forms.ModelForm, BootstrapForm):
     """
@@ -100,10 +88,25 @@ class DeleteUserForm(forms.ModelForm, BootstrapForm):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_form_control(self.fields)
+        self.add_form_control()
         self.fields['username'].widget.attrs.update({'readonly': True})
 
     class Meta:
         model = User
         fields = ['username']
+
+class UserGroupForm(forms.Form):
+    """
+    Form to edit the groups a user belongs.
+    
+    Has the following fields:
+
+    * groups
+    """
+    groups = forms.MultipleChoiceField(
+        label='Select the user groups you want.',
+        widget=forms.CheckboxSelectMultiple,
+        choices=AppUser.USER_LEVEL,
+        help_text='This action is irreversible.',
+    )
 

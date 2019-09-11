@@ -6,11 +6,21 @@
 Welcome to LetLive's documentation!
 ===================================
 
-.. literalinclude:: ../../README.md
+.. toctree::
+   :maxdepth: 2
+
+   overview
+   getting_started
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: Features:
+   
+   features/features
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Modules:
 
    modules/modules
 

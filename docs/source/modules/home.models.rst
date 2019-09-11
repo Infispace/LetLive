@@ -17,6 +17,14 @@ home.models.articleModel module
    :undoc-members:
    :show-inheritance:
 
+home.models.blogModel module
+----------------------------
+
+.. automodule:: home.models.blogModel
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 home.models.topicModel module
 -----------------------------
 

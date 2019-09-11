@@ -8,14 +8,22 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     '''
     groups = serializers.HyperlinkedIdentityField(
         many=True,
+        read_only=True,
         view_name='api_v1:group-detail',
     )
     
-    read_only_fields = ['username']
-
     class Meta:
         model = User
-        exclude = ['password','user_permissions']
+        exclude = ['password', 'user_permissions']
+        
+        read_only_fields = [
+            "is_superuser",
+            "is_staff",
+            "is_active",
+            'last_login',
+            'date_joined',
+        ]
+
         extra_kwargs = {
             'url': {
                 'view_name': 'api_v1:user-detail',
