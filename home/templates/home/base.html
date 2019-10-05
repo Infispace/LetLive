@@ -4,22 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
   {% load static %}
-  {% load is_debug %} {% is_debug  as is_debug%}
-     
-  <!-- font awsome -->
-  {% if is_debug %}
-    <link 
-      rel="stylesheet"
-      href="{% static 'home/@fortawesome/fontawesome-free/css/all.css' %}" 
-    >
-  {% else %}
-    {% include 'home/page_cdns/fontawsome.html' %}
-  {% endif %}
   
-  {% block css %}
+  {% block theme %}
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="{% static 'home/themes/purple.min.css' %}">
+  <!-- style css -->
+  {% endblock %} 
+      
+  <!-- font awsome -->
+  <link 
+    rel="stylesheet"
+    href="{% static 'home/@fortawesome/fontawesome-free/css/all.css' %}" 
+  >
+  
+  {% block css %}
   <!-- Page specific css --> 
+  <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
   {% endblock %} 
   
   <title>{% block title %}Home{% endblock %} | LetLive | A Digital Lifestyle Magazine</title>
@@ -52,29 +52,27 @@
   
   <!-- JavaScript Files -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <!-- font awsome -->
-  {% if is_debug %}
-    <!-- jQuery -->
-    <script src="{% static 'home/jquery/dist/jquery.slim.min.js' %}"></script>
-    <!-- Popper.js -->
-    <script rc="{% static 'home/popper.js/dist/umd/popper.min.js' %}"></script>
-  {% else %}
-    <!-- jQuery -->
-    {% include 'home/page_cdns/jquery.html' %}
-    <!-- Popper.js -->
-    {% include 'home/page_cdns/popper_js.html' %}
-  {% endif %}
   
-  {% block js %}
+  <!-- jQuery -->
+  <script 
+    src="{% static 'home/jquery/dist/jquery.slim.min.js' %}">
+  </script>
+  
+  <!-- Popper.js -->
+  <script 
+    src="{% static 'home/popper.js/dist/umd/popper.min.js' %}">
+  </script>
+  
   <!-- Bootstrap Js -->
-  {% if is_debug %}
-    <script src="{% static 'home/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-  {% else %}
-    {% include 'home/page_cdns/bootstrap_js.html' %}
-  {% endif %}
+  <script 
+    src="{% static 'home/bootstrap/dist/js/bootstrap.min.js' %}">
+  </script>
   
+  {% block js %} 
   <!-- Page specific js -->
-  <script src="{% static 'home/js/main.js' %}"></script>
+  <script 
+    src="{% static 'home/js/script.js' %}">
+  </script>
   {% endblock %} 
 </body>
 </html>

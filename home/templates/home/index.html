@@ -3,12 +3,6 @@
 
 {% block title %}Home{% endblock %}
 
-{% block css %}
-{% load static %}
-<!-- Bulma css --> 
-<link rel="stylesheet" href="{% static 'home/css/main.css' %}">
-{% endblock %} 
-
 {% block menubar_links %}
   {% load menu_bar %}
   {% menu_bar %}
@@ -28,8 +22,3 @@
       <hr>
   {% endfor %}
 {% endblock %}
-
-{% block js %}
-<!-- Page specific js -->
-<script src="{% static 'home/js/main.js' %}"></script>
-{% endblock %} 

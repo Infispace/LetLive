@@ -4,17 +4,12 @@
   "version": "1.0.0",
   "homepage": "https://github.com/LetLive-Ent/LetLive#readme",
   "license": "GNU General Public License v3.0",
-  "private": false,
+  "private": true,
   "keywords": [
     "digital",
     "lifestyle",
     "magazine"
   ],
-  "author": {
-    "name": "Kioko Kenndey Musyimi",
-    "email": "kmkioko@gmail.com",
-    "url": "https://github.com/kenkioko"
-  },
   "contributors": [
     {
       "name": "Kioko Kenndey Musyimi",
@@ -31,20 +26,22 @@
     "type": "git",
     "url": "https://github.com/LetLive-Ent/LetLive.git"
   },
-  "devDependencies": {
-    "bulma": "^0.7.2",
+  "dependencies": {
     "bootstrap": "^4.3.1",
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
     "tinymce": "^5.0.5",
+    "bulma": "^0.7.2"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.10.2",
     "autoprefixer": "^9.4.7",
-    "node-sass": "^4.11.0",
-    "npm-run-all": "^4.1.5",
-    "postcss-cli": "^6.1.1",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015-ie": "^6.7.0",
-    "@fortawesome/fontawesome-free": "^5.10.2"
+    "node-sass": "^4.11.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^6.1.1"
   },
   "scripts": {
     "css-build": "node-sass home/static/home/_sass/main.scss home/static/home/css/main.css",
